@@ -234,7 +234,7 @@ export const youtube: SiteAdapter = {
   id: 'youtube',
   backdrop: true,
   engine: {
-    accept: /^--(yt-sys-color-baseline--|yt-spec-|t[0-9a-f]{16}$|ytd-searchbox-)/,
+    accept: /^--(yt-sys-color-baseline--|yt-spec-|t[0-9a-f]{16}$|ytd-searchbox-|yt-live-chat-)/,
     exclude: /overlay|static|scrim|ad-yellow|shadow|error|warning|complete|themed|add-on|purple|magenta/,
     semantic:
       /^--yt-sys-color-baseline--(base|raised|menu|text|tonal|additive|outline|call-to-action|mono|touch|surface|solid|frosted)/,

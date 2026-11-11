@@ -3,6 +3,7 @@
  * - rs:settings — Settings (parseSettings on every read)
  * - rs:themes   — custom themes (parseTheme on every read)
  * - rs:speed    — last playback speed per platform
+ * - rs:sync-status, rs:device — Chrome Sync bookkeeping (background/sync.ts)
  * - rs:engine:<platform>:<mode> — the recolouring engine's cache of a site's palette
  */
 import { parseSettings, type Settings } from '../core/settings.ts';
@@ -12,6 +13,8 @@ import type { PlatformId } from '../core/platforms.ts';
 export const SETTINGS_KEY = 'rs:settings';
 export const THEMES_KEY = 'rs:themes';
 export const SPEED_KEY = 'rs:speed';
+/** Outcome of the last Chrome Sync step ({ at, ok, error? }), written by the service worker. */
+export const SYNC_STATUS_KEY = 'rs:sync-status';
 export const engineKey = (platform: PlatformId, mode: string) => `rs:engine:${platform}:${mode}`;
 
 export function parseThemes(raw: unknown): Theme[] {

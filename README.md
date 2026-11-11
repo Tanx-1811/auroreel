@@ -10,7 +10,7 @@ A Chrome extension (Manifest V3). Vietnamese and English.
 > 🇻🇳 **Tiếng Việt:** Reelskin làm đẹp YouTube, Twitch và các trang xem phim (Netflix, Prime Video, Disney+,
 > Vimeo, FPT Play, VieON…): 24 chủ đề có sẵn, tự tạo chủ đề (kể cả từ một bức ảnh), ánh sáng nền quanh video,
 > chế độ rạp, chỉnh tốc độ, bộ lọc màu hình, chụp khung hình, hình trong hình, ẩn Shorts/bình luận/đề xuất, tự
-> đổi chủ đề sáng/tối theo giờ. Không tài khoản, không theo dõi — mọi thứ nằm trên máy bạn.
+> đổi chủ đề sáng/tối theo giờ, đồng bộ qua Chrome. Không tài khoản, không theo dõi — mọi thứ nằm trên máy bạn.
 
 ## Features
 
@@ -28,13 +28,15 @@ A Chrome extension (Manifest V3). Vietnamese and English.
 | **Per site**         | Turn sites on/off, give a site its own theme, player tools on every other site (optional permission).                                                                                                      |
 | **Backup**           | Settings and themes (pictures included) in one JSON file.                                                                                                                                                  |
 
-Supported sites: **full** — YouTube, Twitch; **basic** (background, accent, font, all player tools) — YouTube Music,
-Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON; **player tools** — any other site once allowed.
+Supported sites: **full** (every colour, backdrop, layout options) — YouTube, Twitch; **recolour** (every colour, in
+the site's dark style) — Netflix, Prime Video, Disney+, YouTube Music, FPT Play, VieON; **basic** (accent, background,
+font) — Vimeo; **player tools** — any other site once allowed. All of them get every player tool.
 
 ## Privacy
 
 No account, no analytics, no server. Settings, themes and pictures live in `chrome.storage.local` on this computer.
-Host access is limited to the supported sites; "every other site" is an optional permission. See
+Host access is limited to the supported sites (plus VieON's stylesheet CDN); "every other site" is an optional
+permission. Chrome Sync is opt-in. See
 [docs/PRIVACY.md](docs/PRIVACY.md).
 
 ## Development
@@ -57,6 +59,9 @@ Dev tools: `node scripts/probe-site.mjs <url>` lists a site's CSS custom propert
 `node scripts/live-shot.mjs <url> out.png --theme=aurora` screenshots a real page with the extension.
 
 How it works: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Store listing copy: [docs/STORE_LISTING.md](docs/STORE_LISTING.md).
+
+Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Security: [SECURITY.md](SECURITY.md) · Publishing:
+[docs/PUBLISHING.md](docs/PUBLISHING.md) · License: [MIT](LICENSE).
 
 Reelskin is an independent project, not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo,
 FPT Play or VieON.

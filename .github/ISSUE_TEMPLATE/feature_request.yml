@@ -1,0 +1,14 @@
+name: Feature request / Đề xuất tính năng
+description: An idea for Reelskin. / Ý tưởng cho Reelskin.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do? / Bạn muốn làm gì?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How could Reelskin help? / Reelskin có thể giúp thế nào?

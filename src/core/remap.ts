@@ -192,3 +192,109 @@ export function overridesCss(selectors: string[], overrides: Map<string, string>
   const body = [...overrides].map(([k, v]) => `${k}:${v}!important`).join(';');
   return `${selectors.join(',')}{${body}}`;
 }
+
+// ——— Rewriting literal colours (sites without a token palette) ———
+
+/** Colour literals inside a CSS value (gradients, color-mix(), shadows…). */
+const COLOR_TOKEN = /#[0-9a-f]{3,8}\b|(?:rgba?|hsla?|oklch|oklab)\([^()]*\)|\b(?:white|black)\b/gi;
+
+/** Longhand properties whose literal colours are rewritten, and how each is used. */
+export const REWRITE_PROPS: Record<string, ColorRole> = {
+  color: 'fg',
+  'background-color': 'bg',
+  'background-image': 'bg',
+  'border-top-color': 'fg',
+  'border-right-color': 'fg',
+  'border-bottom-color': 'fg',
+  'border-left-color': 'fg',
+  'outline-color': 'fg',
+  'text-decoration-color': 'fg',
+  'caret-color': 'fg',
+  '-webkit-text-fill-color': 'fg',
+  fill: 'fg',
+  stroke: 'fg',
+};
+
+/** Guesses how a custom property is used from its name (design tokens are named semantically). */
+export function roleFromName(name: string): ColorRole {
+  const n = name.toLowerCase();
+  if (/surface|background|(^|[-_])bg([-_]|$)|backdrop|fill-?bg|overlay/.test(n)) return 'bg';
+  if (/foreground|text|font|label|icon|link|border|divider|outline|stroke|(^|[-_])fg([-_]|$)/.test(n)) return 'fg';
+  return 'unknown';
+}
+
+/** Replaces every colour literal in a value; null when nothing changed. */
+export function rewriteValue(
+  value: string,
+  remap: (v: string, role?: ColorRole) => string | null,
+  role: ColorRole,
+): string | null {
+  if (!value || value.includes('url(')) return null;
+  let changed = false;
+  const out = value.replace(COLOR_TOKEN, (token) => {
+    const mapped = remap(token, role);
+    if (!mapped || mapped === token) return token;
+    changed = true;
+    return mapped;
+  });
+  return changed ? out : null;
+}
+
+export interface RewriteRule {
+  /** Enclosing at-rule preludes, outermost first ("@media (min-width: 800px)"). */
+  wrap: string[];
+  selector: string;
+  /**
+   * Declarations with a literal colour; the third item marks `!important`
+   * ones, the fourth copies the value unchanged (a later rule for the same
+   * selector that must keep winning over our rewritten copy of an earlier one).
+   */
+  decls: [name: string, value: string, important?: boolean, keep?: boolean][];
+  /** An earlier rule for the same selector was rewritten: write this one even if unchanged. */
+  follows?: boolean;
+}
+
+/** Properties a rewritten rule can set (colour longhands and custom properties). */
+export function isColorProperty(name: string): boolean {
+  return name.startsWith('--') || name in REWRITE_PROPS;
+}
+
+/** Whether a declaration is worth keeping for rewriting. */
+export function isRewritable(name: string, value: string): boolean {
+  if (!value || value.includes('var(--rs-')) return false;
+  if (!(name.startsWith('--') || name in REWRITE_PROPS)) return false;
+  COLOR_TOKEN.lastIndex = 0;
+  return COLOR_TOKEN.test(value);
+}
+
+/**
+ * Builds override rules for literal colours: same selectors, remapped values,
+ * wrapped in the same @media/@supports/@container conditions. They are not
+ * made `!important` (unless the original was): a copy only wins over its
+ * original by coming later, so a declaration that lost in the site's cascade
+ * still loses — the stylesheet must stay last in the document.
+ */
+export function rewriteCss(rules: RewriteRule[], remap: (v: string, role?: ColorRole) => string | null): string {
+  let css = '';
+  for (const rule of rules) {
+    const body: string[] = [];
+    for (const [name, value, important, keep] of rule.decls) {
+      const role = name.startsWith('--') ? roleFromName(name) : (REWRITE_PROPS[name] ?? 'unknown');
+      // Unchanged colours are copied too, so the copies keep the site's rule order.
+      const mapped = keep ? value : (rewriteValue(value, remap, role) ?? value);
+      if (mapped) body.push(`${name}:${mapped}${important ? '!important' : ''}`);
+    }
+    if (!body.length) continue;
+    if (
+      rule.decls.every(([, , , keep]) => keep) ||
+      body.every((d, i) => d === `${rule.decls[i]![0]}:${rule.decls[i]![1]}`)
+    ) {
+      // Nothing recoloured in this rule: only worth writing to keep the order after an earlier copy.
+      if (!rule.decls.some(([, , , keep]) => keep) && !rule.follows) continue;
+    }
+    let block = `${rule.selector}{${body.join(';')}}`;
+    for (let i = rule.wrap.length - 1; i >= 0; i--) block = `${rule.wrap[i]}{${block}}`;
+    css += block;
+  }
+  return css;
+}

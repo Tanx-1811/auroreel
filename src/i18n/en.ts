@@ -59,9 +59,12 @@ export const en = {
 
   'tier.full': 'Full theme',
   'tier.basic': 'Basic',
+  'tier.recolor': 'Recolour',
   'tier.player': 'Player tools',
   'tier.fullHint': 'Every colour, a backdrop behind the page, layout options and all player tools.',
   'tier.basicHint': 'Background, accent colour, font and every player tool. No layout options for this site yet.',
+  'tier.recolorHint':
+    'Every colour follows your theme, in the site’s own dark style, plus fonts and every player tool. No backdrop or layout options.',
   'tier.playerHint': 'Speed, picture filters, ambient light, cinema mode and frame capture.',
   'platform.generic': 'This site',
 
@@ -341,6 +344,13 @@ export const en = {
   // ——— Backup ———
   'backup.title': 'Backup',
   'backup.subtitle': 'Keep your themes and settings safe, or move them to another computer.',
+  'backup.sync': 'Sync with Chrome',
+  'backup.syncHint':
+    'Keep settings and your themes the same on every computer signed in to Chrome. Turn it on on each one.',
+  'backup.syncSwitch': 'Sync settings and themes',
+  'backup.syncOk': 'Synced · {time}',
+  'backup.syncError': 'Couldn’t sync: {error}',
+  'backup.syncSkipped': '{n} theme(s) with a picture backdrop stay on this computer (too big for Chrome Sync).',
   'backup.export': 'Export everything',
   'backup.exportHint': 'Settings and your {n} themes (pictures included) in one .json file.',
   'backup.exportBtn': 'Export',
@@ -364,13 +374,16 @@ export const en = {
   'about.langAuto': 'Automatic',
   'about.privacyTitle': 'Private by design',
   'about.privacy':
-    'Reelskin works entirely in your browser: no account, no tracking, no server. Your settings, themes and pictures stay on this computer, and nothing about what you watch ever leaves it.',
+    'Reelskin works entirely in your browser: no account, no tracking, no server. Your settings, themes and pictures stay on this computer (settings and themes also in Chrome Sync if you turn it on), and nothing about what you watch ever leaves it.',
   'about.howTitle': 'Good to know',
   'about.how1': 'Changes apply to open tabs instantly — no reload needed.',
   'about.how2': 'Alt + T pauses the theme in one tab; Alt + C turns on cinema mode.',
   'about.how3':
     'Protected videos (Netflix, Disney+…) can’t be captured, and their ambient light uses your accent colour.',
   'about.how4': 'If a site changes its design, update Reelskin or switch the site to “Site colours” for a while.',
+  'about.source': 'Source code',
+  'about.report': 'Report a problem',
+  'about.policy': 'Privacy policy',
   'about.disclaimer':
     'Reelskin is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play or VieON. All trademarks belong to their owners.',
 

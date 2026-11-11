@@ -3,13 +3,16 @@
  * run-time content script for "player tools on every site" (registered only
  * while the user has granted the optional all-sites permission).
  */
-import { ALL_MATCHES } from '../core/platforms.ts';
+import { ALL_MATCHES, isCssHost } from '../core/platforms.ts';
 import { allThemes, NO_THEME } from '../core/themes.ts';
 import { sendToTab, type PageAction } from '../shared/messages.ts';
 import { ANY_SITE_ORIGINS } from '../shared/anySite.ts';
 import { loadState, SETTINGS_KEY, updateSettings } from '../shared/storage.ts';
+import { initSync } from './sync.ts';
 
 const ANY_SITE_ID = 'reelskin-any-site';
+
+initSync();
 
 async function syncAnySite(): Promise<void> {
   const { settings } = await loadState();
@@ -85,4 +88,30 @@ chrome.commands.onCommand.addListener((command) => {
     const tabId = await activeTabId();
     if (action && tabId !== null) await sendToTab(tabId, { type: 'rs:action', action });
   })().catch(() => undefined);
+});
+
+/**
+ * Stylesheets on a site's CDN that refuses cross-origin reads (VieON): the
+ * content script can't read their colours, so the worker fetches them — only
+ * for its own content scripts and only from the hosts listed in CSS_HOSTS.
+ */
+chrome.runtime.onMessage.addListener((msg: { type?: string; url?: string }, sender, reply) => {
+  if (msg?.type !== 'rs:fetch-css' || sender.id !== chrome.runtime.id || !sender.tab) return false;
+  const url = msg.url ?? '';
+  if (!isCssHost(url)) {
+    reply(null);
+    return false;
+  }
+  void (async () => {
+    try {
+      const res = await fetch(url, { credentials: 'omit' });
+      const type = res.headers.get('content-type') ?? '';
+      if (!res.ok || !/css/.test(type)) return reply(null);
+      const text = await res.text();
+      reply(text.length <= 4_000_000 ? { text } : null);
+    } catch {
+      reply(null);
+    }
+  })();
+  return true;
 });

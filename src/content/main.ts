@@ -5,13 +5,13 @@
  * player tools, and follows storage changes live.
  */
 import { formatColor } from '../core/color.ts';
-import { buildPageCss } from '../core/css/index.ts';
+import { buildPageCss, sitePalette } from '../core/css/index.ts';
 import { hasBackdrop } from '../core/css/common.ts';
 import { GENERIC, PLATFORMS, platformForHost, type Platform } from '../core/platforms.ts';
 import { activeThemeId, msUntilNextSwitch } from '../core/schedule.ts';
 import type { Settings } from '../core/settings.ts';
 import { adapterFor } from '../core/sites/index.ts';
-import { findTheme, resolvePalette, type Theme } from '../core/themes.ts';
+import { findTheme, type Theme } from '../core/themes.ts';
 import { resolveLang, translate } from '../shared/i18n.ts';
 import type { PageStatus, ToPage } from '../shared/messages.ts';
 import { loadState, SETTINGS_KEY, THEMES_KEY } from '../shared/storage.ts';
@@ -42,7 +42,9 @@ function main() {
   window.__reelskin = true;
 
   const platform = detectPlatform();
-  const adapter = adapterFor(platform.id);
+  const base = adapterFor(platform.id);
+  // In a frame (YouTube's live chat): flat colours — the page around it already shows the backdrop.
+  const adapter = window.top !== window && base.backdrop ? { ...base, backdrop: false } : base;
   const styles = new Styles();
   const player = new PlayerTools();
   const engine = adapter.engine ? new Engine(adapter.engine, styles, platform.id) : null;
@@ -71,7 +73,7 @@ function main() {
     const on = s.enabled && site.enabled;
     const lang = resolveLang(s.language);
     const theme = on && !skinPaused ? currentTheme(s) : null;
-    const palette = theme ? resolvePalette(theme) : null;
+    const palette = theme ? sitePalette(adapter, theme) : null;
 
     if (on && !skinPaused && platform.tier !== 'player') {
       styles.setMain(

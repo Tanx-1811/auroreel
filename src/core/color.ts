@@ -89,8 +89,8 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 }
 
 /**
- * Parses hex, rgb()/rgba(), hsl()/hsla(), `transparent` and a few named
- * colours. Anything else (var(), color-mix(), gradients, keywords) → null.
+ * Parses hex, rgb()/rgba(), hsl()/hsla(), oklch()/oklab(), `transparent` and a
+ * few named colours. Anything else (var(), color-mix(), gradients, keywords) → null.
  */
 export function parseColor(input: string): Rgba | null {
   const s = input.trim().toLowerCase();
@@ -98,6 +98,27 @@ export function parseColor(input: string): Rgba | null {
   if (s === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
   if (s.startsWith('#')) return parseHex(s);
   if (NAMED[s]) return parseHex(NAMED[s]!);
+  const lab = /^(oklch|oklab)\(([^()]*)\)$/.exec(s);
+  if (lab) {
+    // CSS Color 4 (Tailwind v4 palettes): oklch(64.6% 0.222 41.1 / .5), oklab(0.5 0.1 -0.1).
+    const parts = args(lab[2]!);
+    if (parts.length < 3 || parts.length > 4) return null;
+    const L = num(parts[0]!, 1);
+    const alpha = parts[3] === undefined ? 1 : num(parts[3], 1);
+    let c: Oklab;
+    if (lab[1] === 'oklch') {
+      const C = num(parts[1]!, 0.4);
+      const H = parts[2] === 'none' ? 0 : parseFloat(parts[2]!);
+      if (![L, C, H, alpha].every(Number.isFinite)) return null;
+      c = oklchToOklab({ L, C, H, alpha });
+    } else {
+      const a = num(parts[1]!, 0.4);
+      const b = num(parts[2]!, 0.4);
+      if (![L, a, b, alpha].every(Number.isFinite)) return null;
+      c = { L, a, b, alpha };
+    }
+    return oklabToRgb({ ...c, L: clamp(c.L, 0, 1), alpha: clamp(c.alpha, 0, 1) });
+  }
   const m = /^(rgba?|hsla?)\(([^()]*)\)$/.exec(s);
   if (!m) return null;
   const parts = args(m[2]!);

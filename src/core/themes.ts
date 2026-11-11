@@ -318,6 +318,42 @@ export function resolvePalette(theme: Theme): Palette {
   return { mode: theme.mode, bg, surface, surface2, text, muted, accent, accentText: onColor(accent), link, border };
 }
 
+/**
+ * The theme's counterpart in another mode: same hues and accent, lightness
+ * flipped. Used on sites whose own design is fixed dark (or light) — their
+ * hard-coded overlays (white icons over video, dark scrims) keep working, and
+ * a light theme there shows as its dark sibling.
+ */
+export function adaptPalette(p: Palette, mode: ThemeMode): Palette {
+  if (p.mode === mode) return p;
+  const dark = mode === 'dark';
+  const bgLch = toOklch(p.bg);
+  const accentLch = toOklch(p.accent);
+  const tinted = bgLch.C > 0.012;
+  const H = tinted ? bgLch.H : accentLch.H;
+  const C = tinted ? Math.min(bgLch.C * 1.4, 0.05) : Math.min(accentLch.C * 0.18, 0.03);
+  const at = (L: number, chroma = C) => fromOklch({ L, C: chroma, H, alpha: 1 });
+  const bg = at(dark ? 0.17 : 0.975);
+  const surface = at(dark ? 0.22 : 0.995, C * (dark ? 1.1 : 0.4));
+  const text = at(dark ? 0.95 : 0.2, Math.min(C, 0.012));
+  const muted = ensureContrast(at(dark ? 0.74 : 0.48, Math.min(C, 0.02)), bg, 4.5);
+  const accent = ensureContrast(p.accent, bg, 3);
+  const linkLch = toOklch(p.link);
+  const link = ensureContrast(fromOklch({ ...linkLch, L: dark ? 0.8 : 0.48 }), bg, 4.5);
+  return {
+    mode,
+    bg,
+    surface,
+    surface2: mix(surface, text, dark ? 0.08 : 0.06),
+    text,
+    muted,
+    accent,
+    accentText: onColor(accent),
+    link,
+    border: mix(bg, text, dark ? 0.16 : 0.13),
+  };
+}
+
 /** Builds a complete theme from a background, an accent and a mode (theme wizard, image palettes). */
 export function themeFromSeed(seed: {
   id: string;

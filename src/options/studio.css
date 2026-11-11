@@ -610,3 +610,16 @@ kbd {
     grid-template-columns: 1fr;
   }
 }
+
+.warn-text {
+  color: var(--warn);
+}
+
+.about-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.about-links .btn {
+  text-decoration: none;
+}

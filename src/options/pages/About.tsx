@@ -1,4 +1,4 @@
-import { Lock, Sparkles } from 'lucide-react';
+import { Bug, Code2, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { Field, Segmented } from '../../ui/controls.tsx';
 import { useT } from '../../ui/i18n.tsx';
 import { LogoMark } from '../../ui/Logo.tsx';
@@ -57,6 +57,30 @@ export function AboutPage({ settings, update }: PageProps) {
             <li>{t('about.how4')}</li>
           </ul>
         </Card>
+        <div className="about-links">
+          <a className="btn sm" href="https://github.com/Tanx-1811/reelskin" target="_blank" rel="noreferrer">
+            <Code2 size={14} />
+            {t('about.source')}
+          </a>
+          <a
+            className="btn sm"
+            href="https://github.com/Tanx-1811/reelskin/issues/new/choose"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Bug size={14} />
+            {t('about.report')}
+          </a>
+          <a
+            className="btn sm"
+            href="https://github.com/Tanx-1811/reelskin/blob/main/docs/PRIVACY.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ShieldCheck size={14} />
+            {t('about.policy')}
+          </a>
+        </div>
         <p className="faint small">{t('about.disclaimer')}</p>
       </div>
     </>

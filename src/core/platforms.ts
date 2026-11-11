@@ -17,7 +17,7 @@ export type PlatformId =
   | 'vieon'
   | 'generic';
 
-export type Tier = 'full' | 'basic' | 'player';
+export type Tier = 'full' | 'recolor' | 'basic' | 'player';
 
 export interface ToggleOption {
   id: string;
@@ -42,6 +42,11 @@ export interface Platform {
   tier: Tier;
   /** The site's own brand colour (chips in the UI). */
   brand: string;
+  /**
+   * Hosts of the site's stylesheets that don't allow cross-origin reads; the
+   * service worker fetches them (host permission) so the engine can read the colours.
+   */
+  cssHosts?: string[];
   layout: LayoutOption[];
 }
 
@@ -91,7 +96,7 @@ export const PLATFORMS: Platform[] = [
     name: 'YouTube Music',
     hosts: ['music.youtube.com'],
     matches: ['https://music.youtube.com/*'],
-    tier: 'basic',
+    tier: 'recolor',
     brand: '#ff0033',
     layout: [],
   },
@@ -100,7 +105,7 @@ export const PLATFORMS: Platform[] = [
     name: 'Netflix',
     hosts: ['www.netflix.com', 'netflix.com'],
     matches: ['https://www.netflix.com/*'],
-    tier: 'basic',
+    tier: 'recolor',
     brand: '#e50914',
     layout: [],
   },
@@ -109,7 +114,7 @@ export const PLATFORMS: Platform[] = [
     name: 'Prime Video',
     hosts: ['www.primevideo.com', 'primevideo.com'],
     matches: ['https://www.primevideo.com/*'],
-    tier: 'basic',
+    tier: 'recolor',
     brand: '#1a98ff',
     layout: [],
   },
@@ -118,7 +123,7 @@ export const PLATFORMS: Platform[] = [
     name: 'Disney+',
     hosts: ['www.disneyplus.com', 'disneyplus.com'],
     matches: ['https://www.disneyplus.com/*'],
-    tier: 'basic',
+    tier: 'recolor',
     brand: '#0063e5',
     layout: [],
   },
@@ -136,7 +141,7 @@ export const PLATFORMS: Platform[] = [
     name: 'FPT Play',
     hosts: ['fptplay.vn', 'www.fptplay.vn'],
     matches: ['https://fptplay.vn/*'],
-    tier: 'basic',
+    tier: 'recolor',
     brand: '#fe592a',
     layout: [],
   },
@@ -145,7 +150,8 @@ export const PLATFORMS: Platform[] = [
     name: 'VieON',
     hosts: ['vieon.vn', 'www.vieon.vn'],
     matches: ['https://vieon.vn/*'],
-    tier: 'basic',
+    cssHosts: ['https://*.vieon.vn/*'],
+    tier: 'recolor',
     brand: '#3ac882',
     layout: [],
   },
@@ -194,3 +200,20 @@ export function layoutDefaults(platform: Platform): Record<string, boolean | str
 }
 
 export const ALL_MATCHES = PLATFORMS.flatMap((p) => p.matches);
+
+/** Stylesheet hosts the service worker may fetch for the engine (also host permissions). */
+export const CSS_HOSTS = PLATFORMS.flatMap((p) => p.cssHosts ?? []);
+
+/** Whether `url` is a stylesheet host the service worker may fetch. */
+export function isCssHost(url: string): boolean {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:') return false;
+    return CSS_HOSTS.some((pattern) => {
+      const host = pattern.replace(/^https:\/\//, '').replace(/\/\*$/, '');
+      return host.startsWith('*.') ? u.hostname.endsWith(host.slice(1)) : u.hostname === host;
+    });
+  } catch {
+    return false;
+  }
+}

@@ -1,0 +1,26 @@
+name: Site support / Hỗ trợ trang web
+description: Ask for a new site, or report that a site changed its design. / Đề xuất trang mới hoặc báo trang đã đổi giao diện.
+labels: [site]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Site address / Địa chỉ trang
+      placeholder: https://…
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Request / Yêu cầu
+      options:
+        - New site / Trang mới
+        - Site changed its design / Trang đổi giao diện
+        - Layout option for a site / Tuỳ chọn bố cục cho trang
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details / Chi tiết
+      description: What should Reelskin change there? Screenshots welcome. / Reelskin nên thay đổi gì? Có ảnh càng tốt.

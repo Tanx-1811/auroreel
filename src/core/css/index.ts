@@ -1,5 +1,5 @@
 import type { SiteAdapter, LayoutStrings } from '../sites/index.ts';
-import { resolvePalette, type Theme } from '../themes.ts';
+import { adaptPalette, resolvePalette, type Palette, type Theme } from '../themes.ts';
 import { backdropCss, chromeCss, fontCss, ROOT, tokens } from './common.ts';
 
 export interface PageCssInput {
@@ -11,11 +11,17 @@ export interface PageCssInput {
   strings: LayoutStrings;
 }
 
+/** The palette a site shows: the theme's, or its counterpart in the site's fixed mode. */
+export function sitePalette(adapter: SiteAdapter, theme: Theme): Palette {
+  const palette = resolvePalette(theme);
+  return adapter.siteMode ? adaptPalette(palette, adapter.siteMode) : palette;
+}
+
 /** The whole static stylesheet for a page (the engine's overrides come separately). */
 export function buildPageCss({ adapter, theme, layout, assetUrl, strings }: PageCssInput): string {
   let css = '';
   if (theme) {
-    const palette = resolvePalette(theme);
+    const palette = sitePalette(adapter, theme);
     const ctx = { theme, palette, assetUrl };
     css += tokens(ctx);
     css += adapter.backdrop

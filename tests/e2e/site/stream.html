@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fake Stream — Reelskin test page</title>
+    <style>
+      /* A dark streaming site that hard-codes its colours (like Netflix or FPT Play). */
+      body {
+        margin: 0;
+        background: #141414;
+        color: #ffffff;
+        font:
+          14px/1.4 Arial,
+          sans-serif;
+      }
+      .card {
+        background-color: #181818;
+        padding: 12px;
+        margin: 12px;
+      }
+      .cta {
+        background-color: #e50914;
+        color: #fff;
+        padding: 8px 16px;
+      }
+      .field {
+        --hcw--local-design--Input-Foreground: rgb(255, 255, 255);
+        --hcw--local-design--Input-Surface: rgba(22, 22, 22, 0.7);
+      }
+      .field input {
+        color: var(--hcw--local-design--Input-Foreground);
+        background: var(--hcw--local-design--Input-Surface);
+      }
+      .tailwind {
+        --color-neutral-900: oklch(20.5% 0 0);
+        background-color: var(--color-neutral-900);
+      }
+      /* Cascade order: the later rule (not a literal colour) must keep winning. */
+      .label {
+        color: #000000;
+      }
+      .label {
+        color: var(--keep, #00c853);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="card">A card <span class="label" id="label">label</span></div>
+    <button class="cta" id="cta">Join now</button>
+    <div class="field"><input id="email" placeholder="Email" /></div>
+    <div class="tailwind" id="tw">Tailwind</div>
+  </body>
+</html>

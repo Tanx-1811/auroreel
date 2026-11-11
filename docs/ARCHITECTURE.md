@@ -11,6 +11,7 @@ src/
     remap.ts         the recolouring engine's maths + "which properties are themeable"
     css/             stylesheet builders: common.ts (tokens, backdrop, fonts), index.ts (buildPageCss)
     sites/           one adapter per site: engine config + theme CSS + layout-option CSS
+    sync.ts          Chrome Sync merge rules
     platforms.ts     supported sites, tiers, layout options, manifest match patterns
     settings.ts      Settings model, defaults, parseSettings
     schedule.ts      day/night switching
@@ -23,7 +24,7 @@ src/
     styles.ts        the two <style> elements (engine, main)
     engine.ts        the recolouring engine's DOM half
     player/          floating toolbar, ambient light, cinema mode, capture, shortcuts
-  background/      service worker: welcome page, commands, "every site" script registration
+  background/      service worker: welcome page, commands, "every site" script registration, CSS fetch, sync.ts
   popup/           toolbar popup (themes / player / layout tabs)
   options/         the studio (themes, theme maker, sites, player, auto switch, shortcuts, backup, about, welcome)
   ui/              shared React components, store hook, previews
@@ -77,6 +78,29 @@ tokens; Twitch: `--color-*`). Hand-written overrides can't keep up with hashed n
 Hard-coded colours outside custom properties are handled per site in `core/sites/*.ts` (e.g. YouTube's search box,
 inline colours in descriptions, YouTube's own ambient-mode canvases, which are hidden while a theme is on).
 
+### 2a. Rewrite mode (streaming sites)
+
+Netflix, Prime Video, Disney+, FPT Play, VieON and YouTube Music hard-code colours, or keep design tokens on component
+classes (`.hcw-…{--hcw--local-design--Button-Surface: …}` on Netflix, Tailwind v4 `oklch()` palettes on FPT Play).
+Their adapters (`core/sites/streaming.ts`) set `rewrite: true`:
+
+- every style rule with a literal colour in a colour property (`color`, `background-color`, gradients in
+  `background-image`, border/outline colours, `fill`, `stroke`…) or in a custom property declared on **any** selector
+  is copied with the colour remapped (`rewriteCss`), inside the same `@media`/`@supports`/`@container` conditions;
+- custom properties get their role (text or background) from their name (`roleFromName`: `Foreground`, `Surface`…);
+- the copies are **not** `!important` (unless the original was): they win over the original only by coming later, so a
+  declaration that lost in the site's cascade still loses. A later rule for an already-rewritten selector is copied
+  too (unchanged values included) so the order between them holds. `Styles` keeps our `<style>` elements last in
+  `<head>` as the site adds stylesheets;
+- anchors are the site's measured colours (`anchorColors`), and the palette is adapted to the site's fixed dark design
+  (`siteMode` → `adaptPalette`): a light theme shows as its dark counterpart, so hard-coded overlays (white icons over
+  video, dark scrims) keep working;
+- cross-origin stylesheets (`fetchCss`) are fetched again: with CORS from the content script (Amazon's and Disney's
+  CDNs allow it), or through the service worker for hosts in `CSS_HOSTS` (VieON) — it only fetches `text/css` from
+  those hosts and only for its own content scripts — then parsed with `new CSSStyleSheet().replaceSync()`;
+- CSS-in-JS adds rules to existing `<style>` elements without DOM changes: a throttled observer re-checks each sheet's
+  rule count while the page changes, and rules are de-duplicated by content.
+
 ## 3. Player tools
 
 `content/player/` works on any page with a `<video>`: the primary video is the last one that started playing or the
@@ -101,12 +125,20 @@ reach the site's player.
 `updateSettings(fn)` (read-modify-write); the React hook `useStore` updates optimistically and reloads on
 `storage.onChanged`.
 
+**Chrome Sync** (opt-in, `settings.sync`; `background/sync.ts`, rules in `core/sync.ts`): the service worker is the only
+code that touches `chrome.storage.sync`. Local changes are pushed (debounced): `rs:sync:settings` (settings minus the
+per-device `anySite`, `onboarded`, `sync`, tagged with this device's id so its own echo is ignored), one
+`rs:sync:theme:<id>` item per theme without a picture (Chrome Sync allows 8 KB per item), and `rs:sync:deleted`
+tombstones so a theme deleted on one computer doesn't come back. Changes from other computers are pulled into
+`chrome.storage.local`. Switching sync on pulls first, then pushes. The last outcome is in `rs:sync-status`.
+
 ## 5. Permissions
 
 | Permission                           | Why                                                                                                                                                      |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Host access to the supported sites   | The content script restyles them and adds the player tools.                                                                                              |
-| `storage`                            | Settings, themes and pictures, on this device only.                                                                                                      |
+| `storage`                            | Settings, themes and pictures on this device; Chrome Sync only when the user turns it on.                                                                |
+| `*.vieon.vn` (`CSS_HOSTS`)           | The service worker re-downloads VieON's public stylesheets (its CDN blocks cross-origin reads) so the engine can read their colours.                     |
 | `scripting`                          | Registers the content script for "player tools on every site", only after the user grants it.                                                            |
 | Optional `https://*/*`, `http://*/*` | "Player tools on every site". Requested from a click; the service worker sets `anySite` and (un)registers the script on `permissions.onAdded/onRemoved`. |
 

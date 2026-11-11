@@ -1,5 +1,5 @@
 import pkg from '../package.json' with { type: 'json' };
-import { ALL_MATCHES } from './core/platforms.ts';
+import { ALL_MATCHES, CSS_HOSTS } from './core/platforms.ts';
 
 /**
  * Builds manifest.json at build time so the version always matches package.json.
@@ -8,6 +8,8 @@ import { ALL_MATCHES } from './core/platforms.ts';
  * - Host access to the supported streaming sites only (ALL_MATCHES): the content
  *   script restyles those pages and adds the player tools. Chrome shows
  *   "Read and change your data on www.youtube.com, www.twitch.tv and 7 other sites".
+ * - CSS_HOSTS (a site's stylesheet CDN that blocks cross-origin reads, e.g. *.vieon.vn):
+ *   the service worker fetches those stylesheets so the theme engine can read their colours.
  * - storage: settings and custom themes stay on this device.
  * - scripting: registers the content script for "player tools on every site",
  *   only after the user grants the optional all-sites permission.
@@ -22,6 +24,8 @@ export function createManifest(mode: string): chrome.runtime.ManifestV3 {
     short_name: 'Reelskin',
     version: pkg.version,
     description: '__MSG_extDescription__',
+    // Open source (MIT): Chrome links "Visit website" here.
+    homepage_url: 'https://github.com/Tanx-1811/reelskin',
     default_locale: 'en',
     // scrollbar-color, color-mix(), :has() and clip-path: path(evenodd, …).
     minimum_chrome_version: '121',
@@ -39,9 +43,18 @@ export function createManifest(mode: string): chrome.runtime.ManifestV3 {
     options_ui: { page: 'options/options.html', open_in_tab: true },
     background: { service_worker: 'service-worker.js', type: 'module' },
     permissions: ['storage', 'scripting'],
-    host_permissions: matches,
+    host_permissions: [...matches, ...CSS_HOSTS],
     optional_host_permissions: ['https://*/*', 'http://*/*'],
-    content_scripts: [{ matches, js: ['content.js'], run_at: 'document_start' }],
+    content_scripts: [
+      { matches, js: ['content.js'], run_at: 'document_start' },
+      // YouTube's live chat lives in its own frame.
+      {
+        matches: ['https://www.youtube.com/live_chat*', 'https://www.youtube.com/live_chat_replay*'],
+        js: ['content.js'],
+        run_at: 'document_start',
+        all_frames: true,
+      },
+    ],
     web_accessible_resources: [{ resources: ['fonts/*.woff2'], matches }],
     commands: {
       _execute_action: { suggested_key: { default: 'Alt+Shift+R' }, description: '__MSG_commandOpen__' },

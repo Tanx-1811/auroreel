@@ -37,11 +37,45 @@ export class Styles {
       });
       mo.observe(document.documentElement, { childList: true });
     }
-    document.addEventListener('DOMContentLoaded', remount, { once: true });
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        remount();
+        this.keepLast();
+      },
+      { once: true },
+    );
     // Sites that rebuild <head> (rare) drop our elements; put them back.
     new MutationObserver(() => {
       if (!this.main.isConnected || !this.engine.isConnected) remount();
     }).observe(document.documentElement, { childList: true, subtree: false });
+  }
+
+  /**
+   * Keeps our two elements after every stylesheet the site adds later (CSS-in-JS
+   * appends <style> tags as you browse): rewritten rules only win by coming last.
+   */
+  private keepLast() {
+    if (!document.head) return;
+    let queued = false;
+    new MutationObserver((records) => {
+      if (queued) return;
+      const added = records.some((r) =>
+        [...r.addedNodes].some(
+          (n) =>
+            (n instanceof HTMLStyleElement || n instanceof HTMLLinkElement) && !(n as HTMLElement).dataset.reelskin,
+        ),
+      );
+      if (!added) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        const head = document.head;
+        if (head && head.lastElementChild !== this.main) {
+          head.append(this.engine, this.main);
+        }
+      });
+    }).observe(document.head, { childList: true });
   }
 
   setMain(css: string) {

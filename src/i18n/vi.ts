@@ -60,9 +60,12 @@ export const vi: Messages = {
 
   'tier.full': 'Đầy đủ',
   'tier.basic': 'Cơ bản',
+  'tier.recolor': 'Đổi màu',
   'tier.player': 'Công cụ trình phát',
   'tier.fullHint': 'Đổi mọi màu, có nền phía sau trang, tuỳ chọn bố cục và mọi công cụ trình phát.',
   'tier.basicHint': 'Màu nền, màu nhấn, phông chữ và mọi công cụ trình phát. Trang này chưa có tuỳ chọn bố cục.',
+  'tier.recolorHint':
+    'Mọi màu theo chủ đề của bạn, giữ phong cách tối của trang, kèm phông chữ và mọi công cụ trình phát. Không có nền phía sau hay tuỳ chọn bố cục.',
   'tier.playerHint': 'Tốc độ, bộ lọc màu hình, ánh sáng nền, chế độ rạp và chụp khung hình.',
   'platform.generic': 'Trang này',
 
@@ -333,6 +336,13 @@ export const vi: Messages = {
 
   'backup.title': 'Sao lưu',
   'backup.subtitle': 'Giữ an toàn chủ đề và cài đặt, hoặc chuyển sang máy khác.',
+  'backup.sync': 'Đồng bộ qua Chrome',
+  'backup.syncHint':
+    'Giữ cài đặt và chủ đề giống nhau trên mọi máy đăng nhập cùng tài khoản Chrome. Bật trên từng máy.',
+  'backup.syncSwitch': 'Đồng bộ cài đặt và chủ đề',
+  'backup.syncOk': 'Đã đồng bộ · {time}',
+  'backup.syncError': 'Chưa đồng bộ được: {error}',
+  'backup.syncSkipped': '{n} chủ đề có ảnh nền chỉ nằm trên máy này (quá lớn để đồng bộ qua Chrome).',
   'backup.export': 'Xuất toàn bộ',
   'backup.exportHint': 'Cài đặt và {n} chủ đề của bạn (kèm ảnh) trong một file .json.',
   'backup.exportBtn': 'Xuất file',
@@ -355,13 +365,16 @@ export const vi: Messages = {
   'about.langAuto': 'Tự động',
   'about.privacyTitle': 'Riêng tư ngay từ thiết kế',
   'about.privacy':
-    'Reelskin chạy hoàn toàn trong trình duyệt của bạn: không tài khoản, không theo dõi, không máy chủ. Cài đặt, chủ đề và ảnh nằm trên máy này, và những gì bạn xem không bao giờ bị gửi đi đâu.',
+    'Reelskin chạy hoàn toàn trong trình duyệt của bạn: không tài khoản, không theo dõi, không máy chủ. Cài đặt, chủ đề và ảnh nằm trên máy này (cài đặt và chủ đề có thêm trong Chrome Sync nếu bạn bật đồng bộ), và những gì bạn xem không bao giờ bị gửi đi đâu.',
   'about.howTitle': 'Nên biết',
   'about.how1': 'Thay đổi áp dụng ngay cho các tab đang mở — không cần tải lại.',
   'about.how2': 'Alt + T tạm tắt giao diện ở một tab; Alt + C bật chế độ rạp.',
   'about.how3':
     'Video được bảo vệ (Netflix, Disney+…) không chụp được, và ánh sáng nền của chúng dùng màu nhấn của bạn.',
   'about.how4': 'Nếu một trang đổi thiết kế, hãy cập nhật Reelskin hoặc tạm chuyển trang đó về “Màu gốc của trang”.',
+  'about.source': 'Mã nguồn',
+  'about.report': 'Báo lỗi',
+  'about.policy': 'Chính sách quyền riêng tư',
   'about.disclaimer':
     'Reelskin là dự án độc lập, không liên kết với YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play hay VieON. Mọi nhãn hiệu thuộc về chủ sở hữu.',
 

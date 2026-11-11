@@ -3,8 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "description": "Restyle YouTube, Twitch and streaming sites: themes, ambient light, cinema mode and player tools.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Tanx-1811 (https://github.com/Tanx-1811)",
+  "homepage": "https://github.com/Tanx-1811/reelskin#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tanx-1811/reelskin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Tanx-1811/reelskin/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite build --watch --mode development",

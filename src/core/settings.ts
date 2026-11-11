@@ -70,6 +70,8 @@ export interface Settings {
   anySite: boolean;
   language: 'auto' | 'en' | 'vi';
   onboarded: boolean;
+  /** Keep settings and themes in step across computers through Chrome Sync. */
+  sync: boolean;
 }
 
 export const SPEED_MIN = 0.1;
@@ -111,6 +113,7 @@ export function defaultSettings(): Settings {
     anySite: false,
     language: 'auto',
     onboarded: false,
+    sync: false,
   };
 }
 
@@ -201,6 +204,7 @@ export function parseSettings(raw: unknown): Settings {
     anySite: bool(raw.anySite, d.anySite),
     language: oneOf(raw.language, ['auto', 'en', 'vi'] as const, d.language),
     onboarded: bool(raw.onboarded, d.onboarded),
+    sync: bool(raw.sync, d.sync),
   };
 }
 

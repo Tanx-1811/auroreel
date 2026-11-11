@@ -67,3 +67,28 @@ test('Twitch: palette tokens follow the theme', async ({ context, setSettings })
     .poll(() => page.evaluate(() => getComputedStyle(document.body).color), { timeout: 20_000 })
     .not.toBe('rgb(239, 239, 241)');
 });
+
+const STREAMING = [
+  { name: 'Netflix (public title page)', url: 'https://www.netflix.com/title/80057281', min: 20_000 },
+  { name: 'FPT Play', url: 'https://fptplay.vn/', min: 5_000 },
+  // VieON keeps one stylesheet on a CDN without CORS: read through the service worker.
+  { name: 'VieON', url: 'https://vieon.vn/', min: 20_000 },
+  // Prime Video's stylesheets live on a CORS-enabled CDN.
+  { name: 'Prime Video', url: 'https://www.primevideo.com/', min: 5_000 },
+];
+
+for (const site of STREAMING) {
+  test(`${site.name}: hard-coded colours follow the theme`, async ({ context, setSettings }) => {
+    await setSettings({ themeId: 'midnight-velvet', onboarded: true });
+    const page = await context.newPage();
+    await page.goto(site.url, { waitUntil: 'domcontentloaded' });
+    await expect
+      .poll(() => page.evaluate(() => document.getElementById('reelskin-engine')?.textContent?.length ?? 0), {
+        timeout: 30_000,
+      })
+      .toBeGreaterThan(site.min);
+    await expect
+      .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor), { timeout: 15_000 })
+      .toBe('rgb(13, 11, 30)');
+  });
+}

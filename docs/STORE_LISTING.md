@@ -49,8 +49,12 @@ you always wanted.
 🔒 PRIVATE BY DESIGN
 No account, no tracking, no server. Everything stays on your computer.
 
-Works on: YouTube, Twitch (full themes) · YouTube Music, Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON
-(background, accent, fonts and every player tool) · any other site with a video (player tools, optional).
+Works on: YouTube and Twitch (full themes with backdrops and layout options) · Netflix, Prime Video, Disney+,
+YouTube Music, FPT Play and VieON (every colour follows your theme, in the site's dark style) · Vimeo (accent,
+background and fonts) · any other site with a video (player tools, optional).
+
+☁️ SYNC (OPTIONAL)
+Keep settings and themes the same on every computer signed in to Chrome.
 
 Reelskin is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney,
 Vimeo, FPT Play or VieON.
@@ -91,22 +95,32 @@ mong có.
 🔒 RIÊNG TƯ
 Không tài khoản, không theo dõi, không máy chủ. Mọi thứ nằm trên máy bạn.
 
-Hoạt động trên: YouTube, Twitch (chủ đề đầy đủ) · YouTube Music, Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON
-(màu nền, màu nhấn, phông chữ và mọi công cụ trình phát) · mọi trang có video khác (công cụ trình phát, tuỳ chọn).
+Hoạt động trên: YouTube và Twitch (chủ đề đầy đủ, nền phía sau, tuỳ chọn bố cục) · Netflix, Prime Video, Disney+,
+YouTube Music, FPT Play, VieON (mọi màu theo chủ đề, giữ phong cách tối của trang) · Vimeo (màu nhấn, màu nền, phông
+chữ) · mọi trang có video khác (công cụ trình phát, tuỳ chọn).
+
+☁️ ĐỒNG BỘ (TUỲ CHỌN)
+Giữ cài đặt và chủ đề giống nhau trên mọi máy đăng nhập cùng tài khoản Chrome.
 
 Reelskin là dự án độc lập, không liên kết với YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play hay VieON.
 
 ## Privacy practices (dashboard answers)
 
-- Single purpose: "Customise the look of video sites and add player tools (themes, ambient light, cinema mode,
-  speed, filters)."
-- Host permission justification: "Reelskin applies the user's theme and player tools on the listed video sites. It
-  only reads style sheets and the video element; no page content is collected."
-- `storage`: "Stores the user's settings and themes locally."
-- `scripting`: "Registers the player-tools script on all sites only after the user grants the optional all-sites
-  permission from the extension's UI."
-- Remote code: No. Data collection: none (tick nothing). Certify the three disclosures.
-- Privacy policy URL: the public URL of `docs/PRIVACY.md` (needs a public repository or page).
+- **Single purpose:** "Customise the look of video sites and add player tools (themes, ambient light, cinema mode,
+  speed and picture controls)."
+- **Host permissions** (www.youtube.com, music.youtube.com, www.twitch.tv, www.netflix.com, www.primevideo.com,
+  www.disneyplus.com, vimeo.com, fptplay.vn, vieon.vn): "Reelskin applies the user's theme and player tools on these
+  video sites. It reads their stylesheets (colours) and the video element; no page content is collected or sent."
+- **\*.vieon.vn:** "VieON serves its stylesheets from its own CDN without cross-origin access; Reelskin's service
+  worker downloads those public stylesheets to read their colours. Nothing is sent."
+- **storage:** "Stores the user's settings and themes locally, and in Chrome Sync only if the user turns sync on."
+- **scripting:** "Registers the player-tools content script on all sites, only after the user grants the optional
+  all-sites permission from the extension's UI."
+- **Optional host permission (all sites):** "Requested from a button when the user wants the player tools (speed,
+  filters, cinema mode) on every site with a video."
+- **Remote code:** No. **Data usage:** none collected (tick nothing). Certify the three disclosures.
+- **Privacy policy URL:** `https://github.com/Tanx-1811/reelskin/blob/main/docs/PRIVACY.md` (once the repository is
+  public).
 
 ## Assets
 

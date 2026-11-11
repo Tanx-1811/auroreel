@@ -16,5 +16,8 @@ First release.
 - Player tools on every video: floating toolbar, speed (start speed, remember per site), picture filters with 8
   presets, ambient light, cinema mode, loop, frame capture, picture in picture; remappable shortcuts; browser
   commands (Alt+Shift+C/T/N).
+- Streaming sites recoloured in depth (Netflix, Prime Video, Disney+, YouTube Music, FPT Play, VieON): literal
+  colours and component design tokens follow the theme in the site's dark style; light themes show as their dark
+  counterpart. YouTube live chat follows the theme.
 - Auto switch (by time or with the system), per-site themes and switches, player tools on every site (optional
-  permission), backup/restore, Vietnamese and English.
+  permission), optional Chrome Sync of settings and themes, backup/restore, Vietnamese and English.

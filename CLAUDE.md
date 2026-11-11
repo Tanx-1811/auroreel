@@ -12,7 +12,9 @@ site adapters or player tools. The product owner speaks Vietnamese.
 - `npm run test:e2e` — builds `dist` + `dist-e2e`, runs Playwright on Chrome for Testing (`npx playwright install
 chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps a local page to a platform (e2e
   build only, `__RS_E2E__`).
-- `npm run test:live` — real YouTube/Twitch (network); run by hand after a site redesign, never in CI.
+- `npm run test:live` — real YouTube, Twitch, Netflix (public title page), FPT Play, VieON, Prime Video (network); run
+  by hand after a site redesign, never in CI. Don't spoof the user agent (YouTube Music and Vimeo can't be checked
+  headless).
 - `npm run package` — zips `dist/` into `release/` (refuses the e2e build).
 - `npm run icons`, `npm run brand`, `npm run screenshots` — toolbar icons, brand kit, store screenshots.
 - Dev tools: `scripts/probe-site.mjs` (a site's custom properties / selector census), `scripts/live-shot.mjs` (real
@@ -30,6 +32,12 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
   `html[dark]` with `!important`. Site-specific rules live in `src/core/sites/<site>.ts` — never in content code.
 - Engine: only background-only properties may become transparent/see-through (`ColorRole`); anything used as text
   stays solid. Keep `exclude` patterns for colours drawn over video (`overlay`, `static`, `scrim`).
+- Rewrite mode (streaming sites): rewritten copies are **not** `!important` — they win by order only, so keep the
+  `Styles` elements last and keep copying later same-selector rules (`follows`/`keep`). Light themes there go through
+  `adaptPalette` (`siteMode: 'dark'`). New CDN that blocks CORS → add it to the platform's `cssHosts` (it becomes a
+  host permission; update the privacy docs).
+- Chrome Sync: only `background/sync.ts` touches `chrome.storage.sync`; never sync pictures, `anySite`, `onboarded`
+  or `sync`; deletions need tombstones (`planThemePush`).
 - Content-script DOM: no `innerHTML` (Trusted Types on YouTube) — use `el()`/`icon()` in `content/player/dom.ts`.
   Player UI stays inside its shadow root; stop event propagation so the site's player never sees our clicks.
 - Data from storage, backups or pages is untrusted: `parseSettings`, `parseTheme`, `parseImport`. Custom backdrop

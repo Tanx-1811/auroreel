@@ -1,4 +1,4 @@
-Reelskin bundles the following third-party software and fonts.
+Reelskin is MIT-licensed (see LICENSE in the source repository). It bundles the following third-party software and fonts.
 
 react 19.3.1 — MIT
 https://react.dev/

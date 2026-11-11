@@ -1,0 +1,49 @@
+name: Bug report / Báo lỗi
+description: Something doesn't work or looks wrong. / Có gì đó chạy chưa đúng hoặc hiển thị sai.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! A screenshot helps a lot — crop out anything personal.
+        Cảm ơn bạn đã báo lỗi! Ảnh chụp màn hình giúp rất nhiều — nhớ che thông tin cá nhân.
+  - type: input
+    id: version
+    attributes:
+      label: Version / Phiên bản
+      description: Studio → About / Giới thiệu
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: site
+    attributes:
+      label: Site and page / Trang web
+      placeholder: YouTube — watch page
+    validations:
+      required: true
+  - type: input
+    id: theme
+    attributes:
+      label: Theme and settings / Chủ đề và cài đặt
+      placeholder: Aurora, ambient light on
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and OS / Trình duyệt và hệ điều hành
+      placeholder: Chrome 142 on Windows 11
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / Các bước tái hiện
+      placeholder: |
+        1. …
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What happened, and what did you expect? / Chuyện gì đã xảy ra, và bạn mong đợi gì?
+    validations:
+      required: true
