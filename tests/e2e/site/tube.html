@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" dark>
+  <head>
+    <meta charset="utf-8" />
+    <title>Fake Tube — Reelskin test page</title>
+    <style>
+      /* A miniature of a site that keeps its palette in custom properties. */
+      html {
+        --yt-sys-color-baseline--base-background: #ffffff;
+        --yt-sys-color-baseline--text-primary: #0f0f0f;
+        --yt-sys-color-baseline--text-secondary: #606060;
+        --yt-sys-color-baseline--static-brand-red: #ff0033;
+        --t0123456789abcdef: #f2f2f2;
+        --tfedcba9876543210: #0f0f0f;
+      }
+      html[dark] {
+        --yt-sys-color-baseline--base-background: #0f0f0f;
+        --yt-sys-color-baseline--text-primary: #f1f1f1;
+        --yt-sys-color-baseline--text-secondary: #aaaaaa;
+        --t0123456789abcdef: #272727;
+        --tfedcba9876543210: #f1f1f1;
+      }
+      body {
+        margin: 0;
+        font:
+          14px/1.4 Roboto,
+          Arial,
+          sans-serif;
+        color: var(--yt-sys-color-baseline--text-primary);
+      }
+      ytd-app {
+        display: block;
+        min-height: 100vh;
+        background: var(--yt-sys-color-baseline--base-background);
+      }
+      .chip {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: var(--t0123456789abcdef);
+        color: var(--tfedcba9876543210);
+      }
+      .player {
+        position: relative;
+        width: 800px;
+        margin: 40px;
+        background: #000;
+      }
+      video {
+        display: block;
+        width: 800px;
+        height: 450px;
+      }
+    </style>
+  </head>
+  <body>
+    <ytd-app>
+      <ytd-masthead><div id="background"></div></ytd-masthead>
+      <p><span class="chip" id="chip">Music</span></p>
+      <div class="player"><video id="video" src="clip.webm" muted loop playsinline></video></div>
+      <h1 id="title">A test video</h1>
+      <input id="comment-box" placeholder="Add a comment" />
+      <ytd-comments id="comments">Comments</ytd-comments>
+    </ytd-app>
+  </body>
+</html>

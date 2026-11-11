@@ -1,0 +1,11 @@
+{
+  "extName": { "message": "Reelskin — Themes for YouTube & Streaming" },
+  "extDescription": {
+    "message": "Beautiful themes for YouTube, Twitch and streaming sites, plus ambient light, cinema mode, speed and picture controls."
+  },
+  "actionTitle": { "message": "Reelskin" },
+  "commandOpen": { "message": "Open Reelskin" },
+  "commandCinema": { "message": "Cinema mode on/off" },
+  "commandSkin": { "message": "Pause the theme in this tab" },
+  "commandNextTheme": { "message": "Next theme" }
+}

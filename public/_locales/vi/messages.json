@@ -1,0 +1,11 @@
+{
+  "extName": { "message": "Reelskin — Giao diện cho YouTube & web xem phim" },
+  "extDescription": {
+    "message": "Giao diện đẹp cho YouTube, Twitch và các web xem phim, kèm ánh sáng nền, chế độ rạp, chỉnh tốc độ và màu hình."
+  },
+  "actionTitle": { "message": "Reelskin" },
+  "commandOpen": { "message": "Mở Reelskin" },
+  "commandCinema": { "message": "Bật/tắt chế độ rạp" },
+  "commandSkin": { "message": "Tạm tắt giao diện ở tab này" },
+  "commandNextTheme": { "message": "Chủ đề tiếp theo" }
+}
