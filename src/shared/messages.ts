@@ -2,9 +2,29 @@
 import type { PlatformId } from '../core/platforms.ts';
 
 export type PageAction =
-  'cinema' | 'ambient' | 'screenshot' | 'loop' | 'pip' | 'speedUp' | 'speedDown' | 'speedReset' | 'toggleSkin';
+  | 'cinema'
+  | 'ambient'
+  | 'filters'
+  | 'screenshot'
+  | 'loop'
+  | 'pip'
+  | 'speedUp'
+  | 'speedDown'
+  | 'speedReset'
+  | 'rewind'
+  | 'advance'
+  | 'abStart'
+  | 'abEnd'
+  | 'abClear'
+  | 'abCycle'
+  | 'themeFromVideo'
+  | 'toggleSkin';
 
-export type ToPage = { type: 'rs:status' } | { type: 'rs:action'; action: PageAction };
+/** Sleep timer: minutes from now, 'end' (pause when this video ends) or null (cancel). */
+export type SleepRequest = number | 'end' | null;
+
+export type ToPage =
+  { type: 'rs:status' } | { type: 'rs:action'; action: PageAction } | { type: 'rs:sleep'; sleep: SleepRequest };
 
 export interface PageStatus {
   platform: PlatformId;
@@ -12,8 +32,15 @@ export interface PageStatus {
   speed: number;
   cinema: boolean;
   loop: boolean;
+  /** A–B loop points, seconds. */
+  abA: number | null;
+  abB: number | null;
+  /** Sleep timer: time it fires (ms since epoch), or 'end' of the current video. */
+  sleep: number | 'end' | null;
   /** Theme temporarily switched off in this tab (Alt+T). */
   skinPaused: boolean;
+  /** Result of the last action, already translated (shown by the popup). */
+  note?: string;
 }
 
 export async function sendToTab<T>(tabId: number, msg: ToPage): Promise<T | null> {

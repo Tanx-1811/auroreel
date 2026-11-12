@@ -6,6 +6,7 @@
  */
 import { formatColor } from '../core/color.ts';
 import { buildPageCss, sitePalette } from '../core/css/index.ts';
+import { subtitleCss } from '../core/css/subtitles.ts';
 import { hasBackdrop } from '../core/css/common.ts';
 import { GENERIC, PLATFORMS, platformForHost, type Platform } from '../core/platforms.ts';
 import { activeThemeId, msUntilNextSwitch } from '../core/schedule.ts';
@@ -75,17 +76,22 @@ function main() {
     const theme = on && !skinPaused ? currentTheme(s) : null;
     const palette = theme ? sitePalette(adapter, theme) : null;
 
+    const subtitles = on && site.player ? subtitleCss(s.subtitles) : '';
     if (on && !skinPaused && platform.tier !== 'player') {
       styles.setMain(
-        buildPageCss({
-          adapter,
-          theme,
-          layout: site.layout,
-          assetUrl: (p) => chrome.runtime.getURL(p),
-          strings: { homeHidden: translate(lang, 'page.homeHidden') },
-        }),
+        subtitles +
+          buildPageCss({
+            adapter,
+            theme,
+            layout: site.layout,
+            assetUrl: (p) => chrome.runtime.getURL(p),
+            strings: { homeHidden: translate(lang, 'page.homeHidden') },
+          }),
       );
-    } else styles.clear();
+    } else {
+      styles.clear();
+      if (subtitles) styles.setMain(subtitles);
+    }
 
     if (engine) {
       if (theme && palette) {
@@ -107,6 +113,13 @@ function main() {
       lang,
       platform: platform.id,
     });
+
+    // YouTube's default quality is applied by youtube-main.js (page world), which reads this attribute.
+    if (platform.id === 'youtube') {
+      const q = on ? String(site.layout.quality ?? 'auto') : 'auto';
+      if (q === 'auto') delete document.documentElement.dataset.rsQuality;
+      else document.documentElement.dataset.rsQuality = q;
+    }
 
     // Re-evaluate at the next day/night boundary.
     clearTimeout(scheduleTimer);
@@ -138,12 +151,17 @@ function main() {
   });
 
   chrome.runtime.onMessage.addListener((msg: ToPage, _sender, reply) => {
+    // Only the top frame answers (frames like YouTube's live chat have no player).
+    if (window.top !== window) return false;
+    const status = (): PageStatus => ({ platform: platform.id, skinPaused, ...player.status(), note: player.lastNote });
     if (msg?.type === 'rs:status') {
-      const status: PageStatus = { platform: platform.id, skinPaused, ...player.status() };
-      reply(status);
+      reply(status());
     } else if (msg?.type === 'rs:action') {
-      player.run(msg.action);
-      reply({ platform: platform.id, skinPaused, ...player.status() } satisfies PageStatus);
+      void player.run(msg.action).then(() => reply(status()));
+      return true;
+    } else if (msg?.type === 'rs:sleep') {
+      player.setSleep(msg.sleep);
+      reply(status());
     }
     return false;
   });

@@ -23,7 +23,9 @@ src/
     main.ts          wires settings → styles, engine, player tools; storage.onChanged; messages
     styles.ts        the two <style> elements (engine, main)
     engine.ts        the recolouring engine's DOM half
-    player/          floating toolbar, ambient light, cinema mode, capture, shortcuts
+    player/          floating toolbar, ambient light, cinema mode, capture, A–B loop, sleep timer, volume boost,
+                     theme from video, shortcuts
+    youtube-main.ts  page-world script for YouTube's default quality
   background/      service worker: welcome page, commands, "every site" script registration, CSS fetch, sync.ts
   popup/           toolbar popup (themes / player / layout tabs)
   options/         the studio (themes, theme maker, sites, player, auto switch, shortcuts, backup, about, welcome)
@@ -117,6 +119,20 @@ reach the site's player.
   through to the player. In cinema mode the ambient canvas moves above the overlay with the same hole.
 - **Capture**: draws the frame to a canvas and downloads PNG/JPEG (tainted/DRM → message).
 - **Shortcuts**: `KeyboardEvent.code` based, ignored while typing; `Alt+T` pauses the theme in one tab (session only).
+- **A–B loop** (`timers.ts`): `[`/`]` set the points, a `timeupdate` listener jumps back to A; cleared on a new video.
+- **Sleep timer** (`timers.ts`, popup → `rs:sleep`): pauses after N minutes or when the current video ends, then holds
+  playback that starts within 15 s (the next autoplayed video).
+- **Volume boost** (`audio.ts`): Web Audio gain up to 300 %. A `<video>` can be routed through an AudioContext once and
+  only if its audio is readable (same origin, CORS or a MediaSource `blob:` stream), else it would play silence — so
+  other videos are skipped, and the context is created only when it can start (after a gesture), never muting a video.
+- **Wheel volume**: optional; wheel over the video changes `volume` (Ctrl/⌘ + wheel is left to the browser).
+- **Theme from this video** (`video-theme.ts`): draws the frame to canvases, extracts a palette (`paletteFromPixels`),
+  saves a theme with the frame (WebP) as its backdrop and puts it to use. Protected/tainted video → message.
+- **Subtitles** (`core/css/subtitles.ts`): colour, weight and box behind the text set directly; size by scaling the
+  caption box (sites size captions inline); native tracks via `video::cue`.
+- **YouTube default quality** (`content/youtube-main.ts`, a `world: "MAIN"` content script): YouTube's player API is
+  only reachable from the page's world. The isolated script publishes the choice as `<html data-rs-quality>`; the
+  page-world script only reads it and calls `setPlaybackQualityRange` with the best available level ≤ the choice.
 
 ## 4. Settings and storage
 

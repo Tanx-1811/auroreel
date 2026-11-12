@@ -47,6 +47,13 @@ export function createManifest(mode: string): chrome.runtime.ManifestV3 {
     optional_host_permissions: ['https://*/*', 'http://*/*'],
     content_scripts: [
       { matches, js: ['content.js'], run_at: 'document_start' },
+      // YouTube's player API (default quality) is only reachable from the page's own world.
+      {
+        matches: ['https://www.youtube.com/*'],
+        js: ['youtube-main.js'],
+        run_at: 'document_idle',
+        world: 'MAIN',
+      },
       // YouTube's live chat lives in its own frame.
       {
         matches: ['https://www.youtube.com/live_chat*', 'https://www.youtube.com/live_chat_replay*'],

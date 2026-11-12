@@ -38,6 +38,10 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
   host permission; update the privacy docs).
 - Chrome Sync: only `background/sync.ts` touches `chrome.storage.sync`; never sync pictures, `anySite`, `onboarded`
   or `sync`; deletions need tombstones (`planThemePush`).
+- `content/youtube-main.ts` runs in YouTube's page world (MAIN): keep it tiny, read only `data-rs-quality`, never
+  touch extension APIs or storage from it.
+- Volume boost: never route a video through Web Audio unless its audio is readable and the context is running
+  (`audio.ts`) — otherwise the video goes silent.
 - Content-script DOM: no `innerHTML` (Trusted Types on YouTube) — use `el()`/`icon()` in `content/player/dom.ts`.
   Player UI stays inside its shadow root; stop event propagation so the site's player never sees our clicks.
 - Data from storage, backups or pages is untrusted: `parseSettings`, `parseTheme`, `parseImport`. Custom backdrop
@@ -50,4 +54,4 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
 ## CI / release
 
 CI (`.github/workflows/ci.yml`) runs only on version tags `v*.*.*` or "Run workflow" — the owner pushes tags
-themselves. Don't push, tag or run workflows; commit locally and report.
+themselves. Don't tag or run workflows; push branches only when the owner asks. Repo: github.com/Tanx-1811/auroreel.

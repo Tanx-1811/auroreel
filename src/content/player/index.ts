@@ -18,8 +18,11 @@ import type { PlatformId } from '../../core/platforms.ts';
 import { SPEED_MAX, SPEED_MIN, type PlayerSettings, type Settings } from '../../core/settings.ts';
 import { ACTION_IDS, formatShortcut, matches, type ActionId } from '../../core/shortcuts.ts';
 import { translate, type Lang, type MessageKey, type Vars } from '../../shared/i18n.ts';
-import type { PageAction, PageStatus } from '../../shared/messages.ts';
-import { loadSpeeds, saveSpeed, updateSettings } from '../../shared/storage.ts';
+import type { PageAction, PageStatus, SleepRequest } from '../../shared/messages.ts';
+import { loadSpeeds, saveSpeed, updateSettings, upsertTheme } from '../../shared/storage.ts';
+import { VolumeBoost } from './audio.ts';
+import { ABLoop, clock, SleepTimer } from './timers.ts';
+import { themeFromVideo } from './video-theme.ts';
 import { Ambient } from './ambient.ts';
 import { captureFrame } from './capture.ts';
 import { Cinema } from './cinema.ts';
@@ -85,6 +88,12 @@ export class PlayerTools {
   private presetChips = new Map<string, HTMLButtonElement>();
   private filterSwitch = el('button', { class: 'switch', role: 'switch' }, el('i'));
   private observer: MutationObserver | null = null;
+  private boost = new VolumeBoost();
+  private ab = new ABLoop();
+  private sleep = new SleepTimer();
+  private boostRow: { input: HTMLInputElement; out: HTMLOutputElement } | null = null;
+  /** Text of the last toast (the popup shows it after an action). */
+  lastNote = '';
   /** Theme paused in this tab (Alt+T); owned by the content script. */
   onToggleSkin: () => void = () => undefined;
   skinPaused = () => false;
@@ -94,6 +103,10 @@ export class PlayerTools {
     const style = el('style', { text: UI_CSS });
     this.root.append(style, this.bar, this.panel, this.toastEl, this.tip);
     this.cinema.onExit = () => this.setCinema(false);
+    this.sleep.onFire = () => {
+      for (const v of document.querySelectorAll('video')) if (!v.paused) v.pause();
+      this.toast(this.t('page.sleepDone'));
+    };
     for (const node of [this.bar, this.panel]) {
       node.addEventListener('pointerenter', () => (this.overUi = true));
       node.addEventListener('pointerleave', () => {
@@ -134,6 +147,7 @@ export class PlayerTools {
     if (first || prev?.lang !== cfg.lang || keysChanged) this.buildBar();
     this.buildPanel();
     this.applyFilters();
+    void this.applyBoost(false);
     this.ambient.configure({ ...cfg.settings.ambient, accent: cfg.accent });
     if (cfg.settings.ambient.enabled) this.ambient.enable();
     else this.ambient.disable();
@@ -149,6 +163,9 @@ export class PlayerTools {
       speed: this.video ? round2(this.video.playbackRate) : 1,
       cinema: this.cinema.on,
       loop: !!this.video?.loop,
+      abA: this.ab.a,
+      abB: this.ab.b,
+      sleep: this.sleep.state,
     };
   }
 
@@ -163,6 +180,9 @@ export class PlayerTools {
     document.addEventListener('ratechange', this.onRate, true);
     document.addEventListener('pointermove', this.onPointer, { passive: true, capture: true });
     window.addEventListener('keydown', this.onKey, true);
+    document.addEventListener('ended', this.onEnded, true);
+    window.addEventListener('wheel', this.onWheel, { passive: false, capture: true });
+    window.addEventListener('pointerdown', this.onGesture, true);
     window.addEventListener('scroll', this.onViewport, { passive: true, capture: true });
     window.addEventListener('resize', this.onViewport, { passive: true });
     document.addEventListener('fullscreenchange', this.onFullscreen);
@@ -182,6 +202,9 @@ export class PlayerTools {
     document.removeEventListener('ratechange', this.onRate, true);
     document.removeEventListener('pointermove', this.onPointer, true);
     window.removeEventListener('keydown', this.onKey, true);
+    document.removeEventListener('ended', this.onEnded, true);
+    window.removeEventListener('wheel', this.onWheel, true);
+    window.removeEventListener('pointerdown', this.onGesture, true);
     window.removeEventListener('scroll', this.onViewport, true);
     window.removeEventListener('resize', this.onViewport);
     document.removeEventListener('fullscreenchange', this.onFullscreen);
@@ -190,6 +213,8 @@ export class PlayerTools {
     this.setCinema(false, true);
     for (const v of document.querySelectorAll('video')) this.clearFilter(v);
     this.host.remove();
+    this.ab.attach(null);
+    this.sleep.set(null);
     this.video = null;
   }
 
@@ -222,9 +247,11 @@ export class PlayerTools {
     this.video = v;
     this.ambient.setVideo(v);
     this.cinema.setVideo(v);
+    this.ab.attach(v);
     if (v) {
       this.applyFilters();
       this.applyStartSpeed(v);
+      void this.applyBoost(false);
     } else {
       this.showBar(false);
       if (this.cinema.on) this.setCinema(false);
@@ -234,8 +261,14 @@ export class PlayerTools {
 
   private onPlay = (e: Event) => {
     const v = e.target;
-    if (!(v instanceof HTMLVideoElement) || !this.visible(v)) return;
+    if (!(v instanceof HTMLVideoElement)) return;
+    if (this.sleep.shouldBlock()) {
+      v.pause();
+      return;
+    }
+    if (!this.visible(v)) return;
     this.setVideo(v);
+    void this.applyBoost(false);
     if (this.cfg?.settings.cinema.auto && !this.cinema.on) this.setCinema(true, true);
   };
 
@@ -325,6 +358,13 @@ export class PlayerTools {
         () => void this.screenshot(),
       ),
       this.button('pip', this.label('page.pip', 'pip'), icon(ICONS.pip), () => void this.pip()),
+      el('span', { class: 'sep' }),
+      this.button(
+        'palette',
+        this.label('page.videoTheme', 'themeFromVideo'),
+        icon(ICONS.palette),
+        () => void this.videoTheme(),
+      ),
     );
   }
 
@@ -335,7 +375,7 @@ export class PlayerTools {
     this.speedLabel.textContent = `${round2(v?.playbackRate ?? 1)}×`;
     this.buttons.get('ambient')?.setAttribute('aria-pressed', String(cfg.settings.ambient.enabled));
     this.buttons.get('cinema')?.setAttribute('aria-pressed', String(this.cinema.on));
-    this.buttons.get('loop')?.setAttribute('aria-pressed', String(!!v?.loop));
+    this.buttons.get('loop')?.setAttribute('aria-pressed', String(!!v?.loop || this.ab.b !== null));
     this.buttons.get('filters')?.setAttribute('aria-pressed', String(this.panelOpen || cfg.settings.filtersOn));
   }
 
@@ -403,6 +443,7 @@ export class PlayerTools {
   }
 
   private toast(text: string, big?: string) {
+    this.lastNote = big ? `${big} ${text}` : text;
     this.toastEl.replaceChildren();
     if (big)
       this.toastEl.append(el('span', { class: 'big', text: big }), document.createTextNode(text ? `  ${text}` : ''));
@@ -458,6 +499,23 @@ export class PlayerTools {
           out,
         );
       });
+      const boostId = 'rs-boost';
+      const boostInput = el('input', { id: boostId, type: 'range', min: 100, max: 300, step: 10 });
+      const boostOut = el('output', { for: boostId });
+      boostInput.addEventListener('input', () => {
+        const value = Number(boostInput.value);
+        this.setBoostSlider(value);
+        this.persist((s) => ({ ...s, boost: value }), 250);
+        void this.applyBoost(true);
+      });
+      this.boostRow = { input: boostInput, out: boostOut };
+      const boostRow = el(
+        'div',
+        { class: 'row' },
+        el('label', { for: boostId, text: this.t('page.boost') }),
+        boostInput,
+        boostOut,
+      );
       const reset = el('button', { class: 'text-btn', text: this.t('common.reset') });
       reset.addEventListener('click', () => this.persist((s) => ({ ...s, filters: { ...FILTER_PRESETS.natural } }), 0));
       this.panel.append(
@@ -465,6 +523,8 @@ export class PlayerTools {
         chips,
         ...rows,
         el('div', { class: 'foot' }, this.filterSwitch, reset),
+        el('h4', { text: this.t('page.sound') }),
+        boostRow,
       );
     }
     const f = cfg.settings.filters;
@@ -473,6 +533,25 @@ export class PlayerTools {
     for (const [id, chip] of this.presetChips)
       chip.setAttribute('aria-pressed', String(cfg.settings.filtersOn && id === preset));
     this.filterSwitch.setAttribute('aria-checked', String(cfg.settings.filtersOn));
+    this.setBoostSlider(cfg.settings.boost);
+  }
+
+  private setBoostSlider(value: number) {
+    const r = this.boostRow;
+    if (!r) return;
+    if (this.root.activeElement !== r.input) r.input.value = String(value);
+    r.input.style.setProperty('--pct', `${((value - 100) / 200) * 100}%`);
+    r.out.textContent = `${value}%`;
+  }
+
+  /** Volume boost from the settings; `explicit` when the user just changed it (reports problems). */
+  private async applyBoost(explicit: boolean) {
+    const v = this.video;
+    const cfg = this.cfg;
+    if (!v || !cfg) return;
+    if (cfg.settings.boost <= 100 && !this.boost.has(v)) return;
+    const result = await this.boost.apply(v, cfg.settings.boost);
+    if (explicit && result === 'unsupported') this.toast(this.t('page.boostUnsupported'));
   }
 
   private setSlider(k: keyof FilterValues, value: number) {
@@ -527,7 +606,8 @@ export class PlayerTools {
 
   // ——— Actions ———
 
-  run(action: PageAction | ActionId) {
+  async run(action: PageAction | ActionId): Promise<void> {
+    this.lastNote = '';
     if (action === 'toggleSkin') {
       this.onToggleSkin();
       this.toast(this.t(this.skinPaused() ? 'page.skinOff' : 'page.skinOn'));
@@ -537,6 +617,22 @@ export class PlayerTools {
     const v = this.video;
     if (!v) return;
     switch (action) {
+      case 'abStart':
+        this.ab.setA(v.currentTime);
+        this.refreshButtons();
+        return this.toast(this.t('page.abA', { time: clock(v.currentTime) }));
+      case 'abEnd':
+        if (!this.ab.setB(v.currentTime)) return this.toast(this.t('page.abNeedA'));
+        this.refreshButtons();
+        return this.toast(this.t('page.abOn', { a: clock(this.ab.a!), b: clock(this.ab.b!) }));
+      case 'abClear':
+        this.ab.clear();
+        this.refreshButtons();
+        return this.toast(this.t('page.abOff'));
+      case 'abCycle':
+        return this.run(this.ab.a === null ? 'abStart' : this.ab.b === null ? 'abEnd' : 'abClear');
+      case 'themeFromVideo':
+        return this.videoTheme();
       case 'speedUp':
         return this.stepSpeed(1);
       case 'speedDown':
@@ -559,9 +655,57 @@ export class PlayerTools {
       case 'loop':
         return this.toggleLoop();
       case 'screenshot':
-        return void this.screenshot();
+        return this.screenshot();
       case 'pip':
-        return void this.pip();
+        return this.pip();
+    }
+  }
+
+  /** Sleep timer from the popup. */
+  setSleep(req: SleepRequest) {
+    this.sleep.set(req);
+    if (req === null) this.toast(this.t('page.sleepOff'));
+    else if (req === 'end') this.toast(this.t('page.sleepEnd'));
+    else this.toast(this.t('page.sleepIn', { n: req }));
+  }
+
+  private onEnded = (e: Event) => {
+    if (e.target === this.video) this.sleep.ended();
+  };
+
+  /** A click on the page lets a pending volume boost start its audio. */
+  private onGesture = () => {
+    if (this.cfg && this.cfg.settings.boost > 100 && this.video && !this.boost.has(this.video))
+      void this.applyBoost(false);
+  };
+
+  private onWheel = (e: WheelEvent) => {
+    const v = this.video;
+    if (!v || !this.cfg?.settings.wheelVolume || e.ctrlKey || e.metaKey) return;
+    if (!inside(elementBox(v), e.clientX, e.clientY)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const next = Math.min(1, Math.max(0, Math.round((v.volume + (e.deltaY < 0 ? 0.05 : -0.05)) * 100) / 100));
+    v.volume = next;
+    if (next > 0 && v.muted) v.muted = false;
+    this.toast(this.t('page.volume'), `${Math.round(next * 100)}%`);
+  };
+
+  private async videoTheme() {
+    const v = this.video;
+    if (!v || !this.cfg) return;
+    const title = document.title.replace(/\s*[-–|]\s*(YouTube|Twitch|Netflix).*$/i, '').trim() || 'Video';
+    const result = themeFromVideo(v, this.t('page.videoThemeName', { title: title.slice(0, 28) }));
+    if (result === 'protected' || result === 'not-ready') {
+      this.toast(this.t(result === 'protected' ? 'page.protected' : 'page.notReady'));
+      return;
+    }
+    try {
+      await upsertTheme(result);
+      await updateSettings((s) => ({ ...s, themeId: result.id }));
+      this.toast(this.t('page.videoThemeDone'));
+    } catch {
+      this.toast(this.t('page.videoThemeFailed'));
     }
   }
 
@@ -576,7 +720,7 @@ export class PlayerTools {
     }
     e.preventDefault();
     e.stopImmediatePropagation();
-    this.run(action);
+    void this.run(action);
   };
 
   private stepSpeed(dir: 1 | -1) {

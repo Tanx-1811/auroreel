@@ -235,7 +235,8 @@ export function ToolbarPanel({ settings, update }: { settings: Settings; update:
   );
 }
 
-/** Which layout options count as "look" (the rest hide things: "focus"). */
+/** Layout option groups: player, look; the rest hide things ("focus"). */
+const PLAYER_OPTS = new Set(['quality']);
 const LOOK = new Set(['logoAccent', 'progressGlow', 'gridColumns', 'thumbStyle', 'dimWatched']);
 
 export function LayoutPanel({
@@ -251,8 +252,9 @@ export function LayoutPanel({
   const layout = settings.sites[platform.id].layout;
   if (!platform.layout.length) return <p className="muted small">{t('layout.none', { site: platform.name })}</p>;
   const groups = [
+    { title: t('layout.groupPlayer'), items: platform.layout.filter((o) => PLAYER_OPTS.has(o.id)) },
     { title: t('layout.groupLook'), items: platform.layout.filter((o) => LOOK.has(o.id)) },
-    { title: t('layout.groupFocus'), items: platform.layout.filter((o) => !LOOK.has(o.id)) },
+    { title: t('layout.groupFocus'), items: platform.layout.filter((o) => !LOOK.has(o.id) && !PLAYER_OPTS.has(o.id)) },
   ].filter((g) => g.items.length);
   return (
     <>
@@ -276,7 +278,11 @@ export function LayoutPanel({
                     label={t(key)}
                     options={o.choices.map((c) => ({
                       value: c,
-                      label: /^\d+$/.test(c) ? c : t(`choice.${c}` as MessageKey),
+                      label: /^\d+$/.test(c)
+                        ? o.id === 'quality'
+                          ? `${c}p${c === '2160' ? ' (4K)' : c === '1440' ? ' (2K)' : ''}`
+                          : c
+                        : t(`choice.${c}` as MessageKey),
                     }))}
                     onChange={(v) => update((s) => patchLayout(s, platform.id, o.id, v))}
                   />
@@ -286,6 +292,112 @@ export function LayoutPanel({
           })}
         </div>
       ))}
+    </>
+  );
+}
+
+export function SoundPanel({ settings, update }: { settings: Settings; update: Update }) {
+  const t = useT();
+  const p = settings.player;
+  return (
+    <>
+      <Field label={t('player.boost')} hint={t('player.boostHint')} stack>
+        <Slider
+          value={p.boost}
+          min={100}
+          max={300}
+          step={10}
+          label={t('player.boost')}
+          format={(v) => `${v}%`}
+          onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, boost: v }))}
+        />
+      </Field>
+      <Field label={t('player.wheelVolume')}>
+        <Switch
+          checked={p.wheelVolume}
+          label={t('player.wheelVolume')}
+          onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, wheelVolume: v }))}
+        />
+      </Field>
+    </>
+  );
+}
+
+export function SubtitlesPanel({
+  settings,
+  update,
+  compact,
+}: {
+  settings: Settings;
+  update: Update;
+  compact?: boolean;
+}) {
+  const t = useT();
+  const sub = settings.subtitles;
+  const set = (patch: Partial<Settings['subtitles']>) =>
+    update((s) => ({ ...s, subtitles: { ...s.subtitles, ...patch } }));
+  const box = `rgba(0, 0, 0, ${sub.background / 100})`;
+  return (
+    <>
+      <Field label={t('subs.on')} hint={compact ? undefined : t('subs.hint')}>
+        <Switch checked={sub.on} label={t('subs.on')} onChange={(v) => set({ on: v })} />
+      </Field>
+      {sub.on ? (
+        <>
+          <div className="subs-sample" aria-hidden="true">
+            <span
+              style={{
+                color: sub.color,
+                background: box,
+                fontSize: `${(15 * sub.size) / 100}px`,
+                fontWeight: sub.bold ? 700 : 500,
+              }}
+            >
+              {t('subs.sample')}
+            </span>
+          </div>
+          <Field label={t('subs.size')} stack>
+            <Slider
+              value={sub.size}
+              min={60}
+              max={250}
+              step={5}
+              label={t('subs.size')}
+              format={(v) => `${v}%`}
+              onChange={(v) => set({ size: v })}
+            />
+          </Field>
+          <Field label={t('subs.background')} stack>
+            <Slider
+              value={sub.background}
+              min={0}
+              max={100}
+              label={t('subs.background')}
+              format={(v) => `${v}%`}
+              onChange={(v) => set({ background: v })}
+            />
+          </Field>
+          <Field label={t('subs.color')}>
+            <div className="swatch-row" role="radiogroup" aria-label={t('subs.color')}>
+              {['#ffffff', '#fde047', '#7dd3fc', '#86efac', '#f9a8d4'].map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  role="radio"
+                  aria-checked={sub.color === c}
+                  aria-label={c}
+                  className="swatch-dot"
+                  style={{ background: c }}
+                  onClick={() => set({ color: c })}
+                />
+              ))}
+            </div>
+          </Field>
+          <Field label={t('subs.bold')}>
+            <Switch checked={sub.bold} label={t('subs.bold')} onChange={(v) => set({ bold: v })} />
+          </Field>
+        </>
+      ) : null}
     </>
   );
 }

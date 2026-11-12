@@ -118,6 +118,11 @@ body {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.grow-search {
+  flex: 1;
+  max-width: 340px;
 }
 .notice {
   margin: 0 0 18px;
@@ -139,7 +144,7 @@ body {
 .card-actions {
   position: absolute;
   top: 8px;
-  left: 8px;
+  left: 40px;
   display: flex;
   gap: 4px;
   padding: 3px;
@@ -622,4 +627,190 @@ kbd {
 }
 .about-links .btn {
   text-decoration: none;
+}
+
+/* ——— Overview ——— */
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+.home-preview .tp.large {
+  min-height: 420px;
+  height: 100%;
+  box-shadow:
+    0 0 0 1px var(--line),
+    var(--shadow);
+}
+.home-preview .tp.original {
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+}
+.home-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acc);
+}
+.home-side h1 {
+  font-size: 40px;
+}
+.home-side p {
+  margin: 0;
+}
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 6px;
+}
+.quick-grid {
+  display: grid;
+  gap: 8px;
+}
+.quick-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.quick-card:hover {
+  background: var(--card-hover);
+}
+.quick-card.on {
+  border-color: color-mix(in oklab, var(--acc) 45%, transparent);
+  background: color-mix(in oklab, var(--acc) 9%, var(--card));
+}
+.quick-card .grow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+.quick-card strong {
+  font-size: 13.5px;
+}
+.quick-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--acc-soft);
+  color: var(--acc);
+  flex: none;
+}
+.home-section .section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.home-section h2 {
+  font-size: 18px;
+}
+.home .theme-grid {
+  --card-min: 200px;
+}
+.site-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+.site-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.site-tile.off {
+  opacity: 0.6;
+}
+.site-tile .grow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+.site-tile .site-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+.tip-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 13px;
+  font-weight: 500;
+}
+.tip-card kbd {
+  flex: none;
+}
+
+/* Studio look switch (sidebar) */
+.appearance {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.appearance button {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.appearance button[aria-checked='true'] {
+  background: var(--acc);
+  color: var(--acc-text);
+}
+
+@media (max-width: 1100px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
 }

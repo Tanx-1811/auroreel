@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export type Route =
+  | { page: 'home' }
   | { page: 'themes' }
   | { page: 'editor'; id?: string }
   | { page: 'sites' }
@@ -16,6 +17,8 @@ export function parseHash(hash: string): Route {
   switch (page) {
     case 'editor':
       return id ? { page: 'editor', id: decodeURIComponent(id) } : { page: 'editor' };
+    case 'themes':
+      return { page: 'themes' };
     case 'sites':
     case 'player':
     case 'schedule':
@@ -25,7 +28,7 @@ export function parseHash(hash: string): Route {
     case 'welcome':
       return { page };
     default:
-      return { page: 'themes' };
+      return { page: 'home' };
   }
 }
 

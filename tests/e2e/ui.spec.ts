@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from './fixtures';
 
-const PAGES = ['themes', 'editor', 'sites', 'player', 'schedule', 'shortcuts', 'backup', 'about', 'welcome'];
+const PAGES = ['home', 'themes', 'editor', 'sites', 'player', 'schedule', 'shortcuts', 'backup', 'about', 'welcome'];
 
 test('popup lists the themes and switches the global theme', async ({
   openExtensionPage,
@@ -80,4 +80,26 @@ test('backup exports a file', async ({ openExtensionPage, setSettings }) => {
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
   expect((await download).suggestedFilename()).toMatch(/^auroreel-backup-\d{4}-\d{2}-\d{2}\.json$/);
+});
+
+test('popup finds themes by name and keeps favourites', async ({ openExtensionPage, getSettings, setSettings }) => {
+  await setSettings({ language: 'vi' });
+  const page = await openExtensionPage('popup/popup.html');
+  await page.getByRole('searchbox').fill('cuc quang');
+  await expect(page.locator('.theme-card')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Thêm Cực quang vào yêu thích' }).click();
+  await expect.poll(async () => (await getSettings()).favorites).toEqual(['aurora']);
+  await page.getByRole('searchbox').fill('');
+  await page.getByRole('radio', { name: '♥' }).click();
+  await expect(page.locator('.theme-card')).toHaveCount(1);
+});
+
+test('studio look can be forced light', async ({ openExtensionPage, setSettings }) => {
+  await setSettings({ language: 'en' });
+  const page = await openExtensionPage('options/options.html#/home');
+  await page.getByRole('radio', { name: 'Light' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-ui', 'light');
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+    .toBe('rgb(246, 244, 251)');
 });

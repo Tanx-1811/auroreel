@@ -46,6 +46,21 @@ export interface PlayerSettings {
     auto: boolean;
   };
   screenshotFormat: 'png' | 'jpeg';
+  /** Volume boost, % (100 = off, up to 300). Web Audio; same-origin and stream (blob) video only. */
+  boost: number;
+  /** Scroll over the video to change its volume. */
+  wheelVolume: boolean;
+}
+
+export interface SubtitleSettings {
+  /** Restyle captions (YouTube, Netflix, Prime Video, Disney+ and native WebVTT tracks). */
+  on: boolean;
+  /** Size, % of the site's own. */
+  size: number;
+  color: string;
+  /** Opacity of the dark box behind the text, %. */
+  background: number;
+  bold: boolean;
 }
 
 export type ScheduleMode = 'off' | 'system' | 'time';
@@ -72,6 +87,11 @@ export interface Settings {
   onboarded: boolean;
   /** Keep settings and themes in step across computers through Chrome Sync. */
   sync: boolean;
+  subtitles: SubtitleSettings;
+  /** Favourite theme ids, shown first in the popup and the gallery. */
+  favorites: string[];
+  /** Look of Auroreel's own popup and studio. */
+  appearance: 'auto' | 'dark' | 'light';
 }
 
 export const SPEED_MIN = 0.1;
@@ -107,6 +127,8 @@ export function defaultSettings(): Settings {
       ambient: { enabled: false, intensity: 70, blur: 70, spread: 12 },
       cinema: { dim: 88, auto: false },
       screenshotFormat: 'png',
+      boost: 100,
+      wheelVolume: false,
     },
     shortcutsOn: true,
     shortcuts: { ...DEFAULT_SHORTCUTS },
@@ -114,6 +136,9 @@ export function defaultSettings(): Settings {
     language: 'auto',
     onboarded: false,
     sync: false,
+    subtitles: { on: false, size: 120, color: '#ffffff', background: 55, bold: false },
+    favorites: [],
+    appearance: 'auto',
   };
 }
 
@@ -155,6 +180,7 @@ export function parseSettings(raw: unknown): Settings {
   const amb = isObj(p.ambient) ? p.ambient : {};
   const cin = isObj(p.cinema) ? p.cinema : {};
   const keys = isObj(raw.shortcuts) ? raw.shortcuts : {};
+  const sub = isObj(raw.subtitles) ? raw.subtitles : {};
   const shortcuts = { ...d.shortcuts };
   for (const id of ACTION_IDS) {
     if (!(id in keys)) continue;
@@ -198,6 +224,8 @@ export function parseSettings(raw: unknown): Settings {
         auto: bool(cin.auto, d.player.cinema.auto),
       },
       screenshotFormat: oneOf(p.screenshotFormat, ['png', 'jpeg'] as const, d.player.screenshotFormat),
+      boost: Math.round(numIn(p.boost, 100, 300, d.player.boost)),
+      wheelVolume: bool(p.wheelVolume, d.player.wheelVolume),
     },
     shortcutsOn: bool(raw.shortcutsOn, d.shortcutsOn),
     shortcuts,
@@ -205,6 +233,20 @@ export function parseSettings(raw: unknown): Settings {
     language: oneOf(raw.language, ['auto', 'en', 'vi'] as const, d.language),
     onboarded: bool(raw.onboarded, d.onboarded),
     sync: bool(raw.sync, d.sync),
+    subtitles: {
+      on: bool(sub.on, d.subtitles.on),
+      size: Math.round(numIn(sub.size, 60, 250, d.subtitles.size)),
+      color: typeof sub.color === 'string' && /^#[0-9a-f]{6}$/i.test(sub.color) ? sub.color : d.subtitles.color,
+      background: Math.round(numIn(sub.background, 0, 100, d.subtitles.background)),
+      bold: bool(sub.bold, d.subtitles.bold),
+    },
+    favorites: Array.isArray(raw.favorites)
+      ? [...new Set(raw.favorites.filter((x): x is string => typeof x === 'string' && /^[\w-]{1,64}$/.test(x)))].slice(
+          0,
+          100,
+        )
+      : [],
+    appearance: oneOf(raw.appearance, ['auto', 'dark', 'light'] as const, d.appearance),
   };
 }
 

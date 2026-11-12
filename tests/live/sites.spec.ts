@@ -68,6 +68,29 @@ test('Twitch: palette tokens follow the theme', async ({ context, setSettings })
     .not.toBe('rgb(239, 239, 241)');
 });
 
+test('YouTube: default quality', async ({ context, setSettings }) => {
+  await setSettings({ onboarded: true, sites: { youtube: { layout: { quality: '480' } } } });
+  const page = await context.newPage();
+  await page.goto('https://www.youtube.com/watch?v=dQw4w9WgXcQ', { waitUntil: 'domcontentloaded' });
+  await page.locator('video').waitFor({ timeout: 30_000 });
+  await page.evaluate(async () => {
+    const v = document.querySelector('video')!;
+    v.muted = true;
+    await v.play().catch(() => undefined);
+  });
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          (
+            document.getElementById('movie_player') as unknown as { getPlaybackQuality?: () => string }
+          )?.getPlaybackQuality?.(),
+        ),
+      { timeout: 20_000 },
+    )
+    .toBe('large');
+});
+
 const STREAMING = [
   { name: 'Netflix (public title page)', url: 'https://www.netflix.com/title/80057281', min: 20_000 },
   { name: 'FPT Play', url: 'https://fptplay.vn/', min: 5_000 },

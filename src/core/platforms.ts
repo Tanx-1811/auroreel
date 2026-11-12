@@ -67,6 +67,7 @@ export const PLATFORMS: Platform[] = [
     tier: 'full',
     brand: '#ff0033',
     layout: [
+      select('quality', ['auto', '2160', '1440', '1080', '720', '480'], 'auto'),
       toggle('logoAccent', true),
       toggle('progressGlow', true),
       select('gridColumns', ['auto', '3', '4', '5', '6'], 'auto'),

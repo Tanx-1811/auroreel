@@ -38,12 +38,17 @@ you always wanted.
 • Cinema mode: dim everything but the video
 • Speed control from 0.1× to 16×, start speed, remember per site
 • Picture filters: brightness, contrast, saturation, warmth… with 8 presets (Vivid, Cinema, Night…)
+• Volume boost up to 300%, scroll over the video for volume
+• A–B loop, sleep timer (after N minutes or at the end of the video)
 • Save the current frame, loop, picture in picture
-• Keyboard shortcuts (S/D/R for speed, Alt+C cinema, Alt+S capture…) — all remappable
+• Turn the video you're watching into a theme in one click
+• Subtitle styling: size, colour, background box, bold
+• Keyboard shortcuts (S/D/R for speed, Alt+C cinema, [ ] A–B loop…) — all remappable
 
 🧘 FOCUS ON YOUTUBE
 • Hide Shorts, the home feed, related videos, comments, end screens, chips or merch
 • Choose videos per row, blur or grey out thumbnails until hover, fade watched videos
+• Default video quality (480p to 4K)
 
 🌗 AUTO SWITCH
 • Light theme by day, dark at night — by time or with your system
@@ -84,12 +89,17 @@ mong có.
 • Chế độ rạp: làm tối mọi thứ trừ video
 • Chỉnh tốc độ 0,1× đến 16×, tốc độ khởi đầu, nhớ theo từng trang
 • Bộ lọc màu hình: độ sáng, tương phản, độ rực, độ ấm… với 8 kiểu có sẵn (Rực rỡ, Điện ảnh, Ban đêm…)
+• Tăng âm lượng tới 300%, lăn chuột trên video để chỉnh âm lượng
+• Lặp đoạn A–B, hẹn giờ tắt (sau N phút hoặc khi hết video)
 • Lưu khung hình, lặp lại, hình trong hình
-• Phím tắt (S/D/R chỉnh tốc độ, Alt+C chế độ rạp, Alt+S chụp…) — đổi được hết
+• Biến video đang xem thành chủ đề chỉ với một cú bấm
+• Tuỳ chỉnh phụ đề: cỡ chữ, màu, nền sau chữ, chữ đậm
+• Phím tắt (S/D/R chỉnh tốc độ, Alt+C chế độ rạp, [ ] lặp A–B…) — đổi được hết
 
 🧘 TẬP TRUNG TRÊN YOUTUBE
 • Ẩn Shorts, bảng tin trang chủ, video liên quan, bình luận, màn hình kết thúc, thanh chủ đề, hàng hoá
 • Chọn số video mỗi hàng, làm mờ hoặc trắng đen ảnh thu nhỏ đến khi trỏ chuột, làm mờ video đã xem
+• Chất lượng video mặc định (480p đến 4K)
 
 🌗 TỰ ĐỔI THEO GIỜ
 • Ban ngày chủ đề sáng, ban đêm chủ đề tối — theo giờ hoặc theo hệ thống

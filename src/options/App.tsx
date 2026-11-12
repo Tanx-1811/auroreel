@@ -1,4 +1,17 @@
-import { Archive, CalendarClock, Globe, Info, Keyboard, Palette, PenTool, SlidersHorizontal } from 'lucide-react';
+import {
+  Archive,
+  CalendarClock,
+  Globe,
+  Info,
+  Keyboard,
+  LayoutDashboard,
+  Monitor,
+  Moon,
+  Palette,
+  PenTool,
+  SlidersHorizontal,
+  Sun,
+} from 'lucide-react';
 import { useEffect } from 'react';
 import { resolveLang, type MessageKey } from '../shared/i18n.ts';
 import { Switch } from '../ui/controls.tsx';
@@ -7,6 +20,7 @@ import { LogoMark } from '../ui/Logo.tsx';
 import { useStore } from '../ui/store.ts';
 import { ToastProvider } from '../ui/toast.tsx';
 import { AboutPage } from './pages/About.tsx';
+import { HomePage } from './pages/Home.tsx';
 import { BackupPage } from './pages/Backup.tsx';
 import { EditorPage } from './pages/Editor.tsx';
 import { PlayerPage } from './pages/Player.tsx';
@@ -19,6 +33,7 @@ import { useRoute, type Route } from './router.ts';
 import type { PageProps } from './types.ts';
 
 const NAV: { page: Route['page']; icon: typeof Palette; key: MessageKey }[] = [
+  { page: 'home', icon: LayoutDashboard, key: 'nav.home' },
   { page: 'themes', icon: Palette, key: 'nav.themes' },
   { page: 'editor', icon: PenTool, key: 'nav.editor' },
   { page: 'sites', icon: Globe, key: 'nav.sites' },
@@ -36,6 +51,10 @@ export function App() {
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+  const appearance = store.state?.settings.appearance ?? 'auto';
+  useEffect(() => {
+    document.documentElement.dataset.ui = appearance;
+  }, [appearance]);
   useEffect(() => {
     if (store.state) document.documentElement.dataset.ready = '';
   }, [store.state]);
@@ -64,7 +83,7 @@ function Shell({ route, props }: { route: Route; props: PageProps }) {
   return (
     <div className="studio">
       <aside className="side">
-        <a className="brand" href="#/themes">
+        <a className="brand" href="#/home">
           <LogoMark size={34} />
           <span>
             <strong>Auroreel</strong>
@@ -80,6 +99,27 @@ function Shell({ route, props }: { route: Route; props: PageProps }) {
           ))}
         </nav>
         <div className="side-foot">
+          <div className="appearance" role="radiogroup" aria-label={t('ui.appearance')}>
+            {(
+              [
+                ['auto', Monitor, 'ui.auto'],
+                ['dark', Moon, 'ui.dark'],
+                ['light', Sun, 'ui.light'],
+              ] as const
+            ).map(([value, Icon, key]) => (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={props.settings.appearance === value}
+                aria-label={t(key)}
+                title={t(key)}
+                onClick={() => props.update((s) => ({ ...s, appearance: value }))}
+              >
+                <Icon size={15} />
+              </button>
+            ))}
+          </div>
           <label className="master">
             <Switch
               checked={props.settings.enabled}
@@ -91,6 +131,7 @@ function Shell({ route, props }: { route: Route; props: PageProps }) {
         </div>
       </aside>
       <main className="content">
+        {route.page === 'home' ? <HomePage {...props} /> : null}
         {route.page === 'themes' ? <ThemesPage {...props} /> : null}
         {route.page === 'editor' ? <EditorPage key={route.id ?? 'new'} id={route.id} {...props} /> : null}
         {route.page === 'sites' ? <SitesPage {...props} /> : null}

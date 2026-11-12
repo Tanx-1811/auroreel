@@ -178,3 +178,25 @@ describe('backup', () => {
     expect(mergeThemes([a, b], [{ ...a, name: 'A2' }]).map((t) => t.name)).toEqual(['A2', 'B']);
   });
 });
+
+describe('new player, subtitle and studio settings', () => {
+  it('clamps and validates them', () => {
+    const s = parseSettings({
+      player: { boost: 999, wheelVolume: 'yes' },
+      subtitles: { on: true, size: 10, color: 'red', background: 140, bold: true },
+      favorites: ['aurora', 'aurora', 'bad id!', 3],
+      appearance: 'neon',
+    });
+    expect(s.player.boost).toBe(300);
+    expect(s.player.wheelVolume).toBe(false);
+    expect(s.subtitles).toEqual({ on: true, size: 60, color: '#ffffff', background: 100, bold: true });
+    expect(s.favorites).toEqual(['aurora']);
+    expect(s.appearance).toBe('auto');
+    expect(parseSettings({ sites: { youtube: { layout: { quality: '1080' } } } }).sites.youtube.layout.quality).toBe(
+      '1080',
+    );
+    expect(parseSettings({ sites: { youtube: { layout: { quality: '8k' } } } }).sites.youtube.layout.quality).toBe(
+      'auto',
+    );
+  });
+});

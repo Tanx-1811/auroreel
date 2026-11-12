@@ -94,6 +94,7 @@ function scriptsPlugin(mode: string, outDir: string): Plugin {
     async closeBundle() {
       await one('background/service-worker.ts', 'service-worker.js', 'es');
       await one('content/main.ts', 'content.js', 'iife');
+      await one('content/youtube-main.ts', 'youtube-main.js', 'iife');
     },
   };
 }

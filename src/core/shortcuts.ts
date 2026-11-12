@@ -16,6 +16,10 @@ export type ActionId =
   | 'screenshot'
   | 'pip'
   | 'loop'
+  | 'abStart'
+  | 'abEnd'
+  | 'abClear'
+  | 'themeFromVideo'
   | 'toggleSkin';
 
 export const ACTION_IDS: ActionId[] = [
@@ -30,6 +34,10 @@ export const ACTION_IDS: ActionId[] = [
   'screenshot',
   'pip',
   'loop',
+  'abStart',
+  'abEnd',
+  'abClear',
+  'themeFromVideo',
   'toggleSkin',
 ];
 
@@ -46,6 +54,10 @@ export const DEFAULT_SHORTCUTS: Record<ActionId, string | null> = {
   screenshot: 'Alt+KeyS',
   pip: 'Alt+KeyP',
   loop: 'Alt+KeyL',
+  abStart: 'BracketLeft',
+  abEnd: 'BracketRight',
+  abClear: 'Backslash',
+  themeFromVideo: 'Alt+KeyV',
   toggleSkin: 'Alt+KeyT',
 };
 

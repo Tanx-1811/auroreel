@@ -199,3 +199,44 @@ body {
   border-top: 1px solid var(--line);
   background: color-mix(in oklab, var(--bg) 85%, transparent);
 }
+
+.ct-thumb {
+  width: 64px;
+  flex: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+.ct-thumb .tp {
+  border-radius: 8px;
+}
+.site-text {
+  flex-direction: column;
+  align-items: flex-start !important;
+  gap: 2px;
+}
+.site-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.quick {
+  grid-template-columns: repeat(3, 1fr);
+}
+.pop-note {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--acc-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.sleep-chips {
+  margin: 4px 0 6px;
+}
+.themes-head .search {
+  margin-top: 2px;
+}
+.themes-head .seg button {
+  padding: 0 6px;
+}

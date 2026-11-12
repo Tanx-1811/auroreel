@@ -1,11 +1,11 @@
-import { Copy, Download, ImagePlus, Pencil, Plus, Trash2, Upload } from 'lucide-react';
+import { Copy, Download, ImagePlus, Pencil, Plus, Search, Trash2, Upload } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { makeThemeFile, mergeThemes, parseImport } from '../../core/backup.ts';
 import { allThemes, duplicateTheme, newThemeId, themeName, type Theme } from '../../core/themes.ts';
 import { saveThemes } from '../../shared/storage.ts';
 import { Segmented } from '../../ui/controls.tsx';
 import { useLang, useT } from '../../ui/i18n.tsx';
-import { filterThemes, ThemeGrid, type ThemeFilter } from '../../ui/ThemeGrid.tsx';
+import { filterThemes, ThemeGrid, toggleFavorite, type ThemeFilter } from '../../ui/ThemeGrid.tsx';
 import { useToast } from '../../ui/toast.tsx';
 import { PageHead } from '../PageHead.tsx';
 import { go } from '../router.ts';
@@ -17,8 +17,12 @@ export function ThemesPage({ settings, themes, update, saveTheme, removeTheme }:
   const lang = useLang();
   const toast = useToast();
   const [filter, setFilter] = useState<ThemeFilter>('all');
+  const [query, setQuery] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
-  const list = useMemo(() => filterThemes(allThemes(themes), filter), [themes, filter]);
+  const list = useMemo(
+    () => filterThemes(allThemes(themes), filter, settings.favorites, query),
+    [themes, filter, settings.favorites, query],
+  );
   const scheduled = settings.schedule.mode !== 'off';
 
   const use = (id: string) => {
@@ -92,11 +96,22 @@ export function ThemesPage({ settings, themes, update, saveTheme, removeTheme }:
           onChange={setFilter}
           options={[
             { value: 'all', label: t('themes.all') },
+            { value: 'fav', label: t('themes.fav') },
             { value: 'dark', label: t('themes.dark') },
             { value: 'light', label: t('themes.light') },
             { value: 'mine', label: t('themes.mine') },
           ]}
         />
+        <label className="search grow-search">
+          <Search size={15} />
+          <input
+            type="search"
+            value={query}
+            placeholder={t('themes.search')}
+            aria-label={t('themes.search')}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </label>
         <span className="muted small">{t('themes.count', { n: list.length })}</span>
       </div>
       {scheduled ? (
@@ -104,7 +119,11 @@ export function ThemesPage({ settings, themes, update, saveTheme, removeTheme }:
           {t('themes.scheduleNote')} <a href="#/schedule">{t('nav.schedule')}</a>
         </p>
       ) : null}
-      {filter === 'mine' && !list.length ? (
+      {!list.length && (filter !== 'mine' || query) ? (
+        <div className="empty">
+          <p>{filter === 'fav' && !query ? t('themes.favEmpty') : t('themes.noResults')}</p>
+        </div>
+      ) : filter === 'mine' && !list.length ? (
         <div className="empty">
           <p>{t('themes.mineEmpty')}</p>
           <button type="button" className="btn primary" onClick={() => go('editor')}>
@@ -117,7 +136,9 @@ export function ThemesPage({ settings, themes, update, saveTheme, removeTheme }:
           themes={list}
           activeId={settings.themeId}
           onPick={use}
-          showOriginal={filter === 'all'}
+          showOriginal={filter === 'all' && !query}
+          favorites={settings.favorites}
+          onFavorite={(id) => void update((s) => ({ ...s, favorites: toggleFavorite(s.favorites, id) }))}
           extra={(theme) => (
             <div className="card-actions">
               {theme.builtIn ? null : (

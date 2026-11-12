@@ -1,6 +1,10 @@
 import {
   Camera,
+  Captions,
   ExternalLink,
+  Search,
+  Timer,
+  Volume2,
   Keyboard,
   LayoutGrid,
   MoonStar,
@@ -8,24 +12,34 @@ import {
   Plus,
   RefreshCw,
   Repeat,
+  Repeat1,
   Sparkles,
   SlidersHorizontal,
   Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GENERIC, isWebUrl, platformForUrl, type Platform } from '../core/platforms.ts';
-import { isDaytime } from '../core/schedule.ts';
+import { activeThemeId, isDaytime } from '../core/schedule.ts';
 import { patchSite, type Settings } from '../core/settings.ts';
 import { allThemes, findTheme, themeName, type Theme } from '../core/themes.ts';
 import { hasAnySitePermission, requestAnySitePermission } from '../shared/anySite.ts';
 import { resolveLang, type MessageKey } from '../shared/i18n.ts';
-import { sendToTab, type PageAction, type PageStatus } from '../shared/messages.ts';
+import { sendToTab, type PageAction, type PageStatus, type SleepRequest } from '../shared/messages.ts';
 import { Segmented, Switch } from '../ui/controls.tsx';
 import { LangProvider, useLang, useT } from '../ui/i18n.tsx';
 import { LogoMark } from '../ui/Logo.tsx';
-import { AmbientPanel, CinemaPanel, FiltersPanel, LayoutPanel, SpeedPanel } from '../ui/panels.tsx';
+import {
+  AmbientPanel,
+  CinemaPanel,
+  FiltersPanel,
+  LayoutPanel,
+  SoundPanel,
+  SpeedPanel,
+  SubtitlesPanel,
+} from '../ui/panels.tsx';
 import { useStore } from '../ui/store.ts';
-import { filterThemes, ThemeGrid, type ThemeFilter } from '../ui/ThemeGrid.tsx';
+import { filterThemes, ThemeGrid, toggleFavorite, type ThemeFilter } from '../ui/ThemeGrid.tsx';
+import { MiniPreview } from '../ui/ThemePreview.tsx';
 
 type Tab = 'themes' | 'player' | 'layout';
 type Update = (fn: (s: Settings) => Settings) => Promise<unknown>;
@@ -56,6 +70,10 @@ export function Popup() {
   useEffect(() => {
     if (state) document.documentElement.dataset.ready = '';
   }, [state]);
+  const appearance = state?.settings.appearance ?? 'auto';
+  useEffect(() => {
+    document.documentElement.dataset.ui = appearance;
+  }, [appearance]);
   if (!state) return <div className="popup loading" />;
   const lang = resolveLang(state.settings.language);
   return (
@@ -93,10 +111,32 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
     }
   };
 
+  const [note, setNote] = useState('');
+  const [now, setNow] = useState(0);
+  useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const first = setTimeout(tick, 0);
+    const id = setInterval(tick, 20_000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, []);
   const act = useCallback(
     async (action: PageAction) => {
       if (info.id == null) return;
       const next = await sendToTab<PageStatus>(info.id, { type: 'rs:action', action });
+      if (next) {
+        setStatus(next);
+        setNote(next.note ?? '');
+      }
+    },
+    [info.id],
+  );
+  const sleep = useCallback(
+    async (req: SleepRequest) => {
+      if (info.id == null) return;
+      const next = await sendToTab<PageStatus>(info.id, { type: 'rs:sleep', sleep: req });
       if (next) setStatus(next);
     },
     [info.id],
@@ -125,6 +165,7 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
       <SiteCard
         info={info}
         settings={settings}
+        themes={themes}
         status={status}
         anySiteGranted={anySiteGranted}
         update={update}
@@ -163,29 +204,84 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
         {tab === 'player' ? (
           <div className="pop-section">
             {live && status.hasVideo ? (
-              <div className="quick">
-                <button
-                  type="button"
-                  className="quick-btn"
-                  aria-pressed={status.cinema}
-                  onClick={() => void act('cinema')}
-                >
-                  <MoonStar size={17} />
-                  {t('popup.qCinema')}
-                </button>
-                <button type="button" className="quick-btn" onClick={() => void act('screenshot')}>
-                  <Camera size={17} />
-                  {t('popup.qCapture')}
-                </button>
-                <button type="button" className="quick-btn" aria-pressed={status.loop} onClick={() => void act('loop')}>
-                  <Repeat size={17} />
-                  {t('popup.qLoop')}
-                </button>
-                <button type="button" className="quick-btn" onClick={() => void act('speedReset')}>
-                  <span className="speed-num">{status.speed}×</span>
-                  {t('popup.qSpeed')}
-                </button>
-              </div>
+              <>
+                <div className="quick">
+                  <button
+                    type="button"
+                    className="quick-btn"
+                    aria-pressed={status.cinema}
+                    onClick={() => void act('cinema')}
+                  >
+                    <MoonStar size={17} />
+                    {t('popup.qCinema')}
+                  </button>
+                  <button type="button" className="quick-btn" onClick={() => void act('screenshot')}>
+                    <Camera size={17} />
+                    {t('popup.qCapture')}
+                  </button>
+                  <button
+                    type="button"
+                    className="quick-btn"
+                    aria-pressed={status.loop}
+                    onClick={() => void act('loop')}
+                  >
+                    <Repeat size={17} />
+                    {t('popup.qLoop')}
+                  </button>
+                  <button
+                    type="button"
+                    className="quick-btn"
+                    aria-pressed={status.abB !== null}
+                    onClick={() => void act('abCycle')}
+                  >
+                    <Repeat1 size={17} />
+                    {status.abA === null
+                      ? t('popup.qAB')
+                      : status.abB === null
+                        ? t('popup.qABSetB')
+                        : t('popup.qABClear')}
+                  </button>
+                  <button type="button" className="quick-btn" onClick={() => void act('themeFromVideo')}>
+                    <Palette size={17} />
+                    {t('popup.qVideoTheme')}
+                  </button>
+                  <button type="button" className="quick-btn" onClick={() => void act('speedReset')}>
+                    <span className="speed-num">{status.speed}×</span>
+                    {t('popup.qSpeed')}
+                  </button>
+                </div>
+                {note ? <p className="pop-note">{note}</p> : null}
+                <h4 className="group-title">
+                  <Timer size={14} /> {t('popup.sleep')}
+                </h4>
+                <div className="chips sleep-chips">
+                  {([null, 15, 30, 60, 'end'] as SleepRequest[]).map((v) => {
+                    const on = v === null ? status.sleep === null : v === 'end' ? status.sleep === 'end' : false;
+                    return (
+                      <button
+                        key={String(v)}
+                        type="button"
+                        className="chip"
+                        aria-pressed={on}
+                        onClick={() => void sleep(v)}
+                      >
+                        {v === null
+                          ? t('popup.sleepNone')
+                          : v === 'end'
+                            ? t('popup.sleepEnd')
+                            : t('popup.sleepMin', { n: v })}
+                      </button>
+                    );
+                  })}
+                </div>
+                {typeof status.sleep === 'number' ? (
+                  <p className="muted small">
+                    {t('popup.sleepLeft', { n: Math.max(1, Math.round((status.sleep - now) / 60_000)) })}
+                  </p>
+                ) : status.sleep === 'end' ? (
+                  <p className="muted small">{t('popup.sleepLeftEnd')}</p>
+                ) : null}
+              </>
             ) : null}
             <h4 className="group-title">
               <Sparkles size={14} /> {t('player.ambient')}
@@ -201,6 +297,14 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
             <FiltersPanel settings={settings} update={update} compact />
             <h4 className="group-title">{t('player.speed')}</h4>
             <SpeedPanel settings={settings} update={update} compact />
+            <h4 className="group-title">
+              <Volume2 size={14} /> {t('player.sound')}
+            </h4>
+            <SoundPanel settings={settings} update={update} />
+            <h4 className="group-title">
+              <Captions size={14} /> {t('subs.title')}
+            </h4>
+            <SubtitlesPanel settings={settings} update={update} compact />
           </div>
         ) : null}
         {tab === 'layout' ? (
@@ -231,6 +335,7 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
 function SiteCard({
   info,
   settings,
+  themes,
   status,
   anySiteGranted,
   update,
@@ -239,6 +344,7 @@ function SiteCard({
 }: {
   info: TabInfo;
   settings: Settings;
+  themes: Theme[];
   status: PageStatus | null | 'pending';
   anySiteGranted: boolean;
   update: Update;
@@ -246,6 +352,7 @@ function SiteCard({
   onResume: () => void;
 }) {
   const t = useT();
+  const lang = useLang();
   const p = info.platform;
   if (status === 'pending') return <div className="site-card skeleton" />;
   if (!p) {
@@ -297,15 +404,32 @@ function SiteCard({
   }
   const site = settings.sites[p.id];
   const tierKey = `tier.${p.tier}` as MessageKey;
+  const current =
+    p.tier === 'player'
+      ? null
+      : findTheme(
+          activeThemeId(settings, p.id, new Date(), matchMedia('(prefers-color-scheme: dark)').matches),
+          themes,
+        );
   return (
     <div className="site-card">
       <div className="site-row">
-        <span className="dot" style={{ background: p.brand, width: 10, height: 10 }} />
-        <div className="grow">
-          <strong>{p.tier === 'player' ? t('platform.generic') : p.name}</strong>
-          <span className="badge" style={{ marginLeft: 8 }}>
-            {t(tierKey)}
+        {current ? (
+          <span className="ct-thumb" aria-hidden="true">
+            <MiniPreview theme={current} />
           </span>
+        ) : (
+          <span className="dot" style={{ background: p.brand, width: 10, height: 10 }} />
+        )}
+        <div className="grow site-text">
+          <span className="site-name">
+            <span className="dot" style={{ background: p.brand }} />
+            <strong>{p.tier === 'player' ? t('platform.generic') : p.name}</strong>
+            <span className="badge">{t(tierKey)}</span>
+          </span>
+          {p.tier !== 'player' ? (
+            <span className="muted small">{current ? themeName(current, lang) : t('themes.original')}</span>
+          ) : null}
         </div>
         <Switch
           checked={site.enabled}
@@ -344,6 +468,7 @@ function ThemesTab({
 }) {
   const t = useT();
   const [filter, setFilter] = useState<ThemeFilter>('all');
+  const [query, setQuery] = useState('');
   const siteTheme = platform ? settings.sites[platform.id].themeId : null;
   const [siteOnly, setSiteOnly] = useState(!!siteTheme);
   const sched = settings.schedule;
@@ -355,7 +480,10 @@ function ThemesTab({
         : false;
   const globalActive = sched.mode === 'off' ? settings.themeId : nightNow ? sched.darkThemeId : sched.lightThemeId;
   const activeId = siteOnly && platform ? (siteTheme ?? globalActive) : globalActive;
-  const list = useMemo(() => filterThemes(allThemes(themes), filter), [themes, filter]);
+  const list = useMemo(
+    () => filterThemes(allThemes(themes), filter, settings.favorites, query),
+    [themes, filter, settings.favorites, query],
+  );
   const activeTheme = findTheme(activeId, themes);
 
   const pick = (id: string) => {
@@ -382,11 +510,22 @@ function ThemesTab({
           onChange={setFilter}
           options={[
             { value: 'all', label: t('themes.all') },
+            { value: 'fav', label: '♥' },
             { value: 'dark', label: t('themes.dark') },
             { value: 'light', label: t('themes.light') },
             { value: 'mine', label: t('themes.mine') },
           ]}
         />
+        <label className="search">
+          <Search size={14} />
+          <input
+            type="search"
+            value={query}
+            placeholder={t('themes.search')}
+            aria-label={t('themes.search')}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </label>
       </div>
       {platform ? (
         <label className="site-only">
@@ -405,9 +544,18 @@ function ThemesTab({
         <p className="notice small">{nightNow ? t('popup.scheduleNight') : t('popup.scheduleDay')}</p>
       ) : null}
       {list.length ? (
-        <ThemeGrid themes={list} activeId={activeId} onPick={pick} showOriginal={filter === 'all'} />
+        <ThemeGrid
+          themes={list}
+          activeId={activeId}
+          onPick={pick}
+          showOriginal={filter === 'all' && !query}
+          favorites={settings.favorites}
+          onFavorite={(id) => void update((s) => ({ ...s, favorites: toggleFavorite(s.favorites, id) }))}
+        />
       ) : (
-        <p className="muted small">{t('themes.mineEmpty')}</p>
+        <p className="muted small">
+          {query ? t('themes.noResults') : filter === 'fav' ? t('themes.favEmpty') : t('themes.mineEmpty')}
+        </p>
       )}
       <button type="button" className="btn sm block" style={{ marginTop: 14 }} onClick={() => openStudio('#/editor')}>
         <Plus size={14} />
