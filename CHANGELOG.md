@@ -41,3 +41,4 @@ First release, as **Auroreel** (working name Reelskin).
   language; auto switch explains each mode; sync is one row like the other backup actions; the editor's quick start,
   the overview's grids and the toolbar-button chips are clearer; toolbar settings live on the Player page only;
   readable status colours in the light look; same width for every drop-down.
+- The welcome page now opens on install (it pointed at a page that doesn't exist).

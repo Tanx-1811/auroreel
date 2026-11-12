@@ -38,7 +38,7 @@ async function syncAnySite(): Promise<void> {
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    void chrome.tabs.create({ url: chrome.runtime.getURL('options.html#/welcome') });
+    void chrome.tabs.create({ url: chrome.runtime.getURL('options/options.html#/welcome') });
   }
   void syncAnySite().catch(() => undefined);
 });
