@@ -8,6 +8,7 @@ import { DEFAULT_LIGHT_THEME_ID, DEFAULT_THEME_ID } from './themes.ts';
 import { GENERIC, PLATFORMS, layoutDefaults, platformById, type PlatformId } from './platforms.ts';
 import { DEFAULT_FILTERS, parseFilters, type FilterValues } from './filters.ts';
 import { DEFAULT_SHORTCUTS, parseShortcut, type ActionId, ACTION_IDS } from './shortcuts.ts';
+import { PROGRESS_ICON_IDS, cleanEmoji } from './progressIcons.ts';
 
 export interface SiteSettings {
   enabled: boolean;
@@ -18,9 +19,26 @@ export interface SiteSettings {
   layout: Record<string, boolean | string>;
 }
 
+/** Buttons the floating toolbar can show, in toolbar order ('speed' is the −, 1×, + group). */
+export const TOOLBAR_BUTTONS = [
+  'speed',
+  'filters',
+  'ambient',
+  'cinema',
+  'loop',
+  'ab',
+  'screenshot',
+  'pip',
+  'palette',
+] as const;
+export type ToolbarButton = (typeof TOOLBAR_BUTTONS)[number];
+
 export interface PlayerSettings {
   toolbar: boolean;
   toolbarSide: 'left' | 'right';
+  /** Shown buttons, a subset of TOOLBAR_BUTTONS (kept in toolbar order). */
+  toolbarButtons: ToolbarButton[];
+  toolbarSize: 'sm' | 'md' | 'lg';
   speed: {
     /** Speed every new video starts at. */
     default: number;
@@ -63,6 +81,34 @@ export interface SubtitleSettings {
   bold: boolean;
 }
 
+/** What sits on the progress bar's knob. */
+export const KNOBS = ['site', 'dot', ...PROGRESS_ICON_IDS, 'emoji', 'image'] as const;
+export const KNOB_MOTIONS = ['none', 'bounce', 'spin', 'pulse', 'wiggle'] as const;
+export const BAR_FILLS = ['theme', 'icon', 'rainbow', 'custom'] as const;
+export const BAR_HEIGHTS = ['site', 'thick', 'bold'] as const;
+export const SCROLLBARS = ['site', 'theme', 'thin', 'hidden'] as const;
+/** Largest knob picture kept (a data: URL, resized to 96 px by the studio). */
+export const MAX_KNOB_IMAGE_CHARS = 120_000;
+
+export interface ProgressSettings {
+  /** 'site' keeps the site's own knob; otherwise a KNOBS id. */
+  knob: string;
+  /** Used when knob is 'emoji'. */
+  emoji: string;
+  /** Used when knob is 'image': data:image/… URL ('' when none). Stays on this computer (not synced). */
+  image: string;
+  /** Knob size, px. */
+  size: number;
+  /** How the knob moves while the video plays. */
+  motion: (typeof KNOB_MOTIONS)[number];
+  /** Colour of the played part. */
+  fill: (typeof BAR_FILLS)[number];
+  color: string;
+  height: (typeof BAR_HEIGHTS)[number];
+  /** A thin bar along the video while the site hides its controls. */
+  mini: boolean;
+}
+
 export type ScheduleMode = 'off' | 'system' | 'time';
 
 export interface Settings {
@@ -92,6 +138,10 @@ export interface Settings {
   favorites: string[];
   /** Look of Auroreel's own popup and studio. */
   appearance: 'auto' | 'dark' | 'light';
+  /** Progress bar decorations (sites whose adapter describes their bar: YouTube). */
+  progress: ProgressSettings;
+  /** Page scrollbars on supported sites. */
+  scrollbar: (typeof SCROLLBARS)[number];
 }
 
 export const SPEED_MIN = 0.1;
@@ -121,6 +171,8 @@ export function defaultSettings(): Settings {
     player: {
       toolbar: true,
       toolbarSide: 'right',
+      toolbarButtons: TOOLBAR_BUTTONS.filter((b) => b !== 'ab'),
+      toolbarSize: 'md',
       speed: { default: 1, remember: false, step: 0.25 },
       filtersOn: false,
       filters: { ...DEFAULT_FILTERS },
@@ -139,6 +191,18 @@ export function defaultSettings(): Settings {
     subtitles: { on: false, size: 120, color: '#ffffff', background: 55, bold: false },
     favorites: [],
     appearance: 'auto',
+    progress: {
+      knob: 'site',
+      emoji: '🐱',
+      image: '',
+      size: 26,
+      motion: 'bounce',
+      fill: 'theme',
+      color: '#ff4d6d',
+      height: 'site',
+      mini: false,
+    },
+    scrollbar: 'site',
   };
 }
 
@@ -149,6 +213,33 @@ const numIn = (v: unknown, lo: number, hi: number, d: number) =>
 const themeRef = (v: unknown, d: string) => (typeof v === 'string' && /^[\w-]{1,64}$/.test(v) ? v : d);
 const time = (v: unknown, d: string) => (typeof v === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(v) ? v : d);
 const oneOf = <T extends string>(v: unknown, list: readonly T[], d: T): T => (list.includes(v as T) ? (v as T) : d);
+const hexColor = (v: unknown, d: string) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : d);
+const KNOB_IMAGE = /^data:image\/(png|jpeg|webp|gif|avif);base64,[A-Za-z0-9+/=]+$/;
+
+function parseToolbarButtons(v: unknown, d: ToolbarButton[]): ToolbarButton[] {
+  if (!Array.isArray(v)) return d;
+  const set = new Set(v);
+  return TOOLBAR_BUTTONS.filter((b) => set.has(b));
+}
+
+function parseProgress(raw: unknown, d: ProgressSettings): ProgressSettings {
+  const p = isObj(raw) ? raw : {};
+  const image =
+    typeof p.image === 'string' && p.image.length <= MAX_KNOB_IMAGE_CHARS && KNOB_IMAGE.test(p.image) ? p.image : '';
+  let knob = oneOf(p.knob, KNOBS, d.knob);
+  if (knob === 'image' && !image) knob = d.knob;
+  return {
+    knob,
+    emoji: cleanEmoji(p.emoji) ?? d.emoji,
+    image,
+    size: Math.round(numIn(p.size, 16, 44, d.size)),
+    motion: oneOf(p.motion, KNOB_MOTIONS, d.motion),
+    fill: oneOf(p.fill, BAR_FILLS, d.fill),
+    color: hexColor(p.color, d.color),
+    height: oneOf(p.height, BAR_HEIGHTS, d.height),
+    mini: bool(p.mini, d.mini),
+  };
+}
 
 function parseSite(raw: unknown, id: PlatformId): SiteSettings {
   const d = defaultSite(id);
@@ -206,6 +297,8 @@ export function parseSettings(raw: unknown): Settings {
     player: {
       toolbar: bool(p.toolbar, d.player.toolbar),
       toolbarSide: oneOf(p.toolbarSide, ['left', 'right'] as const, d.player.toolbarSide),
+      toolbarButtons: parseToolbarButtons(p.toolbarButtons, d.player.toolbarButtons),
+      toolbarSize: oneOf(p.toolbarSize, ['sm', 'md', 'lg'] as const, d.player.toolbarSize),
       speed: {
         default: numIn(speed.default, SPEED_MIN, SPEED_MAX, d.player.speed.default),
         remember: bool(speed.remember, d.player.speed.remember),
@@ -236,7 +329,7 @@ export function parseSettings(raw: unknown): Settings {
     subtitles: {
       on: bool(sub.on, d.subtitles.on),
       size: Math.round(numIn(sub.size, 60, 250, d.subtitles.size)),
-      color: typeof sub.color === 'string' && /^#[0-9a-f]{6}$/i.test(sub.color) ? sub.color : d.subtitles.color,
+      color: hexColor(sub.color, d.subtitles.color),
       background: Math.round(numIn(sub.background, 0, 100, d.subtitles.background)),
       bold: bool(sub.bold, d.subtitles.bold),
     },
@@ -247,6 +340,8 @@ export function parseSettings(raw: unknown): Settings {
         )
       : [],
     appearance: oneOf(raw.appearance, ['auto', 'dark', 'light'] as const, d.appearance),
+    progress: parseProgress(raw.progress, d.progress),
+    scrollbar: oneOf(raw.scrollbar, SCROLLBARS, d.scrollbar),
   };
 }
 

@@ -36,9 +36,7 @@ function SiteRow({ platform, settings, themes, update }: PageProps & { platform:
   return (
     <section className={`card site ${site.enabled ? '' : 'off'}`}>
       <div className="site-head">
-        <span className="site-logo" style={{ background: platform.brand }}>
-          {platform.name.slice(0, 1)}
-        </span>
+        <span className="site-dot" style={{ background: platform.brand }} aria-hidden="true" />
         <div className="grow">
           <h3>{platform.name}</h3>
           <span className="muted small">{platform.hosts[0]}</span>
@@ -117,9 +115,7 @@ function AnySiteCard({ settings, update }: PageProps) {
   return (
     <section className="card site">
       <div className="site-head">
-        <span className="site-logo generic">
-          <Globe size={18} />
-        </span>
+        <Globe size={18} className="site-glyph" aria-hidden="true" />
         <div className="grow">
           <h3>{t('sites.anyTitle')}</h3>
           <span className="muted small">{t('sites.anyHint')}</span>

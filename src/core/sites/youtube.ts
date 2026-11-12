@@ -257,4 +257,14 @@ export const youtube: SiteAdapter = {
   themeCss,
   layoutCss,
   fontExclude: ['.ytp-caption-segment', '.caption-visual-line *', '.ytp-caption-window-container *'],
+  // Checked on the 2026 player (ytp-delhi-modern): YouTube stops moving its bar while the controls are hidden.
+  progressBar: {
+    root: '.html5-video-player',
+    knob: '.ytp-scrubber-button',
+    played: '.ytp-play-progress',
+    track: '.ytp-progress-list',
+    extras: ['.ytp-decorated-scrubber-button'],
+    playing: '.playing-mode',
+    idle: '.ytp-autohide',
+  },
 };

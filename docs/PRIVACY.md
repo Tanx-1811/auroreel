@@ -10,6 +10,7 @@ Auroreel is a browser extension that restyles video sites and adds player tools.
 
 - Your settings (chosen theme, per-site options, player preferences, shortcuts, language).
 - Themes you create, including any picture you choose as a backdrop (resized and stored inside the extension).
+- A picture you choose for the progress-bar knob (shrunk to 96 px; stored on this computer only).
 - The last playback speed per site, if you turn on "Remember the last speed".
 - A cache of the colours a supported site uses, so the next visit is recoloured immediately.
 
@@ -60,7 +61,8 @@ Questions: open an issue at <https://github.com/Tanx-1811/auroreel/issues>.
 Auroreel là tiện ích trình duyệt làm đẹp các trang xem video và thêm công cụ trình phát. Mọi thứ chạy trong trình
 duyệt của bạn.
 
-**Auroreel lưu gì:** cài đặt; chủ đề bạn tạo (kể cả ảnh nền bạn chọn, đã thu nhỏ); tốc độ gần nhất trên từng trang
+**Auroreel lưu gì:** cài đặt; chủ đề bạn tạo (kể cả ảnh nền bạn chọn, đã thu nhỏ); ảnh bạn chọn cho nút kéo trên thanh
+tiến độ (thu về 96 px, chỉ lưu trên máy này); tốc độ gần nhất trên từng trang
 (nếu bạn bật); bộ nhớ đệm màu của các trang được hỗ trợ. Tất cả nằm trong bộ nhớ tiện ích trên máy này và bị xoá khi
 gỡ Auroreel hoặc chọn **Sao lưu → Đặt lại Auroreel**.
 

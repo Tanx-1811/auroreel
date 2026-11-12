@@ -42,7 +42,8 @@ theme (`activeThemeId`: site override → schedule → global) and writes two `<
 1. `#auroreel-engine` — the recolouring engine's overrides (below).
 2. `#auroreel-main` — `buildPageCss`: theme tokens (`--rs-*` on `:root`), the backdrop, fonts, scrollbars, the site
    adapter's theme CSS (fixed token overrides, glass bars, rounded thumbnails, accent progress bar, search box…) and the
-   layout options (which also apply when the user keeps the site's colours).
+   layout options (which also apply when the user keeps the site's colours); then the decorations (`decor.ts`:
+   progress-bar knob and fill, scrollbar style), which apply with or without a theme.
 
 Everything is `!important` and the root selector is `html:not(#rs-root)` so site rules such as `html[dark]{…!important}`
 lose. Elements inserted from a content script aren't subject to the page's CSP. Changes in storage re-apply live in
@@ -130,6 +131,16 @@ reach the site's player.
   saves a theme with the frame (WebP) as its backdrop and puts it to use. Protected/tainted video → message.
 - **Subtitles** (`core/css/subtitles.ts`): colour, weight and box behind the text set directly; size by scaling the
   caption box (sites size captions inline); native tracks via `video::cue`.
+- **Toolbar placement**: shown only when ≥ 300 × 120 px of the video is on screen (`visibleBox`); while shown it
+  re-reads the video's rectangle every frame (`follow`), because sites move players without scrolling or resizing.
+  Buttons and size come from `player.toolbarButtons` / `toolbarSize`.
+- **Progress-bar decorations** (`core/css/decor.ts`, `core/progressIcons.ts`): for sites whose adapter describes its
+  bar (`SiteAdapter.progressBar`: player root, knob, played part, track, "playing" and "controls hidden" classes —
+  YouTube). The knob is drawn on the knob's `::before` (so the site's own transforms keep working), animated only
+  under the root's "playing" class and inside `prefers-reduced-motion: no-preference`. The emoji knob is an SVG
+  `<text>` image; a picture knob is a ≤ 96 px PNG/WebP data URL kept out of Chrome Sync. The **mini bar** is drawn by
+  the player UI from `currentTime/duration` while the root has the "controls hidden" class (YouTube stops updating
+  its own bar then).
 - **YouTube default quality** (`content/youtube-main.ts`, a `world: "MAIN"` content script): YouTube's player API is
   only reachable from the page's world. The isolated script publishes the choice as `<html data-rs-quality>`; the
   page-world script only reads it and calls `setPlaybackQualityRange` with the best available level ≤ the choice.

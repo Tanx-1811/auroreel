@@ -36,6 +36,24 @@ export interface EngineConfig {
   fetchCss?: boolean;
 }
 
+/** A site's own progress bar, for the knob decorations (css/decor.ts) and the always-on mini bar. */
+export interface ProgressBarConfig {
+  /** The player element holding the video and its controls. */
+  root: string;
+  /** Inside root: the knob that follows playback. */
+  knob: string;
+  /** Inside root: the played part of the bar. */
+  played: string;
+  /** Inside root: the bar's track (its height). */
+  track: string;
+  /** Inside root: the site's own knob decorations, hidden while ours is shown. */
+  extras?: string[];
+  /** Added to root while the video plays (the knob moves only then). */
+  playing: string;
+  /** Added to root while the site hides its controls (the mini bar shows only then). */
+  idle: string;
+}
+
 export interface LayoutStrings {
   /** Shown where the home feed was hidden. */
   homeHidden: string;
@@ -57,4 +75,6 @@ export interface SiteAdapter {
   layoutCss?: (layout: Record<string, boolean | string>, strings: LayoutStrings) => string;
   /** Elements whose font must not change (captions, icon fonts). */
   fontExclude?: string[];
+  /** The site's progress bar, when it can be decorated. */
+  progressBar?: ProgressBarConfig;
 }

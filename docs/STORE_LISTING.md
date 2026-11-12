@@ -44,6 +44,12 @@ you always wanted.
 • Turn the video you're watching into a theme in one click
 • Subtitle styling: size, colour, background box, bold
 • Keyboard shortcuts (S/D/R for speed, Alt+C cinema, [ ] A–B loop…) — all remappable
+• Pick the toolbar's buttons and size
+
+🐱 A LIVELY PROGRESS BAR (YouTube)
+• The knob becomes a heart, star, rocket, cat, lotus… (16 drawings), any emoji or your own picture
+• Bounce, spin, pulse or wiggle while the video plays; rainbow or custom colour; thicker bar
+• An always-on thin progress bar while YouTube hides its controls
 
 🧘 FOCUS ON YOUTUBE
 • Hide Shorts, the home feed, related videos, comments, end screens, chips or merch
@@ -95,6 +101,12 @@ mong có.
 • Biến video đang xem thành chủ đề chỉ với một cú bấm
 • Tuỳ chỉnh phụ đề: cỡ chữ, màu, nền sau chữ, chữ đậm
 • Phím tắt (S/D/R chỉnh tốc độ, Alt+C chế độ rạp, [ ] lặp A–B…) — đổi được hết
+• Tự chọn nút và cỡ thanh công cụ
+
+🐱 THANH TIẾN ĐỘ SINH ĐỘNG (YouTube)
+• Nút kéo thành trái tim, ngôi sao, tên lửa, mèo, hoa sen… (16 hình), emoji bất kỳ hoặc ảnh của bạn
+• Nảy, xoay, nhịp, lắc khi video phát; màu cầu vồng hoặc tự chọn; thanh dày hơn
+• Thanh tiến độ mảnh luôn hiện khi YouTube ẩn thanh điều khiển
 
 🧘 TẬP TRUNG TRÊN YOUTUBE
 • Ẩn Shorts, bảng tin trang chủ, video liên quan, bình luận, màn hình kết thúc, thanh chủ đề, hàng hoá

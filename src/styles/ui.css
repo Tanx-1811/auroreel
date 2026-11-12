@@ -16,7 +16,6 @@
   --acc-3: #f59e0b;
   --acc-soft: rgba(139, 92, 246, 0.16);
   --acc-text: #ffffff;
-  --grad: linear-gradient(135deg, #8b5cf6 0%, #d946ef 45%, #f97316 100%);
   --ok: #34d399;
   --warn: #fbbf24;
   --bad: #f87171;
@@ -122,10 +121,7 @@ h4 {
   font-size: 12.5px;
 }
 .grad-text {
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--acc);
 }
 
 :focus-visible {
@@ -176,12 +172,11 @@ h4 {
 }
 .btn.primary {
   border: 0;
-  background: var(--grad);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(217, 70, 239, 0.25);
+  background: var(--acc);
+  color: var(--acc-text);
 }
 .btn.primary:hover {
-  filter: brightness(1.08);
+  background: color-mix(in oklab, var(--acc) 88%, var(--text));
 }
 .btn.ghost {
   border-color: transparent;
@@ -495,6 +490,24 @@ h4 {
   border-color: transparent;
   color: var(--acc-text);
 }
+/* Multi-select chips: a ring and a tick instead of a solid fill, so a mostly-on set stays calm. */
+.chip.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.chip.check[aria-pressed='true'] {
+  background: transparent;
+  border-color: var(--acc);
+  color: var(--text);
+}
+.chip.check[aria-pressed='true'] svg {
+  color: var(--acc);
+}
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 
 .card {
   border-radius: var(--r-lg);
@@ -807,7 +820,6 @@ h4 {
   inset: 0 62% 0 0;
   border-radius: 4px;
   background: var(--p-accent);
-  box-shadow: 0 0 10px color-mix(in oklab, var(--p-accent) 70%, transparent);
 }
 .tp-progress b::after {
   content: '';
@@ -818,6 +830,19 @@ h4 {
   height: 12px;
   border-radius: 50%;
   background: var(--p-accent);
+}
+.tp-progress.has-knob b::after {
+  display: none;
+}
+.tp-knob {
+  position: absolute;
+  right: -11px;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin-top: -11px;
+  background: center / contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 .tp-player .row {
   display: flex;
@@ -1090,4 +1115,277 @@ h4 {
 .search input:focus {
   outline: none;
   border-color: var(--acc);
+}
+
+/* ——— Progress-bar knob (studio gallery, popup row, preview) ——— */
+.kn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+.kn-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.kn-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 82px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.kn-row .kn-tile {
+  width: 100%;
+  height: 40px;
+  min-height: 0;
+  padding: 0;
+}
+.kn-tile:hover {
+  background: var(--card-hover);
+}
+.kn-tile[aria-pressed='true'] {
+  border-color: var(--acc);
+  box-shadow: inset 0 0 0 1px var(--acc);
+}
+.kn-tile:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+.kn-art {
+  display: grid;
+  place-items: center;
+  height: 38px;
+}
+.kn-row .kn-art {
+  height: auto;
+}
+.kn-img {
+  display: block;
+  object-fit: contain;
+}
+.kn-name {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--muted);
+}
+.kn-tile[aria-pressed='true'] .kn-name {
+  color: var(--text);
+}
+.kn-placeholder {
+  color: var(--muted);
+}
+.kn-mini-bar {
+  position: relative;
+  display: block;
+  height: 4px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--text) 22%, transparent);
+}
+.kn-mini-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0 45% 0 0;
+  border-radius: 4px;
+  background: var(--kn-c);
+}
+.kn-mini-bar i {
+  position: absolute;
+  left: 55%;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  background: var(--kn-c);
+}
+.kn-mini-bar.dot i {
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  border: 2.5px solid var(--text);
+}
+
+.kn-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #221d45;
+  color: #fff;
+}
+.kn-scene {
+  position: absolute;
+  inset: 0;
+}
+.kn-moon {
+  position: absolute;
+  right: 15%;
+  top: 14%;
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffe3a3;
+}
+.kn-hill {
+  position: absolute;
+  border-radius: 50% 50% 0 0;
+}
+.kn-hill.back {
+  left: -30%;
+  right: 25%;
+  bottom: 10%;
+  height: 46%;
+  background: #3a3170;
+}
+.kn-hill.front {
+  left: 15%;
+  right: -35%;
+  bottom: -14%;
+  height: 52%;
+  background: #2c2558;
+}
+.kn-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 16px 8px;
+}
+.kn-track {
+  position: relative;
+  height: var(--kn-h, 4px);
+  margin-bottom: 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.3);
+}
+.kn-played {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  border-radius: 99px;
+  background: var(--kn-fill);
+}
+.kn-preview.playing .kn-played {
+  animation: kn-progress 14s linear infinite;
+}
+@keyframes kn-progress {
+  from {
+    width: 2%;
+  }
+  to {
+    width: 98%;
+  }
+}
+.kn-knob {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  transform: translate(50%, -50%);
+}
+.kn-knob.site {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--kn-c);
+}
+.kn-knob.dot {
+  width: var(--kn-dot);
+  height: var(--kn-dot);
+  border-radius: 50%;
+  background: var(--kn-c);
+  box-shadow: 0 0 0 3px #fff;
+}
+.kn-knob.art {
+  width: var(--kn-size);
+  height: var(--kn-size);
+}
+.kn-knob.art .kn-img,
+.kn-knob.art svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  transform-origin: 50% 50%;
+  animation: var(--kn-anim, none);
+}
+.kn-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kn-play {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.kn-play:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+.kn-play:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+.kn-play:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.kn-time {
+  font: 600 12px/1 var(--mono);
+  color: rgba(255, 255, 255, 0.85);
+}
+.kn-note {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 10px;
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.kn-error {
+  margin: 10px 0 0;
+  color: var(--bad);
+}
+.kn-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.kn-extra.row-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.emoji-input {
+  width: 76px;
+  text-align: center;
+  font-size: 20px;
+}
+.emoji-ideas .chip {
+  font-size: 17px;
+  padding: 0 9px;
 }

@@ -6,6 +6,7 @@ import { allThemes, duplicateTheme, findTheme, themeName } from '../../core/them
 import type { MessageKey } from '../../shared/i18n.ts';
 import { Switch } from '../../ui/controls.tsx';
 import { useLang, useT } from '../../ui/i18n.tsx';
+import { KnobArt } from '../../ui/Knob.tsx';
 import { LargePreview } from '../../ui/ThemePreview.tsx';
 import { filterThemes, ThemeGrid } from '../../ui/ThemeGrid.tsx';
 import { go } from '../router.ts';
@@ -13,6 +14,7 @@ import type { PageProps } from '../types.ts';
 import { usePreviewText } from '../usePreviewText.ts';
 
 const IS_MAC = /Mac/.test(navigator.platform);
+const DECOR_SAMPLE = ['heart', 'star', 'rocket', 'cat', 'duck', 'popcorn', 'planet', 'lotus'];
 
 export function HomePage({ settings, themes, update, saveTheme }: PageProps) {
   const t = useT();
@@ -71,7 +73,7 @@ export function HomePage({ settings, themes, update, saveTheme }: PageProps) {
       <section className="home-hero">
         <div className="home-preview">
           {theme ? (
-            <LargePreview theme={theme} text={previewText} />
+            <LargePreview theme={theme} text={previewText} progress={settings.progress} />
           ) : (
             <div className="tp original large">
               <div className="tp-original-inner">
@@ -142,6 +144,24 @@ export function HomePage({ settings, themes, update, saveTheme }: PageProps) {
       </section>
 
       <section className="home-section">
+        <div className="home-decor">
+          <div className="kn-strip" aria-hidden="true">
+            {DECOR_SAMPLE.map((id) => (
+              <KnobArt key={id} id={id} progress={settings.progress} accent={null} size={30} />
+            ))}
+          </div>
+          <div className="grow">
+            <h2>{t('home.decorTitle')}</h2>
+            <p className="muted small">{t('home.decorHint')}</p>
+          </div>
+          <button type="button" className="btn" onClick={() => go('decor')}>
+            {t('nav.decor')}
+            <ArrowRight size={14} />
+          </button>
+        </div>
+      </section>
+
+      <section className="home-section">
         <div className="section-head">
           <h2>{t('home.sites')}</h2>
           <button type="button" className="btn ghost sm" onClick={() => go('sites')}>
@@ -155,9 +175,7 @@ export function HomePage({ settings, themes, update, saveTheme }: PageProps) {
             const own = site.themeId ? findTheme(site.themeId, themes) : null;
             return (
               <div key={pl.id} className={`site-tile${site.enabled ? '' : ' off'}`}>
-                <span className="site-logo" style={{ background: pl.brand }}>
-                  {pl.name.slice(0, 1)}
-                </span>
+                <span className="site-dot" style={{ background: pl.brand }} aria-hidden="true" />
                 <span className="grow">
                   <strong>{pl.name}</strong>
                   <span className="muted small">

@@ -9,9 +9,7 @@ body {
   flex-direction: column;
   height: 600px;
   max-height: 600px;
-  background:
-    radial-gradient(120% 60% at 0% 0%, rgba(139, 92, 246, 0.16), transparent 60%),
-    radial-gradient(90% 50% at 100% 0%, rgba(236, 72, 153, 0.1), transparent 60%), var(--bg);
+  background: var(--bg);
 }
 .popup.loading {
   height: 520px;
@@ -91,9 +89,11 @@ body {
   color: var(--text);
 }
 .pop-tabs button[aria-selected='true'] {
-  background: var(--panel);
+  background: var(--acc-soft);
   color: var(--text);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.pop-tabs button[aria-selected='true'] svg {
+  color: var(--acc);
 }
 .pop-main {
   flex: 1;

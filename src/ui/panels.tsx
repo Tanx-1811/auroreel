@@ -1,4 +1,5 @@
 /** Settings panels shared by the popup and the studio. */
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 import {
   DEFAULT_FILTERS,
@@ -9,7 +10,13 @@ import {
   matchPreset,
 } from '../core/filters.ts';
 import type { Platform } from '../core/platforms.ts';
-import { patchLayout, type PlayerSettings, type Settings } from '../core/settings.ts';
+import {
+  patchLayout,
+  TOOLBAR_BUTTONS,
+  type PlayerSettings,
+  type Settings,
+  type ToolbarButton,
+} from '../core/settings.ts';
 import type { MessageKey } from '../shared/i18n.ts';
 import { Field, Segmented, Select, Slider, Switch } from './controls.tsx';
 import { useT } from './i18n.tsx';
@@ -20,6 +27,18 @@ const patchPlayer = (update: Update, fn: (p: PlayerSettings) => PlayerSettings) 
   update((s) => ({ ...s, player: fn(s.player) }));
 
 const SPEEDS = ['0.75', '1', '1.25', '1.5', '1.75', '2'];
+
+const BUTTON_LABEL: Record<ToolbarButton, MessageKey> = {
+  speed: 'tb.speed',
+  filters: 'page.filters',
+  ambient: 'page.ambient',
+  cinema: 'page.cinema',
+  loop: 'page.loop',
+  ab: 'page.abLoop',
+  screenshot: 'page.screenshot',
+  pip: 'page.pip',
+  palette: 'page.videoTheme',
+};
 
 export function AmbientPanel({ settings, update, compact }: { settings: Settings; update: Update; compact?: boolean }) {
   const t = useT();
@@ -197,9 +216,48 @@ export function SpeedPanel({ settings, update, compact }: { settings: Settings; 
   );
 }
 
-export function ToolbarPanel({ settings, update }: { settings: Settings; update: Update }) {
+/** `look`: only how the toolbar looks (buttons, size) — for the Decorations page. */
+export function ToolbarPanel({ settings, update, look }: { settings: Settings; update: Update; look?: boolean }) {
   const t = useT();
   const p = settings.player;
+  const buttons = (
+    <>
+      <Field label={t('player.toolbarButtons')} hint={t('player.toolbarButtonsHint')} stack>
+        <div className="chips" role="group" aria-label={t('player.toolbarButtons')}>
+          {TOOLBAR_BUTTONS.map((b) => {
+            const on = p.toolbarButtons.includes(b);
+            return (
+              <button
+                key={b}
+                type="button"
+                className="chip check"
+                aria-pressed={on}
+                disabled={!p.toolbar}
+                onClick={() =>
+                  patchPlayer(update, (pl) => ({
+                    ...pl,
+                    toolbarButtons: TOOLBAR_BUTTONS.filter((x) => (x === b ? !on : pl.toolbarButtons.includes(x))),
+                  }))
+                }
+              >
+                {on ? <Check size={13} strokeWidth={3} aria-hidden="true" /> : null}
+                {t(BUTTON_LABEL[b])}
+              </button>
+            );
+          })}
+        </div>
+      </Field>
+      <Field label={t('player.toolbarSize')}>
+        <Segmented
+          value={p.toolbarSize}
+          label={t('player.toolbarSize')}
+          options={(['sm', 'md', 'lg'] as const).map((v) => ({ value: v, label: t(`size.${v}`) }))}
+          onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSize: v }))}
+        />
+      </Field>
+    </>
+  );
+  if (look) return buttons;
   return (
     <>
       <Field label={t('player.toolbar')} hint={t('player.toolbarHint')}>
@@ -220,6 +278,7 @@ export function ToolbarPanel({ settings, update }: { settings: Settings; update:
           onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSide: v }))}
         />
       </Field>
+      {buttons}
       <Field label={t('player.screenshotFormat')}>
         <Segmented
           value={p.screenshotFormat}

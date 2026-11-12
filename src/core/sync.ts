@@ -18,7 +18,7 @@ export const SYNC_ITEM_MAX = 8000;
 export const SYNC_MAX_THEMES = 60;
 const TOMBSTONE_DAYS = 120;
 
-/** Fields that stay on each device. */
+/** Fields that stay on each device (plus the knob picture, `progress.image`: too big for a sync item). */
 type LocalOnly = 'anySite' | 'onboarded' | 'sync';
 
 export interface SyncedSettings {
@@ -29,7 +29,7 @@ export interface SyncedSettings {
 
 export function toSynced(settings: Settings, from: string, at: number): SyncedSettings {
   const { anySite: _a, onboarded: _o, sync: _s, ...rest } = settings;
-  return { from, at, settings: rest };
+  return { from, at, settings: { ...rest, progress: { ...rest.progress, image: '' } } };
 }
 
 /** Applies synced settings on this device, keeping its local-only fields. */
@@ -37,8 +37,14 @@ export function applySynced(local: Settings, remote: unknown): Settings {
   if (!remote || typeof remote !== 'object') return local;
   const incoming = (remote as Partial<SyncedSettings>).settings;
   if (!incoming || typeof incoming !== 'object') return local;
-  const merged = parseSettings({ ...incoming, anySite: local.anySite, onboarded: local.onboarded, sync: local.sync });
-  return merged;
+  const progress = (incoming as { progress?: unknown }).progress;
+  return parseSettings({
+    ...incoming,
+    progress: progress && typeof progress === 'object' ? { ...progress, image: local.progress.image } : progress,
+    anySite: local.anySite,
+    onboarded: local.onboarded,
+    sync: local.sync,
+  });
 }
 
 /** Themes that fit in Chrome Sync (no picture backdrop, small enough), newest first. */

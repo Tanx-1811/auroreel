@@ -48,6 +48,12 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
   pictures must be `data:image/(png|jpeg|webp|gif|avif)` and ≤ `MAX_IMAGE_CHARS`.
 - New permission? Update `src/manifest.ts` (comment), `docs/PRIVACY.md`, `docs/STORE_LISTING.md` and
   `docs/ARCHITECTURE.md` §5.
+- Design of Auroreel's own UI (popup, studio, brand art): **flat** — solid colours, one accent, no gradients, glows or
+  glossy fills; no coloured edge strips (border-left/top accents, inset side bars) for state; no tinted tiles or
+  bubbles behind icons. Show state with a full ring, a soft fill of the whole control, a dot or a tick. Theme
+  backdrops (aurora/gradient) are user content and stay. Animations respect `prefers-reduced-motion`.
+- Progress-bar decorations: site selectors go in the adapter's `progressBar`; knob drawings in `progressIcons.ts`
+  (32×32, flat, facing right, `decor.icon.<id>` strings); the knob picture never goes to Chrome Sync.
 - New built-in theme: add it to `BUILT_IN_THEMES` with `nameVi`; the unit tests check contrast (text ≥ 7:1, muted and
   links ≥ 4.5:1) and that the count in the tests/welcome copy still holds.
 

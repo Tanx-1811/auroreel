@@ -6,6 +6,7 @@ export type Route =
   | { page: 'editor'; id?: string }
   | { page: 'sites' }
   | { page: 'player' }
+  | { page: 'decor' }
   | { page: 'schedule' }
   | { page: 'shortcuts' }
   | { page: 'backup' }
@@ -21,6 +22,7 @@ export function parseHash(hash: string): Route {
       return { page: 'themes' };
     case 'sites':
     case 'player':
+    case 'decor':
     case 'schedule':
     case 'shortcuts':
     case 'backup':

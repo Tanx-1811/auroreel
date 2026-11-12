@@ -15,7 +15,16 @@ import {
   type FilterValues,
 } from '../../core/filters.ts';
 import type { PlatformId } from '../../core/platforms.ts';
-import { SPEED_MAX, SPEED_MIN, type PlayerSettings, type Settings } from '../../core/settings.ts';
+import { playedFill } from '../../core/css/decor.ts';
+import {
+  SPEED_MAX,
+  SPEED_MIN,
+  type PlayerSettings,
+  type ProgressSettings,
+  type Settings,
+  type ToolbarButton,
+} from '../../core/settings.ts';
+import type { ProgressBarConfig } from '../../core/sites/types.ts';
 import { ACTION_IDS, formatShortcut, matches, type ActionId } from '../../core/shortcuts.ts';
 import { translate, type Lang, type MessageKey, type Vars } from '../../shared/i18n.ts';
 import type { PageAction, PageStatus, SleepRequest } from '../../shared/messages.ts';
@@ -27,7 +36,7 @@ import { Ambient } from './ambient.ts';
 import { captureFrame } from './capture.ts';
 import { Cinema } from './cinema.ts';
 import { el, icon, ICONS } from './dom.ts';
-import { elementBox, inside } from './geometry.ts';
+import { elementBox, inside, visibleBox } from './geometry.ts';
 import { UI_CSS } from './ui-css.ts';
 
 declare const __RS_E2E__: boolean;
@@ -42,9 +51,14 @@ export interface PlayerConfig {
   accentText: string;
   lang: Lang;
   platform: PlatformId;
+  progress: ProgressSettings;
+  /** The site's own progress bar (for the always-on mini bar), when the skin is on. */
+  progressBar?: ProgressBarConfig;
 }
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+/** Media events that move or show/hide the mini progress bar. */
+const MINI_EVENTS = ['timeupdate', 'seeked', 'play', 'pause', 'durationchange', 'emptied'] as const;
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 function isTyping(e: Event): boolean {
@@ -68,6 +82,8 @@ export class PlayerTools {
   private panel = el('div', { class: 'panel', role: 'dialog' });
   private toastEl = el('div', { class: 'toast', role: 'status', 'aria-live': 'polite' });
   private tip = el('div', { class: 'tip', role: 'tooltip' });
+  private miniFill = el('i');
+  private mini = el('div', { class: 'mini', 'aria-hidden': 'true' }, this.miniFill);
   private buttons = new Map<string, HTMLButtonElement>();
   private speedLabel = el('button', { class: 'speed' });
   private video: HTMLVideoElement | null = null;
@@ -84,6 +100,8 @@ export class PlayerTools {
   private filtered = new WeakSet<HTMLVideoElement>();
   private speeds: Partial<Record<PlatformId, number>> = {};
   private panelOpen = false;
+  private followFrame = 0;
+  private lastBox = '';
   private sliders = new Map<keyof FilterValues, { input: HTMLInputElement; out: HTMLOutputElement }>();
   private presetChips = new Map<string, HTMLButtonElement>();
   private filterSwitch = el('button', { class: 'switch', role: 'switch' }, el('i'));
@@ -101,7 +119,7 @@ export class PlayerTools {
   constructor() {
     this.host.dataset.auroreel = 'ui';
     const style = el('style', { text: UI_CSS });
-    this.root.append(style, this.bar, this.panel, this.toastEl, this.tip);
+    this.root.append(style, this.mini, this.bar, this.panel, this.toastEl, this.tip);
     this.cinema.onExit = () => this.setCinema(false);
     this.sleep.onFire = () => {
       for (const v of document.querySelectorAll('video')) if (!v.paused) v.pause();
@@ -137,6 +155,8 @@ export class PlayerTools {
     this.cfg = cfg;
     this.host.style.setProperty('--acc', cfg.accent);
     this.host.style.setProperty('--acc-text', cfg.accentText);
+    this.host.style.setProperty('--mini-fill', playedFill(cfg.progress, cfg.accent) ?? cfg.accent);
+    this.host.dataset.size = cfg.settings.toolbarSize;
     if (!cfg.on) {
       this.teardown();
       return;
@@ -144,7 +164,8 @@ export class PlayerTools {
     if (!this.started) this.start();
     const keysChanged =
       prev?.shortcutsOn !== cfg.shortcutsOn || JSON.stringify(prev?.shortcuts) !== JSON.stringify(cfg.shortcuts);
-    if (first || prev?.lang !== cfg.lang || keysChanged) this.buildBar();
+    const buttonsChanged = prev?.settings.toolbarButtons.join() !== cfg.settings.toolbarButtons.join();
+    if (first || prev?.lang !== cfg.lang || keysChanged || buttonsChanged) this.buildBar();
     this.buildPanel();
     this.applyFilters();
     void this.applyBoost(false);
@@ -154,6 +175,7 @@ export class PlayerTools {
     this.cinema.setDim(cfg.settings.cinema.dim);
     this.refreshButtons();
     this.position();
+    this.updateMini();
   }
 
   status(): Omit<PageStatus, 'platform' | 'skinPaused'> {
@@ -178,6 +200,7 @@ export class PlayerTools {
     document.addEventListener('play', this.onPlay, true);
     document.addEventListener('loadedmetadata', this.onMeta, true);
     document.addEventListener('ratechange', this.onRate, true);
+    for (const type of MINI_EVENTS) document.addEventListener(type, this.updateMini, true);
     document.addEventListener('pointermove', this.onPointer, { passive: true, capture: true });
     window.addEventListener('keydown', this.onKey, true);
     document.addEventListener('ended', this.onEnded, true);
@@ -200,6 +223,7 @@ export class PlayerTools {
     document.removeEventListener('play', this.onPlay, true);
     document.removeEventListener('loadedmetadata', this.onMeta, true);
     document.removeEventListener('ratechange', this.onRate, true);
+    for (const type of MINI_EVENTS) document.removeEventListener(type, this.updateMini, true);
     document.removeEventListener('pointermove', this.onPointer, true);
     window.removeEventListener('keydown', this.onKey, true);
     document.removeEventListener('ended', this.onEnded, true);
@@ -208,6 +232,8 @@ export class PlayerTools {
     window.removeEventListener('scroll', this.onViewport, true);
     window.removeEventListener('resize', this.onViewport);
     document.removeEventListener('fullscreenchange', this.onFullscreen);
+    cancelAnimationFrame(this.followFrame);
+    this.followFrame = 0;
     this.observer?.disconnect();
     this.ambient.disable();
     this.setCinema(false, true);
@@ -324,48 +350,77 @@ export class PlayerTools {
       () => this.setSpeed(1),
     );
     this.speedLabel.classList.add('speed');
-    this.bar.append(
-      this.button('slower', this.label('page.slower', 'speedDown'), icon(ICONS.minus, 16), () => this.stepSpeed(-1)),
-      this.speedLabel,
-      this.button('faster', this.label('page.faster', 'speedUp'), icon(ICONS.plus, 16), () => this.stepSpeed(1)),
-      el('span', { class: 'sep' }),
-      this.button(
-        'filters',
-        this.label('page.filters', 'filters'),
-        icon(ICONS.filters),
-        () => this.togglePanel(),
-        false,
-      ),
-      this.button(
-        'ambient',
-        this.label('page.ambient', 'ambient'),
-        icon(ICONS.ambient),
-        () => this.toggleAmbient(),
-        false,
-      ),
-      this.button(
-        'cinema',
-        this.label('page.cinema', 'cinema'),
-        icon(ICONS.cinema),
-        () => this.setCinema(!this.cinema.on),
-        false,
-      ),
-      this.button('loop', this.label('page.loop', 'loop'), icon(ICONS.loop), () => this.toggleLoop(), false),
-      this.button(
-        'screenshot',
-        this.label('page.screenshot', 'screenshot'),
-        icon(ICONS.camera),
-        () => void this.screenshot(),
-      ),
-      this.button('pip', this.label('page.pip', 'pip'), icon(ICONS.pip), () => void this.pip()),
-      el('span', { class: 'sep' }),
-      this.button(
-        'palette',
-        this.label('page.videoTheme', 'themeFromVideo'),
-        icon(ICONS.palette),
-        () => void this.videoTheme(),
-      ),
-    );
+    const make: Record<ToolbarButton, () => HTMLElement[]> = {
+      speed: () => [
+        this.button('slower', this.label('page.slower', 'speedDown'), icon(ICONS.minus, 16), () => this.stepSpeed(-1)),
+        this.speedLabel,
+        this.button('faster', this.label('page.faster', 'speedUp'), icon(ICONS.plus, 16), () => this.stepSpeed(1)),
+      ],
+      filters: () => [
+        this.button(
+          'filters',
+          this.label('page.filters', 'filters'),
+          icon(ICONS.filters),
+          () => this.togglePanel(),
+          false,
+        ),
+      ],
+      ambient: () => [
+        this.button(
+          'ambient',
+          this.label('page.ambient', 'ambient'),
+          icon(ICONS.ambient),
+          () => this.toggleAmbient(),
+          false,
+        ),
+      ],
+      cinema: () => [
+        this.button(
+          'cinema',
+          this.label('page.cinema', 'cinema'),
+          icon(ICONS.cinema),
+          () => this.setCinema(!this.cinema.on),
+          false,
+        ),
+      ],
+      loop: () => [
+        this.button('loop', this.label('page.loop', 'loop'), icon(ICONS.loop), () => this.toggleLoop(), false),
+      ],
+      ab: () => [
+        this.button('ab', this.label('page.abLoop', 'abStart'), icon(ICONS.ab), () => void this.run('abCycle'), false),
+      ],
+      screenshot: () => [
+        this.button(
+          'screenshot',
+          this.label('page.screenshot', 'screenshot'),
+          icon(ICONS.camera),
+          () => void this.screenshot(),
+        ),
+      ],
+      pip: () => [this.button('pip', this.label('page.pip', 'pip'), icon(ICONS.pip), () => void this.pip())],
+      palette: () => [
+        this.button(
+          'palette',
+          this.label('page.videoTheme', 'themeFromVideo'),
+          icon(ICONS.palette),
+          () => void this.videoTheme(),
+        ),
+      ],
+    };
+    // Groups split by a thin line: speed | tools | colour from the video.
+    const groups: ToolbarButton[][] = [
+      ['speed'],
+      ['filters', 'ambient', 'cinema', 'loop', 'ab', 'screenshot', 'pip'],
+      ['palette'],
+    ];
+    const shown = new Set(this.cfg?.settings.toolbarButtons ?? []);
+    const parts = groups
+      .map((g) => g.filter((id) => shown.has(id)).flatMap((id) => make[id]()))
+      .filter((g) => g.length);
+    parts.forEach((g, i) => {
+      if (i) this.bar.append(el('span', { class: 'sep' }));
+      this.bar.append(...g);
+    });
   }
 
   private refreshButtons() {
@@ -376,6 +431,7 @@ export class PlayerTools {
     this.buttons.get('ambient')?.setAttribute('aria-pressed', String(cfg.settings.ambient.enabled));
     this.buttons.get('cinema')?.setAttribute('aria-pressed', String(this.cinema.on));
     this.buttons.get('loop')?.setAttribute('aria-pressed', String(!!v?.loop || this.ab.b !== null));
+    this.buttons.get('ab')?.setAttribute('aria-pressed', String(this.ab.a !== null));
     this.buttons.get('filters')?.setAttribute('aria-pressed', String(this.panelOpen || cfg.settings.filtersOn));
   }
 
@@ -389,6 +445,7 @@ export class PlayerTools {
   }
 
   private onPointer = (e: PointerEvent) => {
+    this.updateMini();
     const v = this.video;
     if (!v || !this.cfg?.settings.toolbar) return;
     if (inside(elementBox(v), e.clientX, e.clientY)) {
@@ -399,6 +456,33 @@ export class PlayerTools {
 
   private onViewport = () => {
     if (this.barVisible || this.panelOpen) this.position();
+    this.updateMini();
+  };
+
+  /**
+   * A thin progress line along the bottom of the video while the site hides its own controls (YouTube stops
+   * drawing its bar then). Only for sites whose adapter names the "controls hidden" state.
+   */
+  private updateMini = () => {
+    const cfg = this.cfg;
+    const v = this.video;
+    const bar = cfg?.progressBar;
+    const show =
+      !!cfg?.progress.mini &&
+      !!v &&
+      !!bar &&
+      Number.isFinite(v.duration) &&
+      v.duration > 0 &&
+      !!v.closest(`${bar.root}${bar.idle}`) &&
+      this.roomy();
+    this.mini.classList.toggle('show', show);
+    if (!show || !v) return;
+    const b = visibleBox(elementBox(v), innerWidth, innerHeight);
+    // Inset from the edges so it clears the player's rounded corners.
+    this.mini.style.left = `${b.x + 12}px`;
+    this.mini.style.top = `${b.y + b.h - 10}px`;
+    this.mini.style.width = `${Math.max(0, b.w - 24)}px`;
+    this.miniFill.style.transform = `scaleX(${Math.min(1, v.currentTime / v.duration)})`;
   };
 
   private onFullscreen = () => {
@@ -406,6 +490,7 @@ export class PlayerTools {
     const parent = fs && !(fs instanceof HTMLVideoElement) && this.video && fs.contains(this.video) ? fs : null;
     (parent ?? document.body ?? document.documentElement).append(this.host);
     this.position();
+    this.updateMini();
   };
 
   private scheduleHide(ms: number) {
@@ -416,12 +501,43 @@ export class PlayerTools {
     }, ms);
   }
 
+  /** Enough of the video is on screen to carry the toolbar (not a sliver, not a player still being laid out). */
+  private roomy(): boolean {
+    if (!this.video) return false;
+    const seen = visibleBox(elementBox(this.video), innerWidth, innerHeight);
+    return seen.w >= 300 && seen.h >= 120;
+  }
+
   private showBar(show: boolean) {
-    if (show && (!this.video || !this.cfg?.settings.toolbar || elementBox(this.video).w < 300)) show = false;
+    if (show && (!this.cfg?.settings.toolbar || !this.roomy())) show = false;
     this.barVisible = show;
     this.bar.classList.toggle('show', show);
     if (!show) this.tip.classList.remove('show');
-    if (show) this.position();
+    if (show) {
+      this.position();
+      this.follow();
+    }
+  }
+
+  /**
+   * While the toolbar or panel is shown, keep them on the video every frame: sites move their player without
+   * scrolling or resizing (YouTube lays it out after load, theatre mode, chat opening…).
+   */
+  private follow() {
+    if (this.followFrame) return;
+    const tick = () => {
+      this.followFrame = 0;
+      if (!this.started || !this.video || !(this.barVisible || this.panelOpen)) return;
+      if (!this.panelOpen && !this.roomy()) return this.showBar(false);
+      const b = elementBox(this.video);
+      const key = `${b.x},${b.y},${b.w},${b.h}`;
+      if (key !== this.lastBox) {
+        this.lastBox = key;
+        this.position();
+      }
+      this.followFrame = requestAnimationFrame(tick);
+    };
+    this.followFrame = requestAnimationFrame(tick);
   }
 
   private position() {

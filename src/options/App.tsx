@@ -9,6 +9,7 @@ import {
   Moon,
   Palette,
   PenTool,
+  Shapes,
   SlidersHorizontal,
   Sun,
 } from 'lucide-react';
@@ -23,6 +24,7 @@ import { AboutPage } from './pages/About.tsx';
 import { HomePage } from './pages/Home.tsx';
 import { BackupPage } from './pages/Backup.tsx';
 import { EditorPage } from './pages/Editor.tsx';
+import { DecorPage } from './pages/Decor.tsx';
 import { PlayerPage } from './pages/Player.tsx';
 import { SchedulePage } from './pages/Schedule.tsx';
 import { ShortcutsPage } from './pages/Shortcuts.tsx';
@@ -38,6 +40,7 @@ const NAV: { page: Route['page']; icon: typeof Palette; key: MessageKey }[] = [
   { page: 'editor', icon: PenTool, key: 'nav.editor' },
   { page: 'sites', icon: Globe, key: 'nav.sites' },
   { page: 'player', icon: SlidersHorizontal, key: 'nav.player' },
+  { page: 'decor', icon: Shapes, key: 'nav.decor' },
   { page: 'schedule', icon: CalendarClock, key: 'nav.schedule' },
   { page: 'shortcuts', icon: Keyboard, key: 'nav.shortcuts' },
   { page: 'backup', icon: Archive, key: 'nav.backup' },
@@ -136,6 +139,7 @@ function Shell({ route, props }: { route: Route; props: PageProps }) {
         {route.page === 'editor' ? <EditorPage key={route.id ?? 'new'} id={route.id} {...props} /> : null}
         {route.page === 'sites' ? <SitesPage {...props} /> : null}
         {route.page === 'player' ? <PlayerPage {...props} /> : null}
+        {route.page === 'decor' ? <DecorPage {...props} /> : null}
         {route.page === 'schedule' ? <SchedulePage {...props} /> : null}
         {route.page === 'shortcuts' ? <ShortcutsPage {...props} /> : null}
         {route.page === 'backup' ? <BackupPage {...props} /> : null}

@@ -1,7 +1,19 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from './fixtures';
 
-const PAGES = ['home', 'themes', 'editor', 'sites', 'player', 'schedule', 'shortcuts', 'backup', 'about', 'welcome'];
+const PAGES = [
+  'home',
+  'themes',
+  'editor',
+  'sites',
+  'player',
+  'decor',
+  'schedule',
+  'shortcuts',
+  'backup',
+  'about',
+  'welcome',
+];
 
 test('popup lists the themes and switches the global theme', async ({
   openExtensionPage,

@@ -48,3 +48,19 @@ export async function loadPicture(file: File, maxSide = 1920, maxChars = 2_800_0
   bitmap.close();
   return { dataUrl, pixels };
 }
+
+/** A picture for the progress-bar knob: fitted into 96 × 96, transparent edges kept. */
+export async function loadKnobPicture(file: File, maxChars: number): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const size = 96;
+  const scale = Math.min(size / bitmap.width, size / bitmap.height);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  let url = canvas.toDataURL('image/png');
+  if (url.length > maxChars) url = canvas.toDataURL('image/webp', 0.85);
+  if (url.length > maxChars) throw new Error('too large');
+  return url;
+}

@@ -142,11 +142,8 @@ export function lockupHtml({ size = 48, color = PALETTE.text } = {}) {
   return `<span class="lockup" style="--s:${size}px;color:${color}"><img src="${svgDataUri(MARK_SVG)}" alt=""><span class="word">${NAME}</span></span>`;
 }
 
-/** Night background with the brand's gradient glows. */
-export const nightBackground = (strength = 1) =>
-  `radial-gradient(60% 80% at 0% 0%,rgba(139,92,246,${0.42 * strength}),transparent 70%),` +
-  `radial-gradient(55% 75% at 78% 18%,rgba(217,70,239,${0.3 * strength}),transparent 70%),` +
-  `radial-gradient(60% 70% at 100% 100%,rgba(249,115,22,${0.28 * strength}),transparent 70%),${PALETTE.night}`;
+/** Flat night background (the brand avoids gradients and glows). */
+export const nightBackground = () => PALETTE.night;
 
 /** A complete HTML document of the given size. */
 export function page({ width, height, css = '', body, lang = 'en', background = nightBackground() }) {
@@ -159,7 +156,7 @@ body{position:relative;background:${background};color:${PALETTE.text};font:400 1
 .lockup{display:inline-flex;align-items:center;gap:calc(var(--s)*0.3);height:var(--s)}
 .lockup img{width:var(--s);height:var(--s);display:block}
 .lockup .word{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600;font-size:calc(var(--s)*0.74);line-height:1;letter-spacing:-0.01em;padding-right:calc(var(--s)*0.08)}
-.grad{background:linear-gradient(120deg,${PALETTE.violet},${PALETTE.magenta} 55%,${PALETTE.orange});-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad{color:${PALETTE.magenta}}
 .card{position:absolute;margin:0;transform-origin:50% 100%}
 .card .tp{border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 24px 60px rgba(0,0,0,.55),0 6px 18px rgba(0,0,0,.4)}
 .card figcaption{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:600;font-size:15px;color:${PALETTE.text};text-shadow:0 2px 8px rgba(0,0,0,.5)}

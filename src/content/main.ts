@@ -6,6 +6,7 @@
  */
 import { formatColor } from '../core/color.ts';
 import { buildPageCss, sitePalette } from '../core/css/index.ts';
+import { progressCss, scrollbarCss } from '../core/css/decor.ts';
 import { subtitleCss } from '../core/css/subtitles.ts';
 import { hasBackdrop } from '../core/css/common.ts';
 import { GENERIC, PLATFORMS, platformForHost, type Platform } from '../core/platforms.ts';
@@ -78,6 +79,7 @@ function main() {
 
     const subtitles = on && site.player ? subtitleCss(s.subtitles) : '';
     if (on && !skinPaused && platform.tier !== 'player') {
+      const accent = palette ? formatColor(palette.accent) : null;
       styles.setMain(
         subtitles +
           buildPageCss({
@@ -86,7 +88,9 @@ function main() {
             layout: site.layout,
             assetUrl: (p) => chrome.runtime.getURL(p),
             strings: { homeHidden: translate(lang, 'page.homeHidden') },
-          }),
+          }) +
+          (adapter.progressBar ? progressCss(adapter.progressBar, s.progress, accent) : '') +
+          scrollbarCss(s.scrollbar, !!palette),
       );
     } else {
       styles.clear();
@@ -112,6 +116,8 @@ function main() {
       accentText: palette ? formatColor(palette.accentText) : '#ffffff',
       lang,
       platform: platform.id,
+      progress: s.progress,
+      progressBar: on && !skinPaused ? adapter.progressBar : undefined,
     });
 
     // YouTube's default quality is applied by youtube-main.js (page world), which reads this attribute.

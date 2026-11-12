@@ -91,6 +91,35 @@ test('YouTube: default quality', async ({ context, setSettings }) => {
     .toBe('large');
 });
 
+test('YouTube: progress-bar knob, played colour and the always-on mini bar', async ({ context, setSettings }) => {
+  await setSettings({
+    onboarded: true,
+    progress: { knob: 'rocket', motion: 'bounce', fill: 'custom', color: '#00ff00', mini: true },
+  });
+  const page = await context.newPage();
+  await page.goto('https://www.youtube.com/watch?v=aqz-KE-bpKQ', { waitUntil: 'domcontentloaded' });
+  await page.locator('video').waitFor({ timeout: 30_000 });
+  await page.evaluate(async () => {
+    const v = document.querySelector('video')!;
+    v.muted = true;
+    await v.play().catch(() => undefined);
+  });
+  const knob = () =>
+    page.evaluate(() => {
+      const k = document.querySelector('.html5-video-player .ytp-scrubber-button');
+      return k ? getComputedStyle(k, '::before').backgroundImage : 'missing';
+    });
+  await expect.poll(knob, { timeout: 20_000 }).toMatch(/^url\("data:image\/svg\+xml,/);
+  expect(
+    await page.evaluate(() => getComputedStyle(document.querySelector('.ytp-play-progress')!).backgroundColor),
+  ).toBe('rgb(0, 255, 0)');
+  // YouTube hides its controls a few seconds after the pointer leaves; the mini bar takes over.
+  await page.mouse.move(2, 2);
+  await expect
+    .poll(() => page.locator('auroreel-ui').locator('.mini').getAttribute('class'), { timeout: 20_000 })
+    .toContain('show');
+});
+
 const STREAMING = [
   { name: 'Netflix (public title page)', url: 'https://www.netflix.com/title/80057281', min: 20_000 },
   { name: 'FPT Play', url: 'https://fptplay.vn/', min: 5_000 },

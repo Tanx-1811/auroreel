@@ -9,6 +9,15 @@ button{all:unset;cursor:pointer;display:inline-grid;place-items:center;min-width
 button:hover{background:rgba(255,255,255,.14)}
 button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 button[aria-pressed="true"]{background:var(--acc);color:var(--acc-text)}
+:host([data-size="sm"]) button{min-width:26px;height:26px;padding:0 4px}
+:host([data-size="sm"]) button svg{width:16px;height:16px}
+:host([data-size="sm"]) .speed{min-width:46px;font-size:11.5px}
+:host([data-size="lg"]) button{min-width:38px;height:38px;padding:0 8px}
+:host([data-size="lg"]) button svg{width:22px;height:22px}
+:host([data-size="lg"]) .speed{min-width:62px;font-size:14px}
+.mini{position:fixed;height:4px;border-radius:99px;background:rgba(255,255,255,.28);pointer-events:none;opacity:0;transition:opacity .2s ease;overflow:hidden}
+.mini.show{opacity:1}
+.mini i{display:block;height:100%;background:var(--mini-fill,var(--acc));transform-origin:0 50%;transform:scaleX(0);transition:transform .25s linear}
 .speed{min-width:54px;font:700 12.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
 .tip{position:fixed;padding:5px 9px;border-radius:8px;background:rgba(10,10,14,.92);color:#fff;font-size:12px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s ease}
 .tip.show{opacity:1}

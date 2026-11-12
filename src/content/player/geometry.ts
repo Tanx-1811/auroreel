@@ -29,6 +29,13 @@ export function elementBox(video: HTMLVideoElement): Box {
   return { x: r.left, y: r.top, w: r.width, h: r.height };
 }
 
+/** The part of `b` inside a `vw` × `vh` viewport (zero-size when it is off screen). */
+export function visibleBox(b: Box, vw: number, vh: number): Box {
+  const x = Math.max(0, b.x);
+  const y = Math.max(0, b.y);
+  return { x, y, w: Math.max(0, Math.min(vw, b.x + b.w) - x), h: Math.max(0, Math.min(vh, b.y + b.h) - y) };
+}
+
 export const inside = (b: Box, x: number, y: number) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;
 
 /** clip-path that covers the viewport except a rounded hole at `b`. */

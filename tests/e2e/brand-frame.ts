@@ -37,7 +37,7 @@ const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 export interface FrameInput {
   lang: 'en' | 'vi';
   title: string;
-  /** Words of the title drawn in the brand gradient. */
+  /** Words of the title drawn in the brand accent. */
   highlight?: string;
   subtitle: string;
   /** Text in the window's address pill. */
@@ -56,11 +56,11 @@ ${fontFaces()}
 *{box-sizing:border-box}
 html,body{margin:0;width:1280px;height:800px;overflow:hidden}
 body{position:relative;color:#f4f2ff;font:400 16px/1.4 "Be Vietnam Pro",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
-background:radial-gradient(55% 70% at 0% 0%,rgba(139,92,246,.45),transparent 70%),radial-gradient(50% 60% at 85% 0%,rgba(217,70,239,.3),transparent 70%),radial-gradient(60% 60% at 100% 100%,rgba(249,115,22,.25),transparent 70%),#0b0a12}
+background:#0b0a12}
 .cap{position:absolute;left:72px;top:40px;width:${f.overlay ? 720 : 1080}px}
 h1{margin:0;font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600;font-size:${f.overlay ? 40 : 44}px;line-height:1.1;letter-spacing:-.015em}
 p{margin:10px 0 0;font-size:${f.overlay ? 17 : 18}px;line-height:1.45;color:#c9c4de}
-.grad{background:linear-gradient(120deg,#a78bfa,#e879f9 55%,#fb923c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad{color:#e879f9}
 .win{position:absolute;left:72px;top:184px;width:1136px;border-radius:16px;overflow:hidden;background:#15131f;
 box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 80px rgba(0,0,0,.6)}
 .bar{display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;background:#1b1828;border-bottom:1px solid rgba(255,255,255,.06)}

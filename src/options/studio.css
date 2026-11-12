@@ -1,9 +1,6 @@
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(70% 45% at 100% 0%, rgba(217, 70, 239, 0.08), transparent 60%),
-    radial-gradient(60% 40% at 0% 0%, rgba(139, 92, 246, 0.12), transparent 60%), var(--bg);
-  background-attachment: fixed;
+  background: var(--bg);
 }
 
 .studio {
@@ -64,7 +61,6 @@ body {
 .side nav a[aria-current='page'] {
   color: var(--text);
   background: var(--acc-soft);
-  box-shadow: inset 3px 0 0 var(--acc);
 }
 .side nav a[aria-current='page'] svg {
   color: var(--acc);
@@ -397,20 +393,16 @@ button.quick-tile:hover {
 .site-head h3 {
   font-size: 15px;
 }
-.site-logo {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  color: #fff;
-  font-weight: 800;
-  font-size: 17px;
+/* A site's colour as a small solid dot next to its name (no tiles behind letters or icons). */
+.site-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
   flex: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
-.site-logo.generic {
-  background: var(--grad);
+.site-glyph {
+  color: var(--muted);
+  flex: none;
 }
 .site-body {
   margin-top: 10px;
@@ -571,8 +563,8 @@ kbd {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--grad);
-  color: #fff;
+  border: 1.5px solid var(--line-2);
+  color: var(--acc);
   font-weight: 800;
   flex: none;
 }
@@ -714,12 +706,12 @@ kbd {
 .quick-icon {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: var(--acc-soft);
-  color: var(--acc);
+  width: 22px;
+  color: var(--muted);
   flex: none;
+}
+.quick-card.on .quick-icon {
+  color: var(--acc);
 }
 .home-section .section-head {
   display: flex;
@@ -756,12 +748,6 @@ kbd {
   flex-direction: column;
   min-width: 0;
   line-height: 1.35;
-}
-.site-tile .site-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  font-size: 15px;
 }
 .tip-grid {
   display: grid;
@@ -813,4 +799,95 @@ kbd {
   .home-hero {
     grid-template-columns: 1fr;
   }
+}
+
+/* ——— Decorations ——— */
+.decor-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .decor-top {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-decor {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 18px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.home-decor h2 {
+  font-size: 16px;
+  margin: 0 0 2px;
+}
+.home-decor p {
+  margin: 0;
+}
+.home-decor .grow {
+  flex: 1;
+  min-width: 0;
+}
+.kn-strip {
+  display: flex;
+  gap: 10px;
+  flex: none;
+}
+@media (max-width: 1100px) {
+  .home-decor {
+    flex-wrap: wrap;
+  }
+}
+
+/* Scrollbar styles drawn as tiny pages. */
+.sb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.sb-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 64px;
+  height: 46px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: var(--bg);
+}
+.sb-art i {
+  display: block;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--line-2);
+}
+.sb-art i:nth-child(2) {
+  width: 70%;
+}
+.sb-art b {
+  position: absolute;
+  right: 4px;
+  top: 6px;
+  width: 5px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--faint);
+}
+.sb-art.theme b {
+  background: var(--acc);
+}
+.sb-art.thin b {
+  width: 2.5px;
+  background: var(--acc);
+}
+.sb-art.hidden b {
+  display: none;
 }

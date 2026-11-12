@@ -3,6 +3,7 @@ import {
   Captions,
   ExternalLink,
   Search,
+  Shapes,
   Timer,
   Volume2,
   Keyboard,
@@ -40,6 +41,8 @@ import {
 import { useStore } from '../ui/store.ts';
 import { filterThemes, ThemeGrid, toggleFavorite, type ThemeFilter } from '../ui/ThemeGrid.tsx';
 import { MiniPreview } from '../ui/ThemePreview.tsx';
+import { ProgressQuick } from '../ui/ProgressQuick.tsx';
+import { adapterFor } from '../core/sites/index.ts';
 
 type Tab = 'themes' | 'player' | 'layout';
 type Update = (fn: (s: Settings) => Settings) => Promise<unknown>;
@@ -310,7 +313,23 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
         {tab === 'layout' ? (
           <div className="pop-section">
             {platform && platform.tier !== 'player' && site ? (
-              <LayoutPanel platform={platform} settings={settings} update={update} />
+              <>
+                {adapterFor(platform.id).progressBar ? (
+                  <>
+                    <h4 className="group-title">
+                      <Shapes size={14} /> {t('decor.progress')}
+                    </h4>
+                    <ProgressQuick
+                      settings={settings}
+                      themes={themes}
+                      platform={platform.id}
+                      update={update}
+                      onMore={() => openStudio('#/decor')}
+                    />
+                  </>
+                ) : null}
+                <LayoutPanel platform={platform} settings={settings} update={update} />
+              </>
             ) : (
               <p className="muted small">{t('popup.layoutNoSite')}</p>
             )}

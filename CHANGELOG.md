@@ -25,3 +25,13 @@ First release, as **Auroreel** (working name Reelskin).
   wheel volume, "theme from this video", subtitle styling, YouTube default quality (480p–4K).
 - Studio overview page, theme search and favourites, studio look (auto/dark/light), redesigned popup with quick
   actions, sleep timer and the current theme at a glance.
+- Decorations: the YouTube progress-bar knob as one of 16 original drawings (heart, star, flame, rocket, cat, duck,
+  ghost, fish, popcorn, film reel, music, moon, planet, cherry blossom, lotus, paw), a dot, any emoji or your own
+  picture, with size, motion (bounce, spin, pulse, wiggle — only while playing, never with reduced motion), played
+  colour (accent, icon colour, rainbow, custom) and bar thickness; an always-on thin progress bar while YouTube hides
+  its controls; scrollbar styles (theme colour, thin, hidden); choose the toolbar's buttons (new A–B loop button) and
+  its size.
+- Flat look throughout: solid accent buttons, no gradients or glows in the popup and studio, no coloured edge strips,
+  no tinted tiles behind icons, a flat logo.
+- The floating toolbar follows the video when the site moves its player (YouTube lays it out after load) and only
+  shows when enough of the video is on screen.

@@ -51,13 +51,49 @@
         width: 800px;
         height: 450px;
       }
+      /* A stand-in for YouTube's progress bar (2026 player class names). */
+      .ytp-chrome-bottom {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+      .ytp-progress-list {
+        position: relative;
+        height: 3px;
+        background: #555;
+      }
+      .ytp-play-progress {
+        position: absolute;
+        inset: 0 70% 0 0;
+        background: #ff0033;
+      }
+      .ytp-scrubber-container {
+        position: absolute;
+        left: 30%;
+        top: -4px;
+      }
+      .ytp-scrubber-button {
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+        background: #ff0033;
+      }
     </style>
   </head>
   <body>
     <ytd-app>
       <ytd-masthead><div id="background"></div></ytd-masthead>
       <p><span class="chip" id="chip">Music</span></p>
-      <div class="player"><video id="video" src="clip.webm" muted loop playsinline></video></div>
+      <div class="player html5-video-player playing-mode">
+        <video id="video" src="clip.webm" muted loop playsinline></video>
+        <div class="ytp-chrome-bottom">
+          <div class="ytp-progress-list"><div class="ytp-play-progress"></div></div>
+          <div class="ytp-scrubber-container">
+            <div class="ytp-scrubber-button"><img class="ytp-decorated-scrubber-button" alt="" /></div>
+          </div>
+        </div>
+      </div>
       <h1 id="title">A test video</h1>
       <input id="comment-box" placeholder="Add a comment" />
       <ytd-comments id="comments">Comments</ytd-comments>

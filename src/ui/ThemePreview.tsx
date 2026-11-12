@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
 import { formatColor } from '../core/color.ts';
 import { backdropLayers, fontStack, glassOpacity } from '../core/css/common.ts';
+import { knobImage } from '../core/css/decor.ts';
+import type { ProgressSettings } from '../core/settings.ts';
 import { resolvePalette, type Theme } from '../core/themes.ts';
 
 /** Stand-ins for video thumbnails: colourful scenes, the same in every theme (like real videos). */
@@ -88,7 +90,17 @@ export interface LargePreviewText {
 }
 
 /** A watch page in the theme (theme maker). */
-export function LargePreview({ theme, text }: { theme: Theme; text: LargePreviewText }) {
+export function LargePreview({
+  theme,
+  text,
+  progress,
+}: {
+  theme: Theme;
+  text: LargePreviewText;
+  /** Shows the chosen progress-bar knob on the player. */
+  progress?: ProgressSettings;
+}) {
+  const knob = progress ? knobImage(progress) : null;
   return (
     <div className="tp large" style={previewStyle(theme)}>
       <div className="tp-backdrop" />
@@ -104,8 +116,8 @@ export function LargePreview({ theme, text }: { theme: Theme; text: LargePreview
             <div className="glow" />
             <div className="screen" />
             <div className="controls">
-              <div className="tp-progress">
-                <b />
+              <div className={`tp-progress${knob ? ' has-knob' : ''}`}>
+                <b>{knob ? <span className="tp-knob" style={{ backgroundImage: knob }} /> : null}</b>
               </div>
               <div className="row">
                 <i />
