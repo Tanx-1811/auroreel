@@ -100,7 +100,7 @@ describe('white text on a recoloured brand colour', () => {
     brand: [{ color: '#e50914', tolerance: 24 }],
     glass: null,
   });
-  const onAccent = formatColor(palette.accentText);
+  const onAccent = { accent: formatColor(palette.accent), text: formatColor(palette.accentText) };
 
   it("takes the accent's own text colour, so it reads on a light accent", () => {
     const css = rewriteCss(
@@ -117,7 +117,7 @@ describe('white text on a recoloured brand colour', () => {
       remap,
       onAccent,
     );
-    expect(css).toContain(`color:${onAccent}`);
+    expect(css).toContain(`color:${onAccent.text}`);
     const bg = parseColor(css.match(/background-color:([^;}]+)/)![1]!)!;
     expect(contrast(palette.accentText, bg)).toBeGreaterThan(4.5);
   });
@@ -138,8 +138,26 @@ describe('white text on a recoloured brand colour', () => {
       remap,
       onAccent,
     );
-    expect(css).toContain(`--hcw--local-design--Button-Foreground:${onAccent}`);
-    expect(css).not.toContain(`--hcw--local-design--Card-Foreground:${onAccent}`);
+    expect(css).toContain(`--hcw--local-design--Button-Foreground:${onAccent.text}`);
+    expect(css).not.toContain(`--hcw--local-design--Card-Foreground:${onAccent.text}`);
+  });
+
+  it('leaves white text alone on colours that are not the brand (a green badge with a white fade)', () => {
+    const css = rewriteCss(
+      [
+        {
+          wrap: [],
+          selector: '.badge',
+          decls: [
+            ['background-image', 'linear-gradient(#2ecc71,#ffffff)'],
+            ['color', '#fff'],
+          ],
+        },
+      ],
+      remap,
+      onAccent,
+    );
+    expect(css).not.toContain(`color:${onAccent.text}`);
   });
 
   it('leaves white text on grey backgrounds to the normal mapping', () => {
@@ -157,6 +175,6 @@ describe('white text on a recoloured brand colour', () => {
       remap,
       onAccent,
     );
-    expect(css).not.toContain(`color:${onAccent}`);
+    expect(css).not.toContain(`color:${onAccent.text}`);
   });
 });

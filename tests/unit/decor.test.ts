@@ -129,7 +129,9 @@ describe('decoration settings', () => {
     ]) {
       const s = parseSettings({ progress: { knob: 'image', image } });
       expect(s.progress.image).toBe('');
-      expect(s.progress.knob).toBe('site');
+      // Still "my picture", drawn as the site's own knob until a picture is chosen here.
+      expect(s.progress.knob).toBe('image');
+      expect(progressCss(youtube.progressBar!, s.progress, '#8b5cf6')).not.toContain('::before');
     }
   });
 
@@ -150,7 +152,18 @@ describe('decoration settings', () => {
       settings: { ...pushed.settings, progress: { ...pushed.settings.progress, size: 40 } },
     });
     expect(merged.progress).toMatchObject({ knob: 'image', image: PNG, size: 40 });
-    // Another computer without the picture falls back to the site's knob.
-    expect(applySynced(defaultSettings(), pushed).progress.knob).toBe('site');
+    // Another computer without the picture keeps the choice (so it never syncs a different knob back)
+    // and draws the site's own knob.
+    const other = applySynced(defaultSettings(), pushed);
+    expect(other.progress).toMatchObject({ knob: 'image', image: '' });
+    expect(toSynced(other, 'b', 2).settings.progress).toEqual(pushed.settings.progress);
+    expect(progressCss(youtube.progressBar!, other.progress, null)).not.toContain('::before');
+  });
+
+  it('keeps the progress settings when a device on an older version syncs without them', () => {
+    const local = parseSettings({ progress: { knob: 'image', image: PNG, size: 34 } });
+    const { progress: _p, ...older } = toSynced(local, 'old', 1).settings;
+    const merged = applySynced(local, { from: 'old', at: 2, settings: older });
+    expect(merged.progress).toEqual(local.progress);
   });
 });

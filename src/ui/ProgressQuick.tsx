@@ -21,7 +21,8 @@ export function ProgressQuick({
   themes: Theme[];
   platform: PlatformId;
   update: (fn: (s: Settings) => Settings) => unknown;
-  onMore: (pickImage: boolean) => void;
+  /** Opens the studio's Decorations page (more options, and where a picture is chosen). */
+  onMore: () => void;
 }) {
   const t = useT();
   const p = settings.progress;
@@ -37,7 +38,7 @@ export function ProgressQuick({
         compact
         progress={p}
         accent={accent}
-        onPick={(id) => (id === 'image' && !p.image ? onMore(true) : set({ knob: id }))}
+        onPick={(id) => (id === 'image' && !p.image ? onMore() : set({ knob: id }))}
       />
       <Field label={t('decor.motion')}>
         <Select
@@ -50,7 +51,7 @@ export function ProgressQuick({
       <Field label={t('decor.mini')}>
         <Switch checked={p.mini} label={t('decor.mini')} onChange={(v) => set({ mini: v })} />
       </Field>
-      <button type="button" className="btn ghost sm" onClick={() => onMore(false)}>
+      <button type="button" className="btn ghost sm" onClick={onMore}>
         {t('popup.decorMore')}
         <ArrowRight size={14} />
       </button>

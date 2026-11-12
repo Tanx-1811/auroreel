@@ -253,9 +253,27 @@ function pairKey(name: string): string {
     .replace(/surface|background|backdrop|foreground|text|label|content|(?<=[-_])(bg|fg)(?=[-_]|$)/, '*');
 }
 
-/** A value holding a clearly coloured (not grey) literal. */
-function hasChromatic(value: string): boolean {
-  return colorTokens(value).some((c) => c.a > 0.5 && toOklch(c).C >= 0.06);
+/**
+ * A value whose clearly coloured literal is recoloured to the theme accent (a brand colour), not just any
+ * colour next to a grey that changed, nor one that became the link colour.
+ */
+function turnsIntoAccent(
+  value: string,
+  remap: (v: string, role?: ColorRole) => string | null,
+  accent: string,
+): boolean {
+  const a = parseColor(accent);
+  if (!a) return false;
+  const target = toOklch(a);
+  return (value.match(COLOR_TOKEN) ?? []).some((token) => {
+    const c = parseColor(token);
+    if (!c || c.a <= 0.5 || toOklch(c).C < 0.06) return false;
+    const mapped = parseColor(remap(token, 'bg') ?? '');
+    if (!mapped) return false;
+    const m = toOklch(mapped);
+    // A grey accent keeps brand shades grey; otherwise the shade takes the accent's hue.
+    return target.C < 0.02 ? m.C < 0.03 : hueDistance(m.H, target.H) < 12;
+  });
 }
 
 /** A single light grey/white literal (a site's text on its brand colour). */
@@ -303,8 +321,8 @@ export function isRewritable(name: string, value: string): boolean {
 export function rewriteCss(
   rules: RewriteRule[],
   remap: (v: string, role?: ColorRole) => string | null,
-  /** Text colour for the theme accent: white text on a recoloured brand background takes it. */
-  onAccent?: string,
+  /** The theme accent and its text colour: white text on a background recoloured to the accent takes it. */
+  onAccent?: { accent: string; text: string },
 ): string {
   let css = '';
   for (const rule of rules) {
@@ -315,7 +333,7 @@ export function rewriteCss(
     const brandBg = new Set<string>();
     if (onAccent) {
       for (const [name, value, , keep] of rule.decls) {
-        if (keep || !hasChromatic(value) || rewriteValue(value, remap, 'bg') === null) continue;
+        if (keep || !turnsIntoAccent(value, remap, onAccent.accent)) continue;
         if (name === 'background-color' || name === 'background-image') brandBg.add('');
         else if (name.startsWith('--') && roleFromName(name) === 'bg') brandBg.add(pairKey(name));
       }
@@ -329,7 +347,7 @@ export function rewriteCss(
     for (const [name, value, important, keep] of rule.decls) {
       const role = name.startsWith('--') ? roleFromName(name) : (REWRITE_PROPS[name] ?? 'unknown');
       // Unchanged colours are copied too, so the copies keep the site's rule order.
-      const mapped = keep ? value : onBrand(name, value) ? onAccent! : (rewriteValue(value, remap, role) ?? value);
+      const mapped = keep ? value : onBrand(name, value) ? onAccent!.text : (rewriteValue(value, remap, role) ?? value);
       if (mapped) body.push(`${name}:${mapped}${important ? '!important' : ''}`);
     }
     if (!body.length) continue;

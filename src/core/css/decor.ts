@@ -73,7 +73,8 @@ export function progressCss(bar: ProgressBarConfig, p: ProgressSettings, accent:
     const h = BAR_PX[p.height];
     css += `${at(bar.track)}{height:${h}px!important;transform:none!important;border-radius:${h / 2}px!important}`;
   }
-  if (p.knob === 'site') return css;
+  // A picture knob without its picture (chosen on another synced computer) draws like the site's own.
+  if (p.knob === 'site' || (p.knob === 'image' && !p.image)) return css;
   css += (bar.extras ?? []).map((e) => `${at(e)}{display:none!important}`).join('');
   const knob = at(bar.knob);
   if (p.knob === 'dot') {
@@ -89,13 +90,14 @@ export function progressCss(bar: ProgressBarConfig, p: ProgressSettings, accent:
   if (!img) return css;
   const s = p.size;
   css +=
-    `${knob}{position:relative;background:transparent!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}` +
-    `${knob}::before{content:""!important;position:absolute;left:50%;top:50%;width:${s}px;height:${s}px;` +
-    `margin:${-s / 2}px 0 0 ${-s / 2}px;background:${img} center/contain no-repeat;` +
-    'filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));pointer-events:none;transform-origin:50% 50%}';
+    `${knob}{position:relative!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}` +
+    `${knob}::before{content:""!important;position:absolute!important;left:50%!important;top:50%!important;` +
+    `width:${s}px!important;height:${s}px!important;margin:${-s / 2}px 0 0 ${-s / 2}px!important;` +
+    `background:${img} center/contain no-repeat!important;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))!important;` +
+    'pointer-events:none!important;transform-origin:50% 50%!important}';
   const anim = knobAnimation(p.motion);
   if (anim) {
-    css += `@media (prefers-reduced-motion:no-preference){${KNOB_KEYFRAMES}${bar.root}${bar.playing} ${bar.knob}::before{animation:${anim}}}`;
+    css += `@media (prefers-reduced-motion:no-preference){${KNOB_KEYFRAMES}${bar.root}${bar.playing} ${bar.knob}::before{animation:${anim}!important}}`;
   }
   return css;
 }

@@ -52,3 +52,8 @@ First release, as **Auroreel** (working name Reelskin).
 - YouTube home with a backdrop theme: the filter chips (All, Music…) slid 56px down behind the first row of videos —
   the frosted glass sat on an ancestor of YouTube's fixed chip bar. Only the chip bar is frosted now; YouTube's own
   frosted layer follows the theme. `contrast-scan` also flags fixed bars trapped this way.
+- Final review fixes: a picture knob chosen on one synced computer no longer resets the knob on the others, and a
+  device on an older version can't wipe the knob settings; white text only takes the accent's text colour on a
+  background really recoloured to the accent; an empty toolbar never shows (the last button can't be unticked);
+  the toolbar and mini bar measure the page less often; the Decorations preview uses the theme YouTube actually
+  shows; the emoji box follows changes made elsewhere; Twitch's sign-up bar and text buttons follow the theme.

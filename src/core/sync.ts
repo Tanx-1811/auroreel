@@ -40,7 +40,8 @@ export function applySynced(local: Settings, remote: unknown): Settings {
   const progress = (incoming as { progress?: unknown }).progress;
   return parseSettings({
     ...incoming,
-    progress: progress && typeof progress === 'object' ? { ...progress, image: local.progress.image } : progress,
+    // The knob picture never travels; a device on an older version sends no progress at all — keep ours then.
+    progress: progress && typeof progress === 'object' ? { ...progress, image: local.progress.image } : local.progress,
     anySite: local.anySite,
     onboarded: local.onboarded,
     sync: local.sync,

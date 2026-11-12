@@ -250,6 +250,8 @@ export function ToolbarPanel({ settings, update }: { settings: Settings; update:
                   type="button"
                   className="chip check"
                   aria-pressed={on}
+                  // The last button stays: an empty toolbar would be a blank pill over the video.
+                  disabled={on && p.toolbarButtons.length === 1}
                   onClick={() =>
                     patchPlayer(update, (pl) => ({
                       ...pl,

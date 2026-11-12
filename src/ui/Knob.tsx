@@ -97,7 +97,9 @@ export function ProgressPreview({ progress, accent }: { progress: ProgressSettin
   const fill = playedFill(progress, accent) ?? SITE_RED;
   const h = progress.height === 'site' ? 4 : BAR_PX[progress.height];
   const anim = knobAnimation(progress.motion);
-  const icon = progress.knob !== 'site' && progress.knob !== 'dot';
+  // A picture knob without its picture on this computer draws like the site's own (as on the page).
+  const knob = progress.knob === 'image' && !progress.image ? 'site' : progress.knob;
+  const icon = knob !== 'site' && knob !== 'dot';
   const style = {
     '--kn-fill': fill,
     '--kn-h': `${h}px`,
@@ -117,8 +119,8 @@ export function ProgressPreview({ progress, accent }: { progress: ProgressSettin
       <div className="kn-controls">
         <div className="kn-track">
           <div className="kn-played">
-            <span className={`kn-knob ${icon ? 'art' : progress.knob}`}>
-              {icon ? <KnobArt id={progress.knob} progress={progress} accent={accent} size={progress.size} /> : null}
+            <span className={`kn-knob ${icon ? 'art' : knob}`}>
+              {icon ? <KnobArt id={knob} progress={progress} accent={accent} size={progress.size} /> : null}
             </span>
           </div>
         </div>

@@ -129,7 +129,10 @@ const scan = async (label) => {
   if (trapped.length) report = (report === 'no low-contrast text' ? '' : report + '\n') + trapped.join('\n');
   if (report !== 'no low-contrast text') problems += report.split('\n').length;
   console.log(`=== ${label}\n${report}`);
-  if (arg('shots')) await page.screenshot({ path: resolve(arg('shots'), `${label.replace(/\W+/g, '_')}.png`) });
+  if (arg('shots')) {
+    const name = `${arg('theme') ?? 'theme'}-${arg('scheme') ?? 'light'}-${label.replace(/^https?:\/\/(www\.)?/, '').replace(/\W+/g, '_')}`;
+    await page.screenshot({ path: resolve(arg('shots'), `${name.slice(0, 120)}.png`) });
+  }
 };
 for (const url of urls) {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });

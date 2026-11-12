@@ -410,7 +410,10 @@ export class Engine {
     const selectors = snap.selectors.filter((s) => s && isRootLikeSelector(s));
     this.styles.setEngine(
       overridesCss(selectors.length ? selectors : this.cfg.rootSelectors, out) +
-        rewriteCss(snap.rewrite ?? [], remap, formatColor(this.theme.palette.accentText)),
+        rewriteCss(snap.rewrite ?? [], remap, {
+          accent: formatColor(this.theme.palette.accent),
+          text: formatColor(this.theme.palette.accentText),
+        }),
     );
   }
 }

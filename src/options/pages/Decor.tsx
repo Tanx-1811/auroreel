@@ -10,6 +10,7 @@ import {
   SCROLLBARS,
   type ProgressSettings,
 } from '../../core/settings.ts';
+import { activeThemeId } from '../../core/schedule.ts';
 import { findTheme, resolvePalette } from '../../core/themes.ts';
 import type { MessageKey } from '../../shared/i18n.ts';
 import { ColorField, Field, Segmented, Slider, Switch } from '../../ui/controls.tsx';
@@ -24,12 +25,22 @@ const EMOJI_IDEAS = ['🐱', '🐶', '🦄', '🐧', '🍿', '🎬', '⚡', '�
 export function DecorPage({ settings, themes, update }: PageProps) {
   const t = useT();
   const p = settings.progress;
-  const theme = findTheme(settings.themeId, themes);
+  // The theme YouTube shows right now (its own theme, the schedule…), which the preview should match.
+  const theme = findTheme(
+    activeThemeId(settings, 'youtube', new Date(), matchMedia('(prefers-color-scheme: dark)').matches),
+    themes,
+  );
   const accent = theme ? formatColor(resolvePalette(theme).accent) : null;
   const set = (patch: Partial<ProgressSettings>) => update((s) => ({ ...s, progress: { ...s.progress, ...patch } }));
   const file = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
   const [emojiDraft, setEmojiDraft] = useState(p.emoji);
+  const [emojiSeen, setEmojiSeen] = useState(p.emoji);
+  if (p.emoji !== emojiSeen) {
+    // Changed elsewhere (popup, another tab, sync): show it, unless it is what is being typed.
+    setEmojiSeen(p.emoji);
+    if (cleanEmoji(emojiDraft) !== p.emoji) setEmojiDraft(p.emoji);
+  }
 
   const pick = (id: string) => {
     if (id === 'image' && !p.image) file.current?.click();

@@ -104,6 +104,11 @@ export class PlayerTools {
   private panelOpen = false;
   private followFrame = 0;
   private lastBox = '';
+  /** The toolbar's width, measured when it is (re)built or resized — not every frame. */
+  private barWidth = 0;
+  /** No button chosen: there is no toolbar to show. */
+  private barEmpty = false;
+  private miniFrame = 0;
   private sliders = new Map<keyof FilterValues, { input: HTMLInputElement; out: HTMLOutputElement }>();
   private presetChips = new Map<string, HTMLButtonElement>();
   private filterSwitch = el('button', { class: 'switch', role: 'switch' }, el('i'));
@@ -158,7 +163,10 @@ export class PlayerTools {
     this.host.style.setProperty('--acc', cfg.accent);
     this.host.style.setProperty('--acc-text', cfg.accentText);
     this.host.style.setProperty('--mini-fill', playedFill(cfg.progress, cfg.accent) ?? cfg.accent);
-    this.host.dataset.size = cfg.settings.toolbarSize;
+    if (this.host.dataset.size !== cfg.settings.toolbarSize) {
+      this.host.dataset.size = cfg.settings.toolbarSize;
+      this.barWidth = 0;
+    }
     if (!cfg.on) {
       this.teardown();
       return;
@@ -235,6 +243,8 @@ export class PlayerTools {
     window.removeEventListener('resize', this.onViewport);
     document.removeEventListener('fullscreenchange', this.onFullscreen);
     cancelAnimationFrame(this.followFrame);
+    cancelAnimationFrame(this.miniFrame);
+    this.miniFrame = 0;
     this.followFrame = 0;
     this.observer?.disconnect();
     this.ambient.disable();
@@ -423,6 +433,8 @@ export class PlayerTools {
       if (i) this.bar.append(el('span', { class: 'sep' }));
       this.bar.append(...g);
     });
+    this.barEmpty = !parts.length;
+    this.barWidth = 0;
   }
 
   private refreshButtons() {
@@ -447,7 +459,13 @@ export class PlayerTools {
   }
 
   private onPointer = (e: PointerEvent) => {
-    this.updateMini();
+    // The mini bar follows the site's "controls hidden" state, which changes as the pointer moves: once a frame.
+    if (!this.miniFrame) {
+      this.miniFrame = requestAnimationFrame(() => {
+        this.miniFrame = 0;
+        this.updateMini();
+      });
+    }
     const v = this.video;
     if (!v || !this.cfg?.settings.toolbar) return;
     if (inside(elementBox(v), e.clientX, e.clientY)) {
@@ -507,17 +525,18 @@ export class PlayerTools {
    * Enough of the video is on screen to carry the toolbar (not a sliver, not a player still being laid out,
    * not a miniplayer narrower than the bar) and the site isn't using that spot (ads, Shorts).
    */
-  private roomy(forBar = true): boolean {
+  private roomy(forBar = true, box = this.video ? elementBox(this.video) : null): boolean {
     const v = this.video;
-    if (!v) return false;
+    if (!v || !box) return false;
     if (this.cfg?.hideIn?.some((s) => v.closest(s))) return false;
-    const seen = visibleBox(elementBox(v), innerWidth, innerHeight);
-    const minW = forBar ? Math.max(300, (this.bar.offsetWidth || 340) + 24) : 160;
+    const seen = visibleBox(box, innerWidth, innerHeight);
+    if (forBar && !this.barWidth) this.barWidth = this.bar.offsetWidth; // 0 until laid out: measured again later
+    const minW = forBar ? Math.max(300, (this.barWidth || 340) + 24) : 160;
     return seen.w >= minW && seen.h >= (forBar ? 120 : 90);
   }
 
   private showBar(show: boolean) {
-    if (show && (!this.cfg?.settings.toolbar || !this.roomy())) show = false;
+    if (show && (!this.cfg?.settings.toolbar || this.barEmpty || !this.roomy())) show = false;
     this.barVisible = show;
     this.bar.classList.toggle('show', show);
     if (!show) this.tip.classList.remove('show');
@@ -536,8 +555,9 @@ export class PlayerTools {
     const tick = () => {
       this.followFrame = 0;
       if (!this.started || !this.video || !(this.barVisible || this.panelOpen)) return;
-      if (!this.panelOpen && !this.roomy()) return this.showBar(false);
+      // One measurement of the video per frame, shared by the room check and the move check.
       const b = elementBox(this.video);
+      if (!this.panelOpen && !this.roomy(true, b)) return this.showBar(false);
       const key = `${b.x},${b.y},${b.w},${b.h}`;
       if (key !== this.lastBox) {
         this.lastBox = key;
@@ -553,7 +573,7 @@ export class PlayerTools {
     if (!v || !this.cfg) return;
     const b = elementBox(v);
     const right = this.cfg.settings.toolbarSide === 'right';
-    const bw = this.bar.offsetWidth || 340;
+    const bw = this.barWidth || this.bar.offsetWidth || 340;
     const top = Math.max(8, b.y + 12);
     const left = right ? b.x + b.w - bw - 12 : b.x + 12;
     this.bar.style.top = `${top}px`;

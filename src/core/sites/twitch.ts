@@ -25,6 +25,9 @@ function themeCss({ theme }: CssContext): string {
     'background-button-primary-default': 'var(--rs-accent)',
     'background-button-primary-hover': 'color-mix(in oklab,var(--rs-accent) 85%,var(--rs-text))',
     'text-button-primary': 'var(--rs-accent-text)',
+    // Text buttons ("Show more") read like links; Twitch's light-look purple would be dark on a dark theme.
+    'text-button-text': 'var(--rs-link)',
+    'text-button-text-hover': 'var(--rs-text)',
     'border-base': 'var(--rs-border)',
   };
   let css = rule(
@@ -59,6 +62,12 @@ function themeCss({ theme }: CssContext): string {
     '.carousel-metadata--fadeout',
     'background:linear-gradient(transparent,color-mix(in oklab,var(--rs-surface) 90%,transparent) 75%,var(--rs-surface) 80%)!important',
   );
+  // The signed-out "join the community" bar at the bottom: brand-coloured, so its text follows the accent.
+  css += rule('#twilight-sticky-footer-root article', 'background:var(--rs-accent)!important');
+  css += rule(
+    ['#twilight-sticky-footer-root article', '#twilight-sticky-footer-root article :is(p, strong, span):not(button *)'],
+    'color:var(--rs-accent-text)!important',
+  );
   // Category tiles sit on the accent: their text follows the accent's own text colour.
   css += rule(['.vertical-selector', '.vertical-selector *'], 'color:var(--rs-accent-text)!important');
   css += rule(
@@ -90,7 +99,7 @@ export const twitch: SiteAdapter = {
   engine: {
     accept: /^--color-/,
     exclude:
-      /overlay|inverted|static|prime|bits|turbo|snackbar|success|error|warn|info|alert|destructive|live|status|hinted-grey|opac-|brand-accent|deprecated|tooltip|ftue|apple|google|facebook|twitter|button-primary/,
+      /overlay|inverted|static|prime|bits|turbo|snackbar|success|error|warn|info|alert|destructive|live|status|hinted-grey|opac-|brand-accent|deprecated|tooltip|ftue|apple|google|facebook|twitter|button-primary|text-button-text/,
     semantic: /^--color-(background|text|border|fill|twitch-purple|accent)/,
     rootSelectors: ROOTS,
     brand: [{ color: '#9147ff', tolerance: 26 }],

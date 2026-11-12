@@ -226,10 +226,10 @@ function parseProgress(raw: unknown, d: ProgressSettings): ProgressSettings {
   const p = isObj(raw) ? raw : {};
   const image =
     typeof p.image === 'string' && p.image.length <= MAX_KNOB_IMAGE_CHARS && KNOB_IMAGE.test(p.image) ? p.image : '';
-  let knob = oneOf(p.knob, KNOBS, d.knob);
-  if (knob === 'image' && !image) knob = d.knob;
   return {
-    knob,
+    // 'image' stays chosen even without a picture here (it is chosen on another synced computer, or the
+    // picture was refused): it then draws like the site's own knob (`progressCss`), and sync doesn't ping-pong.
+    knob: oneOf(p.knob, KNOBS, d.knob),
     emoji: cleanEmoji(p.emoji) ?? d.emoji,
     image,
     size: Math.round(numIn(p.size, 16, 44, d.size)),
