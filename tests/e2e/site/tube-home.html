@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tube home (2026 layout)</title>
+    <!--
+      The YouTube home feed as of 2026-11: a fixed top bar, then the grid whose #header holds the
+      chip bar — and the chip bar's wrapper is position:fixed just under the top bar.
+    -->
+    <style>
+      html {
+        --yt-spec-base-background: #fff;
+        --yt-spec-text-primary: #0f0f0f;
+      }
+      body {
+        margin: 0;
+        font: 14px sans-serif;
+        background: var(--yt-spec-base-background);
+        color: var(--yt-spec-text-primary);
+      }
+      #masthead-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        z-index: 2020;
+        background: #fff;
+      }
+      ytd-page-manager {
+        display: block;
+        margin-top: 56px;
+      }
+      ytd-rich-grid-renderer,
+      ytd-feed-filter-chip-bar-renderer {
+        display: block;
+      }
+      ytd-rich-grid-renderer #header {
+        height: 56px;
+      }
+      ytd-feed-filter-chip-bar-renderer #chips-wrapper {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        height: 56px;
+        z-index: 2019;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 0 24px;
+        background: #fff;
+      }
+      .chip {
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #eee;
+      }
+      #contents {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 24px;
+      }
+      ytd-rich-item-renderer {
+        display: block;
+        height: 220px;
+        border-radius: 12px;
+        background: #888;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="masthead-container">
+      <ytd-masthead
+        ><div id="background"></div>
+        Tube</ytd-masthead
+      >
+    </div>
+    <ytd-app>
+      <ytd-page-manager>
+        <ytd-browse>
+          <ytd-rich-grid-renderer>
+            <div id="header">
+              <ytd-feed-filter-chip-bar-renderer>
+                <div id="chips-wrapper"><span class="chip">All</span><span class="chip">Music</span></div>
+              </ytd-feed-filter-chip-bar-renderer>
+            </div>
+            <div id="contents">
+              <ytd-rich-item-renderer></ytd-rich-item-renderer>
+              <ytd-rich-item-renderer></ytd-rich-item-renderer>
+              <ytd-rich-item-renderer></ytd-rich-item-renderer>
+            </div>
+          </ytd-rich-grid-renderer>
+        </ytd-browse>
+      </ytd-page-manager>
+    </ytd-app>
+  </body>
+</html>

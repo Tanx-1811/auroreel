@@ -49,3 +49,6 @@ First release, as **Auroreel** (working name Reelskin).
 - The floating toolbar steps aside for the site's own features: never during YouTube ads, on Shorts or on Twitch's
   front-page preview, and never on a player narrower than itself (YouTube's miniplayer) — shortcuts and the popup
   still work there.
+- YouTube home with a backdrop theme: the filter chips (All, Music…) slid 56px down behind the first row of videos —
+  the frosted glass sat on an ancestor of YouTube's fixed chip bar. Only the chip bar is frosted now; YouTube's own
+  frosted layer follows the theme. `contrast-scan` also flags fixed bars trapped this way.

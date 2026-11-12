@@ -67,10 +67,14 @@ function themeCss({ theme }: CssContext): string {
     ['tp-yt-app-drawer#guide #contentContainer', 'tp-yt-app-drawer #guide-content'],
     `background:var(--rs-glass-bg)!important;backdrop-filter:blur(24px) saturate(1.4)`,
   );
+  // Only the chip bar itself gets the frosted glass. A filter on an ancestor (the grid's #header) would become
+  // the containing block of the 2026 chip bar, which is position:fixed — it slid 56px down, under the videos.
   css += rule(
-    ['ytd-feed-filter-chip-bar-renderer #chips-wrapper', 'ytd-rich-grid-renderer #header'],
+    'ytd-feed-filter-chip-bar-renderer #chips-wrapper',
     `background:${glass ? 'var(--rs-glass-bg)' : 'var(--rs-bg)'}!important;${glass ? 'backdrop-filter:blur(20px)' : ''}`,
   );
+  // YouTube's own frosted layer behind the top bar and chips follows the theme too.
+  css += rule('#frosted-glass', `background:${glass ? 'var(--rs-glass-bg)' : 'var(--rs-bg)'}!important`);
   // The search box hard-codes its colours (with a separate "Dark" variant).
   css += rule(
     ['.ytSearchboxComponentInputBox', '.ytSearchboxComponentInputBoxDark'],

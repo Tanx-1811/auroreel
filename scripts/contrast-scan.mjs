@@ -1,5 +1,6 @@
 // Dev tool: loads the e2e build with a theme, opens real pages and lists text that is hard to
-// read (contrast below 3:1 against what is behind it) plus, in dark themes, leftover light boxes.
+// read (contrast below 3:1 against what is behind it), in dark themes leftover light boxes, and
+// fixed bars trapped inside a filtered/transformed element (they slide out of place).
 //   node scripts/contrast-scan.mjs <url>... [--theme=sakura-night] [--scheme=light|dark] [--scroll] [--shots=dir]
 // Run it after a site redesign or a theme change, in both schemes (sites switch look with the system).
 import { resolve } from 'node:path';
@@ -104,10 +105,28 @@ const PROBE = `// Runs in the page: lists visible text whose colour barely diffe
   return out.slice(0, 40).join('\\n') || 'no low-contrast text';
 })()`;
 
+/**
+ * Runs in the page: a backdrop-filter, filter or transform makes an element the containing block of its
+ * position:fixed descendants — a sticky bar inside it slides away from the viewport edge (YouTube's chip bar did).
+ */
+const TRAPPED_FIXED = `(() => {
+  const out = [];
+  for (const el of document.querySelectorAll('*')) {
+    const cs = getComputedStyle(el);
+    if (cs.backdropFilter === 'none' && cs.filter === 'none' && cs.transform === 'none') continue;
+    if (el.closest('auroreel-ui')) continue;
+    const fixed = [...el.querySelectorAll('*')].find((d) => getComputedStyle(d).position === 'fixed');
+    if (fixed) out.push('TRAPPED fixed ' + fixed.tagName.toLowerCase() + (fixed.id ? '#' + fixed.id : '') + ' inside ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + '.' + [...el.classList].slice(0, 2).join('.'));
+  }
+  return out;
+})()`;
+
 const page = await context.newPage();
 let problems = 0;
 const scan = async (label) => {
-  const report = await page.evaluate(PROBE).catch((e) => `scan failed: ${e.message}`);
+  let report = await page.evaluate(PROBE).catch((e) => `scan failed: ${e.message}`);
+  const trapped = await page.evaluate(TRAPPED_FIXED).catch(() => []);
+  if (trapped.length) report = (report === 'no low-contrast text' ? '' : report + '\n') + trapped.join('\n');
   if (report !== 'no low-contrast text') problems += report.split('\n').length;
   console.log(`=== ${label}\n${report}`);
   if (arg('shots')) await page.screenshot({ path: resolve(arg('shots'), `${label.replace(/\W+/g, '_')}.png`) });
