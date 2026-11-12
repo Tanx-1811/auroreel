@@ -91,3 +91,72 @@ describe('stylesheet hosts', () => {
     expect(isCssHost('not a url')).toBe(false);
   });
 });
+
+describe('white text on a recoloured brand colour', () => {
+  const palette = resolvePalette(BUILT_IN_THEMES.find((t) => t.id === 'sakura-night')!);
+  const remap = createRemapper({
+    palette,
+    anchors: { bg: parseColor('#141414')!, text: parseColor('#ffffff')! },
+    brand: [{ color: '#e50914', tolerance: 24 }],
+    glass: null,
+  });
+  const onAccent = formatColor(palette.accentText);
+
+  it("takes the accent's own text colour, so it reads on a light accent", () => {
+    const css = rewriteCss(
+      [
+        {
+          wrap: [],
+          selector: '.join',
+          decls: [
+            ['background-color', '#e50914'],
+            ['color', '#fff'],
+          ],
+        },
+      ],
+      remap,
+      onAccent,
+    );
+    expect(css).toContain(`color:${onAccent}`);
+    const bg = parseColor(css.match(/background-color:([^;}]+)/)![1]!)!;
+    expect(contrast(palette.accentText, bg)).toBeGreaterThan(4.5);
+  });
+
+  it('pairs component tokens: a brand surface gives its foreground the accent text colour', () => {
+    const css = rewriteCss(
+      [
+        {
+          wrap: [],
+          selector: '.btn',
+          decls: [
+            ['--hcw--local-design--Button-Surface', '#e50914'],
+            ['--hcw--local-design--Button-Foreground', '#ffffff'],
+            ['--hcw--local-design--Card-Foreground', '#ffffff'],
+          ],
+        },
+      ],
+      remap,
+      onAccent,
+    );
+    expect(css).toContain(`--hcw--local-design--Button-Foreground:${onAccent}`);
+    expect(css).not.toContain(`--hcw--local-design--Card-Foreground:${onAccent}`);
+  });
+
+  it('leaves white text on grey backgrounds to the normal mapping', () => {
+    const css = rewriteCss(
+      [
+        {
+          wrap: [],
+          selector: '.card',
+          decls: [
+            ['background-color', '#181818'],
+            ['color', '#fff'],
+          ],
+        },
+      ],
+      remap,
+      onAccent,
+    );
+    expect(css).not.toContain(`color:${onAccent}`);
+  });
+});

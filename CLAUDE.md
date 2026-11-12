@@ -19,7 +19,8 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
 - `npm run icons`, `npm run brand`, `npm run screenshots` — toolbar icons, brand kit, store screenshots.
 - Dev tools: `scripts/probe-site.mjs` (a site's custom properties / selector census), `scripts/live-shot.mjs` (real
   page + extension screenshot, `--theme=`, `--set='{json}'`, `--yt-dark`, `--eval=`), `scripts/ui-shot.mjs` (popup /
-  studio screenshot).
+  studio screenshot), `scripts/contrast-scan.mjs` (real pages with a theme: lists hard-to-read text and leftover light
+  boxes — run in both `--scheme=light` and `dark`, sites switch look with the system).
 
 ## Conventions
 

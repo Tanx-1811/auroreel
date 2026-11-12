@@ -13,7 +13,7 @@
  * The result is cached per site and mode, so the next visit is recoloured
  * before the site's stylesheets have even loaded.
  */
-import { parseColor } from '../core/color.ts';
+import { formatColor, parseColor } from '../core/color.ts';
 import type { PlatformId } from '../core/platforms.ts';
 import {
   collectUsage,
@@ -409,7 +409,8 @@ export class Engine {
     }
     const selectors = snap.selectors.filter((s) => s && isRootLikeSelector(s));
     this.styles.setEngine(
-      overridesCss(selectors.length ? selectors : this.cfg.rootSelectors, out) + rewriteCss(snap.rewrite ?? [], remap),
+      overridesCss(selectors.length ? selectors : this.cfg.rootSelectors, out) +
+        rewriteCss(snap.rewrite ?? [], remap, formatColor(this.theme.palette.accentText)),
     );
   }
 }

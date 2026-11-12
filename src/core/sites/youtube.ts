@@ -95,8 +95,57 @@ function themeCss({ theme }: CssContext): string {
       'ytd-text-inline-expander span[style*="color: rgb("]',
       '#description span[style*="color: rgb("]',
       '#content-text span[style*="color: rgb("]',
+      // Channel header handle and other "inherit colour" text runs (light-mode #131313 inline).
+      'span.ytAttributedStringLinkInheritColor[style*="color: rgb("]',
+      'yt-content-metadata-view-model span[style*="color: rgb("]',
     ],
     'color:inherit!important',
+  );
+  // "Lightsource": colours YouTube picks from each video (light ones in its light look) for the
+  // playlist panel, chapters and key moments. Keep them on the theme's scale.
+  css += rule(
+    [
+      'ytd-app',
+      'ytd-watch-flexy',
+      '[use-color-palette]',
+      '[use-custom-colors]',
+      'ytd-playlist-panel-renderer',
+      'ytd-expandable-metadata-renderer',
+      'ytd-macro-markers-list-item-renderer',
+      'ytd-horizontal-card-list-renderer',
+    ],
+    [
+      '--yt-lightsource-section1-color:var(--rs-surface)!important',
+      '--yt-lightsource-section2-color:var(--rs-surface)!important',
+      '--yt-lightsource-section3-color:var(--rs-surface-2)!important',
+      '--yt-lightsource-section4-color:var(--rs-surface)!important',
+      '--yt-lightsource-primary-title-color:var(--rs-text)!important',
+      '--yt-lightsource-secondary-title-color:var(--rs-muted)!important',
+      '--yt-lightsource-icon-disabled-color:var(--rs-surface-2)!important',
+      '--yt-active-playlist-panel-background-color:color-mix(in oklab,var(--rs-accent) 18%,var(--rs-surface))!important',
+    ].join(';'),
+  );
+  css += rule(
+    'ytd-expandable-metadata-renderer',
+    'background:var(--rs-surface)!important;color:var(--rs-text)!important',
+  );
+  // The playing row of a playlist/mix panel is tinted with a colour YouTube picks from the video
+  // (often a light grey-blue); keep it in the theme so its text stays readable.
+  css += rule(
+    ['ytd-playlist-panel-video-renderer[selected]', 'ytd-playlist-panel-video-renderer[selected]:hover'],
+    'background:color-mix(in oklab,var(--rs-accent) 18%,var(--rs-surface))!important',
+  );
+  css += rule(
+    [
+      'ytd-playlist-panel-video-renderer[selected] #video-title',
+      'ytd-playlist-panel-video-renderer[selected] #index',
+      'ytd-playlist-panel-video-renderer[selected] #index-message',
+    ],
+    'color:var(--rs-text)!important',
+  );
+  css += rule(
+    ['ytd-playlist-panel-video-renderer[selected] #byline', 'ytd-playlist-panel-video-renderer[selected] #byline *'],
+    'color:var(--rs-muted)!important',
   );
   // Menus and dialogs stay solid so they read well over anything.
   css += rule(

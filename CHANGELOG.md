@@ -42,3 +42,7 @@ First release, as **Auroreel** (working name Reelskin).
   the overview's grids and the toolbar-button chips are clearer; toolbar settings live on the Player page only;
   readable status colours in the light look; same width for every drop-down.
 - The welcome page now opens on install (it pointed at a page that doesn't exist).
+- Site fixes found with the new `scripts/contrast-scan.mjs`: YouTube's playing row in playlists/mixes, key-moments
+  and chapter boxes (colours YouTube picks from each video) and the channel handle now follow the theme; Twitch's
+  light look (nav links, featured-stream panel and its fade, carousel arrows, category tiles, primary buttons) is
+  themed; white text on a recoloured brand button (Netflix "Join now") takes the accent's own text colour.

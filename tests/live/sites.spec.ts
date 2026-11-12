@@ -122,7 +122,8 @@ test('YouTube: progress-bar knob, played colour and the always-on mini bar', asy
 
 const STREAMING = [
   { name: 'Netflix (public title page)', url: 'https://www.netflix.com/title/80057281', min: 20_000 },
-  { name: 'FPT Play', url: 'https://fptplay.vn/', min: 5_000 },
+  // The bare domain sometimes shows a full-screen event splash with no site styles: open the home page itself.
+  { name: 'FPT Play', url: 'https://fptplay.vn/trang/home', min: 5_000 },
   // VieON keeps one stylesheet on a CDN without CORS: read through the service worker.
   { name: 'VieON', url: 'https://vieon.vn/', min: 20_000 },
   // Prime Video's stylesheets live on a CORS-enabled CDN.

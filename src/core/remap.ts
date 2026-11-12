@@ -240,6 +240,32 @@ export function rewriteValue(
   return changed ? out : null;
 }
 
+const colorTokens = (value: string): Rgba[] =>
+  (value.match(COLOR_TOKEN) ?? []).flatMap((t) => {
+    const c = parseColor(t);
+    return c ? [c] : [];
+  });
+
+/** A token's name with its role word blanked, to pair a component's surface with its foreground. */
+function pairKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/surface|background|backdrop|foreground|text|label|content|(?<=[-_])(bg|fg)(?=[-_]|$)/, '*');
+}
+
+/** A value holding a clearly coloured (not grey) literal. */
+function hasChromatic(value: string): boolean {
+  return colorTokens(value).some((c) => c.a > 0.5 && toOklch(c).C >= 0.06);
+}
+
+/** A single light grey/white literal (a site's text on its brand colour). */
+function isLightNeutral(value: string): boolean {
+  const cs = colorTokens(value);
+  if (cs.length !== 1) return false;
+  const lch = toOklch(cs[0]!);
+  return lch.C < NEUTRAL_CHROMA && lch.L > 0.85;
+}
+
 export interface RewriteRule {
   /** Enclosing at-rule preludes, outermost first ("@media (min-width: 800px)"). */
   wrap: string[];
@@ -274,14 +300,36 @@ export function isRewritable(name: string, value: string): boolean {
  * original by coming later, so a declaration that lost in the site's cascade
  * still loses — the stylesheet must stay last in the document.
  */
-export function rewriteCss(rules: RewriteRule[], remap: (v: string, role?: ColorRole) => string | null): string {
+export function rewriteCss(
+  rules: RewriteRule[],
+  remap: (v: string, role?: ColorRole) => string | null,
+  /** Text colour for the theme accent: white text on a recoloured brand background takes it. */
+  onAccent?: string,
+): string {
   let css = '';
   for (const rule of rules) {
     const body: string[] = [];
+    // A brand-coloured button or badge (Netflix's red "Join now"): its white text must stay
+    // readable on the theme accent, which may be light.
+    // Component tokens pair up by name: `--x-Button-Surface` with `--x-Button-Foreground`.
+    const brandBg = new Set<string>();
+    if (onAccent) {
+      for (const [name, value, , keep] of rule.decls) {
+        if (keep || !hasChromatic(value) || rewriteValue(value, remap, 'bg') === null) continue;
+        if (name === 'background-color' || name === 'background-image') brandBg.add('');
+        else if (name.startsWith('--') && roleFromName(name) === 'bg') brandBg.add(pairKey(name));
+      }
+    }
+    const onBrand = (name: string, value: string) =>
+      brandBg.size > 0 &&
+      isLightNeutral(value) &&
+      (name === 'color'
+        ? brandBg.has('')
+        : name.startsWith('--') && roleFromName(name) === 'fg' && brandBg.has(pairKey(name)));
     for (const [name, value, important, keep] of rule.decls) {
       const role = name.startsWith('--') ? roleFromName(name) : (REWRITE_PROPS[name] ?? 'unknown');
       // Unchanged colours are copied too, so the copies keep the site's rule order.
-      const mapped = keep ? value : (rewriteValue(value, remap, role) ?? value);
+      const mapped = keep ? value : onBrand(name, value) ? onAccent! : (rewriteValue(value, remap, role) ?? value);
       if (mapped) body.push(`${name}:${mapped}${important ? '!important' : ''}`);
     }
     if (!body.length) continue;

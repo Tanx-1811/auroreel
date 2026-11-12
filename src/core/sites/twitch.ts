@@ -48,6 +48,19 @@ function themeCss({ theme }: CssContext): string {
     ['.tw-image', '.preview-card-image-link img', 'article img.tw-image', '[class*="ScCoreLink"] .tw-aspect img'],
     'border-radius:var(--rs-radius)!important',
   );
+  // Twitch's light look hard-codes these (not tokens): near-black nav text, white carousel panels.
+  css += rule('.navigation-link', 'color:var(--rs-text)!important');
+  css += rule(['.navigation-link.active', '.navigation-link:hover'], 'color:var(--rs-accent)!important');
+  css += rule(
+    ['.carousel-metadata', '.carousel-player-nav-arrow__container'],
+    'background:var(--rs-surface)!important;color:var(--rs-text)!important',
+  );
+  css += rule(
+    '.carousel-metadata--fadeout',
+    'background:linear-gradient(transparent,color-mix(in oklab,var(--rs-surface) 90%,transparent) 75%,var(--rs-surface) 80%)!important',
+  );
+  // Category tiles sit on the accent: their text follows the accent's own text colour.
+  css += rule(['.vertical-selector', '.vertical-selector *'], 'color:var(--rs-accent-text)!important');
   css += rule(
     ['[data-a-target="player-seekbar"] [data-test-selector="seekbar-segment__segment"]', '.seekbar-bar > div'],
     'background:var(--rs-accent)!important',
@@ -77,7 +90,7 @@ export const twitch: SiteAdapter = {
   engine: {
     accept: /^--color-/,
     exclude:
-      /overlay|inverted|static|prime|bits|turbo|snackbar|success|error|warn|info|alert|destructive|live|status|hinted-grey|opac-|brand-accent|deprecated|tooltip|ftue|apple|google|facebook|twitter/,
+      /overlay|inverted|static|prime|bits|turbo|snackbar|success|error|warn|info|alert|destructive|live|status|hinted-grey|opac-|brand-accent|deprecated|tooltip|ftue|apple|google|facebook|twitter|button-primary/,
     semantic: /^--color-(background|text|border|fill|twitch-purple|accent)/,
     rootSelectors: ROOTS,
     brand: [{ color: '#9147ff', tolerance: 26 }],
