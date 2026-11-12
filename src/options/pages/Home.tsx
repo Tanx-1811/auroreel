@@ -1,4 +1,4 @@
-import { ArrowRight, Cloud, MoonStar, Palette, PenTool, Sparkles, SunMoon, Wand2 } from 'lucide-react';
+import { ArrowRight, Cloud, MoonStar, Palette, PenTool, Sparkles, SunMoon } from 'lucide-react';
 import { PLATFORMS } from '../../core/platforms.ts';
 import { patchSite } from '../../core/settings.ts';
 import { formatShortcut } from '../../core/shortcuts.ts';
@@ -105,10 +105,6 @@ export function HomePage({ settings, themes, update, saveTheme }: PageProps) {
                 {t('home.customize')}
               </button>
             ) : null}
-            <button type="button" className="btn ghost" onClick={() => go('editor/from-image')}>
-              <Wand2 size={16} />
-              {t('themes.fromImage')}
-            </button>
           </div>
           <div className="quick-grid">
             {quick.map(({ key, hint, icon: Icon, on, set }) => (

@@ -27,10 +27,24 @@ test('popup lists the themes and switches the global theme', async ({
   await page.getByRole('button', { name: 'Use the Aurora theme' }).click();
   await expect.poll(async () => (await getSettings()).themeId).toBe('aurora');
   await page.getByRole('tab', { name: 'Player' }).click();
-  await page.getByRole('switch', { name: 'Ambient light' }).click();
+  const intensity = page.getByRole('slider', { name: 'Strength' });
+  await expect(intensity).toBeDisabled();
+  await page.getByRole('switch', { name: 'Turn on ambient light' }).click();
   await expect
     .poll(async () => ((await getSettings()).player as { ambient: { enabled: boolean } }).ambient.enabled)
     .toBe(true);
+  await expect(intensity).toBeEnabled();
+});
+
+test('shortcuts page names Chrome commands in the studio language, grouped', async ({
+  openExtensionPage,
+  setSettings,
+}) => {
+  await setSettings({ language: 'vi' });
+  const page = await openExtensionPage('options/options.html#/shortcuts');
+  await expect(page.getByText('Tốc độ và tua')).toBeVisible();
+  await expect(page.getByText('Chủ đề tiếp theo')).toBeVisible();
+  await expect(page.getByText('Next theme')).toHaveCount(0);
 });
 
 for (const path of PAGES) {

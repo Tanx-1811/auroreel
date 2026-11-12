@@ -35,3 +35,9 @@ First release, as **Auroreel** (working name Reelskin).
   no tinted tiles behind icons, a flat logo.
 - The floating toolbar follows the video when the site moves its player (YouTube lays it out after load) and only
   shows when enough of the video is on screen.
+- UI/UX pass on the studio and popup: settings that only matter while their feature is on (ambient light, picture
+  filters, subtitles, the toolbar's options, day/night themes) stay visible but are dimmed and locked while it's off;
+  page shortcuts grouped (speed, viewing, loop and capture, theme) and Chrome's own commands named in the studio's
+  language; auto switch explains each mode; sync is one row like the other backup actions; the editor's quick start,
+  the overview's grids and the toolbar-button chips are clearer; toolbar settings live on the Player page only;
+  readable status colours in the light look; same width for every drop-down.

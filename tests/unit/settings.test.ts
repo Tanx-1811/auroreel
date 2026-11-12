@@ -12,12 +12,15 @@ import {
 import { activeThemeId, isDaytime, msUntilNextSwitch } from '../../src/core/schedule';
 import { defaultSettings, parseSettings, patchLayout, patchSite } from '../../src/core/settings';
 import {
+  ACTION_GROUPS,
+  ACTION_IDS,
   conflicts,
   DEFAULT_SHORTCUTS,
   formatShortcut,
   matches,
   parseShortcut,
   shortcutFromEvent,
+  spaceChromeShortcut,
 } from '../../src/core/shortcuts';
 import { BUILT_IN_THEMES } from '../../src/core/themes';
 
@@ -117,6 +120,12 @@ describe('schedule', () => {
 });
 
 describe('shortcuts', () => {
+  it('lists every action in exactly one group', () => {
+    const grouped = ACTION_GROUPS.flatMap((g) => g.actions);
+    expect([...grouped].sort()).toEqual([...ACTION_IDS].sort());
+    expect(new Set(grouped).size).toBe(grouped.length);
+  });
+
   it('parses, matches and formats', () => {
     expect(parseShortcut('Alt+KeyC')).not.toBeNull();
     expect(parseShortcut('Alt+Alt+KeyC')).toBeNull();
@@ -128,6 +137,8 @@ describe('shortcuts', () => {
     expect(formatShortcut('Alt+Shift+KeyC')).toBe('Alt + Shift + C');
     expect(formatShortcut('Alt+BracketLeft', true)).toBe('⌥ [');
     expect(formatShortcut(null)).toBe('—');
+    expect(spaceChromeShortcut('⌥⇧R')).toBe('⌥ ⇧ R');
+    expect(spaceChromeShortcut('Alt+Shift+R')).toBe('Alt + Shift + R');
   });
 
   it('has no clashing defaults and finds clashes', () => {

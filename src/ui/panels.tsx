@@ -47,43 +47,45 @@ export function AmbientPanel({ settings, update, compact }: { settings: Settings
     patchPlayer(update, (p) => ({ ...p, ambient: { ...p.ambient, ...patch } }));
   return (
     <>
-      <Field label={t('player.ambient')} hint={compact ? undefined : t('player.ambientHint')}>
-        <Switch checked={a.enabled} onChange={(v) => set({ enabled: v })} label={t('player.ambient')} />
+      <Field label={t('player.ambientOn')} hint={compact ? undefined : t('player.ambientHint')}>
+        <Switch checked={a.enabled} onChange={(v) => set({ enabled: v })} label={t('player.ambientOn')} />
       </Field>
-      <Field label={t('player.intensity')} stack>
-        <Slider
-          value={a.intensity}
-          min={0}
-          max={100}
-          label={t('player.intensity')}
-          onChange={(v) => set({ intensity: v })}
-          format={(v) => `${v}%`}
-        />
-      </Field>
-      {!compact ? (
-        <>
-          <Field label={t('player.blur')} stack>
-            <Slider
-              value={a.blur}
-              min={10}
-              max={140}
-              label={t('player.blur')}
-              onChange={(v) => set({ blur: v })}
-              format={(v) => `${v}px`}
-            />
-          </Field>
-          <Field label={t('player.spread')} stack>
-            <Slider
-              value={a.spread}
-              min={0}
-              max={40}
-              label={t('player.spread')}
-              onChange={(v) => set({ spread: v })}
-              format={(v) => `${v}%`}
-            />
-          </Field>
-        </>
-      ) : null}
+      <fieldset className="dep" disabled={!a.enabled}>
+        <Field label={t('player.intensity')} stack>
+          <Slider
+            value={a.intensity}
+            min={0}
+            max={100}
+            label={t('player.intensity')}
+            onChange={(v) => set({ intensity: v })}
+            format={(v) => `${v}%`}
+          />
+        </Field>
+        {!compact ? (
+          <>
+            <Field label={t('player.blur')} stack>
+              <Slider
+                value={a.blur}
+                min={10}
+                max={140}
+                label={t('player.blur')}
+                onChange={(v) => set({ blur: v })}
+                format={(v) => `${v}px`}
+              />
+            </Field>
+            <Field label={t('player.spread')} stack>
+              <Slider
+                value={a.spread}
+                min={0}
+                max={40}
+                label={t('player.spread')}
+                onChange={(v) => set({ spread: v })}
+                format={(v) => `${v}%`}
+              />
+            </Field>
+          </>
+        ) : null}
+      </fieldset>
     </>
   );
 }
@@ -146,8 +148,9 @@ export function FiltersPanel({ settings, update, compact }: { settings: Settings
           {open ? t('player.lessFilters') : t('player.moreFilters')}
         </button>
       ) : null}
-      {open
-        ? FILTER_KEYS.map((k) => {
+      {open ? (
+        <fieldset className="dep" disabled={!p.filtersOn}>
+          {FILTER_KEYS.map((k) => {
             const lim = FILTER_LIMITS[k];
             return (
               <Field key={k} label={t(`filter.${k}` as MessageKey)} stack>
@@ -158,24 +161,21 @@ export function FiltersPanel({ settings, update, compact }: { settings: Settings
                   step={lim.step}
                   label={t(`filter.${k}` as MessageKey)}
                   format={(v) => `${v}${lim.unit}`}
-                  onChange={(v) =>
-                    patchPlayer(update, (pl) => ({ ...pl, filtersOn: true, filters: { ...pl.filters, [k]: v } }))
-                  }
+                  onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, filters: { ...pl.filters, [k]: v } }))}
                 />
               </Field>
             );
-          })
-        : null}
-      {open ? (
-        <div style={{ paddingTop: 6 }}>
-          <button
-            type="button"
-            className="btn sm"
-            onClick={() => patchPlayer(update, (pl) => ({ ...pl, filters: { ...DEFAULT_FILTERS } }))}
-          >
-            {t('common.reset')}
-          </button>
-        </div>
+          })}
+          <div style={{ paddingTop: 6 }}>
+            <button
+              type="button"
+              className="btn sm"
+              onClick={() => patchPlayer(update, (pl) => ({ ...pl, filters: { ...DEFAULT_FILTERS } }))}
+            >
+              {t('common.reset')}
+            </button>
+          </div>
+        </fieldset>
       ) : null}
     </>
   );
@@ -216,48 +216,9 @@ export function SpeedPanel({ settings, update, compact }: { settings: Settings; 
   );
 }
 
-/** `look`: only how the toolbar looks (buttons, size) — for the Decorations page. */
-export function ToolbarPanel({ settings, update, look }: { settings: Settings; update: Update; look?: boolean }) {
+export function ToolbarPanel({ settings, update }: { settings: Settings; update: Update }) {
   const t = useT();
   const p = settings.player;
-  const buttons = (
-    <>
-      <Field label={t('player.toolbarButtons')} hint={t('player.toolbarButtonsHint')} stack>
-        <div className="chips" role="group" aria-label={t('player.toolbarButtons')}>
-          {TOOLBAR_BUTTONS.map((b) => {
-            const on = p.toolbarButtons.includes(b);
-            return (
-              <button
-                key={b}
-                type="button"
-                className="chip check"
-                aria-pressed={on}
-                disabled={!p.toolbar}
-                onClick={() =>
-                  patchPlayer(update, (pl) => ({
-                    ...pl,
-                    toolbarButtons: TOOLBAR_BUTTONS.filter((x) => (x === b ? !on : pl.toolbarButtons.includes(x))),
-                  }))
-                }
-              >
-                {on ? <Check size={13} strokeWidth={3} aria-hidden="true" /> : null}
-                {t(BUTTON_LABEL[b])}
-              </button>
-            );
-          })}
-        </div>
-      </Field>
-      <Field label={t('player.toolbarSize')}>
-        <Segmented
-          value={p.toolbarSize}
-          label={t('player.toolbarSize')}
-          options={(['sm', 'md', 'lg'] as const).map((v) => ({ value: v, label: t(`size.${v}`) }))}
-          onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSize: v }))}
-        />
-      </Field>
-    </>
-  );
-  if (look) return buttons;
   return (
     <>
       <Field label={t('player.toolbar')} hint={t('player.toolbarHint')}>
@@ -267,18 +228,51 @@ export function ToolbarPanel({ settings, update, look }: { settings: Settings; u
           label={t('player.toolbar')}
         />
       </Field>
-      <Field label={t('player.toolbarSide')}>
-        <Segmented
-          value={p.toolbarSide}
-          label={t('player.toolbarSide')}
-          options={[
-            { value: 'left', label: t('common.left') },
-            { value: 'right', label: t('common.right') },
-          ]}
-          onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSide: v }))}
-        />
-      </Field>
-      {buttons}
+      <fieldset className="dep" disabled={!p.toolbar}>
+        <Field label={t('player.toolbarSide')}>
+          <Segmented
+            value={p.toolbarSide}
+            label={t('player.toolbarSide')}
+            options={[
+              { value: 'left', label: t('common.left') },
+              { value: 'right', label: t('common.right') },
+            ]}
+            onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSide: v }))}
+          />
+        </Field>
+        <Field label={t('player.toolbarButtons')} hint={t('player.toolbarButtonsHint')} stack>
+          <div className="chips" role="group" aria-label={t('player.toolbarButtons')}>
+            {TOOLBAR_BUTTONS.map((b) => {
+              const on = p.toolbarButtons.includes(b);
+              return (
+                <button
+                  key={b}
+                  type="button"
+                  className="chip check"
+                  aria-pressed={on}
+                  onClick={() =>
+                    patchPlayer(update, (pl) => ({
+                      ...pl,
+                      toolbarButtons: TOOLBAR_BUTTONS.filter((x) => (x === b ? !on : pl.toolbarButtons.includes(x))),
+                    }))
+                  }
+                >
+                  {on ? <Check size={13} strokeWidth={3} aria-hidden="true" /> : null}
+                  {t(BUTTON_LABEL[b])}
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+        <Field label={t('player.toolbarSize')}>
+          <Segmented
+            value={p.toolbarSize}
+            label={t('player.toolbarSize')}
+            options={(['sm', 'md', 'lg'] as const).map((v) => ({ value: v, label: t(`size.${v}`) }))}
+            onChange={(v) => patchPlayer(update, (pl) => ({ ...pl, toolbarSize: v }))}
+          />
+        </Field>
+      </fieldset>
       <Field label={t('player.screenshotFormat')}>
         <Segmented
           value={p.screenshotFormat}
@@ -401,62 +395,60 @@ export function SubtitlesPanel({
       <Field label={t('subs.on')} hint={compact ? undefined : t('subs.hint')}>
         <Switch checked={sub.on} label={t('subs.on')} onChange={(v) => set({ on: v })} />
       </Field>
-      {sub.on ? (
-        <>
-          <div className="subs-sample" aria-hidden="true">
-            <span
-              style={{
-                color: sub.color,
-                background: box,
-                fontSize: `${(15 * sub.size) / 100}px`,
-                fontWeight: sub.bold ? 700 : 500,
-              }}
-            >
-              {t('subs.sample')}
-            </span>
+      <fieldset className="dep" disabled={!sub.on}>
+        <div className="subs-sample" aria-hidden="true">
+          <span
+            style={{
+              color: sub.color,
+              background: box,
+              fontSize: `${(15 * sub.size) / 100}px`,
+              fontWeight: sub.bold ? 700 : 500,
+            }}
+          >
+            {t('subs.sample')}
+          </span>
+        </div>
+        <Field label={t('subs.size')} stack>
+          <Slider
+            value={sub.size}
+            min={60}
+            max={250}
+            step={5}
+            label={t('subs.size')}
+            format={(v) => `${v}%`}
+            onChange={(v) => set({ size: v })}
+          />
+        </Field>
+        <Field label={t('subs.background')} stack>
+          <Slider
+            value={sub.background}
+            min={0}
+            max={100}
+            label={t('subs.background')}
+            format={(v) => `${v}%`}
+            onChange={(v) => set({ background: v })}
+          />
+        </Field>
+        <Field label={t('subs.color')}>
+          <div className="swatch-row" role="radiogroup" aria-label={t('subs.color')}>
+            {['#ffffff', '#fde047', '#7dd3fc', '#86efac', '#f9a8d4'].map((c) => (
+              <button
+                key={c}
+                type="button"
+                role="radio"
+                aria-checked={sub.color === c}
+                aria-label={c}
+                className="swatch-dot"
+                style={{ background: c }}
+                onClick={() => set({ color: c })}
+              />
+            ))}
           </div>
-          <Field label={t('subs.size')} stack>
-            <Slider
-              value={sub.size}
-              min={60}
-              max={250}
-              step={5}
-              label={t('subs.size')}
-              format={(v) => `${v}%`}
-              onChange={(v) => set({ size: v })}
-            />
-          </Field>
-          <Field label={t('subs.background')} stack>
-            <Slider
-              value={sub.background}
-              min={0}
-              max={100}
-              label={t('subs.background')}
-              format={(v) => `${v}%`}
-              onChange={(v) => set({ background: v })}
-            />
-          </Field>
-          <Field label={t('subs.color')}>
-            <div className="swatch-row" role="radiogroup" aria-label={t('subs.color')}>
-              {['#ffffff', '#fde047', '#7dd3fc', '#86efac', '#f9a8d4'].map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  role="radio"
-                  aria-checked={sub.color === c}
-                  aria-label={c}
-                  className="swatch-dot"
-                  style={{ background: c }}
-                  onClick={() => set({ color: c })}
-                />
-              ))}
-            </div>
-          </Field>
-          <Field label={t('subs.bold')}>
-            <Switch checked={sub.bold} label={t('subs.bold')} onChange={(v) => set({ bold: v })} />
-          </Field>
-        </>
-      ) : null}
+        </Field>
+        <Field label={t('subs.bold')}>
+          <Switch checked={sub.bold} label={t('subs.bold')} onChange={(v) => set({ bold: v })} />
+        </Field>
+      </fieldset>
     </>
   );
 }

@@ -199,44 +199,48 @@ export function EditorPage({ id, settings, themes, update, saveTheme, removeThem
           </Card>
 
           <Card title={t('editor.quick')} hint={t('editor.quickHint')}>
+            <div className="quick-seed">
+              <ColorField label={t('editor.seedColor')} value={seedAccent} onChange={setSeedAccent} />
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() => {
+                  const seeded = themeFromSeed({
+                    id: draft.id,
+                    name: draft.name,
+                    mode: draft.mode,
+                    accent: seedAccent,
+                  });
+                  setDraft((d) => ({
+                    ...d,
+                    colors: seeded.colors,
+                    backdrop: d.backdrop.kind === 'image' ? d.backdrop : seeded.backdrop,
+                  }));
+                }}
+              >
+                <Wand2 size={14} />
+                {t('editor.generate')}
+              </button>
+            </div>
             <div className="quick-start">
-              <div className="quick-tile">
-                <ColorField label={t('editor.seedColor')} value={seedAccent} onChange={setSeedAccent} />
-                <button
-                  type="button"
-                  className="btn sm"
-                  onClick={() => {
-                    const seeded = themeFromSeed({
-                      id: draft.id,
-                      name: draft.name,
-                      mode: draft.mode,
-                      accent: seedAccent,
-                    });
-                    setDraft((d) => ({
-                      ...d,
-                      colors: seeded.colors,
-                      backdrop: d.backdrop.kind === 'image' ? d.backdrop : seeded.backdrop,
-                    }));
-                  }}
-                >
-                  <Wand2 size={14} />
-                  {t('editor.generate')}
-                </button>
-              </div>
               <button
                 type="button"
                 className="quick-tile picture"
                 onClick={() => fileRef.current?.click()}
                 disabled={busy}
               >
-                <ImagePlus size={20} />
-                <strong>{busy ? t('editor.reading') : t('editor.fromPicture')}</strong>
-                <span className="muted small">{t('editor.fromPictureHint')}</span>
+                <ImagePlus size={18} aria-hidden="true" />
+                <span>
+                  <strong>{busy ? t('editor.reading') : t('editor.fromPicture')}</strong>
+                  <span className="muted small">{t('editor.fromPictureHint')}</span>
+                </span>
               </button>
               <button type="button" className="quick-tile" onClick={() => setDraft((d) => randomTheme(d))}>
-                <Shuffle size={20} />
-                <strong>{t('editor.surprise')}</strong>
-                <span className="muted small">{t('editor.surpriseHint')}</span>
+                <Shuffle size={18} aria-hidden="true" />
+                <span>
+                  <strong>{t('editor.surprise')}</strong>
+                  <span className="muted small">{t('editor.surpriseHint')}</span>
+                </span>
               </button>
             </div>
             {swatches.length ? (

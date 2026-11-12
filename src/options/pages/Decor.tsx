@@ -15,7 +15,6 @@ import type { MessageKey } from '../../shared/i18n.ts';
 import { ColorField, Field, Segmented, Slider, Switch } from '../../ui/controls.tsx';
 import { useT } from '../../ui/i18n.tsx';
 import { KnobGallery, ProgressPreview } from '../../ui/Knob.tsx';
-import { ToolbarPanel } from '../../ui/panels.tsx';
 import { loadKnobPicture } from '../files.ts';
 import { Card, PageHead } from '../PageHead.tsx';
 import type { PageProps } from '../types.ts';
@@ -69,7 +68,7 @@ export function DecorPage({ settings, themes, update }: PageProps) {
             <ProgressPreview progress={p} accent={accent} />
           </Card>
           <Card title={t('decor.progress')}>
-            <Field label={t('decor.size')}>
+            <Field label={t('decor.size')} stack>
               <Slider
                 value={p.size}
                 min={16}
@@ -167,36 +166,27 @@ export function DecorPage({ settings, themes, update }: PageProps) {
           />
         </Card>
 
-        <div className="two-col">
-          <div className="col">
-            <Card title={t('decor.scrollbar')} hint={t('decor.scrollbarHint')}>
-              <div className="sb-grid" role="group" aria-label={t('decor.scrollbar')}>
-                {SCROLLBARS.map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    className="kn-tile"
-                    aria-pressed={settings.scrollbar === m}
-                    onClick={() => update((s) => ({ ...s, scrollbar: m }))}
-                  >
-                    <span className={`sb-art ${m}`} aria-hidden="true">
-                      <i />
-                      <i />
-                      <i />
-                      <b />
-                    </span>
-                    <span className="kn-name">{t(`decor.scrollbar.${m}` as MessageKey)}</span>
-                  </button>
-                ))}
-              </div>
-            </Card>
+        <Card title={t('decor.scrollbar')} hint={t('decor.scrollbarHint')}>
+          <div className="sb-grid" role="group" aria-label={t('decor.scrollbar')}>
+            {SCROLLBARS.map((m) => (
+              <button
+                key={m}
+                type="button"
+                className="kn-tile"
+                aria-pressed={settings.scrollbar === m}
+                onClick={() => update((s) => ({ ...s, scrollbar: m }))}
+              >
+                <span className={`sb-art ${m}`} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <b />
+                </span>
+                <span className="kn-name">{t(`decor.scrollbar.${m}` as MessageKey)}</span>
+              </button>
+            ))}
           </div>
-          <div className="col">
-            <Card title={t('player.toolbar')} hint={t('player.toolbarHint')}>
-              <ToolbarPanel look settings={settings} update={update} />
-            </Card>
-          </div>
-        </div>
+        </Card>
       </div>
     </>
   );

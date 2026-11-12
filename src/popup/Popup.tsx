@@ -1,11 +1,7 @@
 import {
   Camera,
-  Captions,
   ExternalLink,
   Search,
-  Shapes,
-  Timer,
-  Volume2,
   Keyboard,
   LayoutGrid,
   MoonStar,
@@ -14,9 +10,7 @@ import {
   RefreshCw,
   Repeat,
   Repeat1,
-  Sparkles,
   SlidersHorizontal,
-  Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GENERIC, isWebUrl, platformForUrl, type Platform } from '../core/platforms.ts';
@@ -254,9 +248,7 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
                   </button>
                 </div>
                 {note ? <p className="pop-note">{note}</p> : null}
-                <h4 className="group-title">
-                  <Timer size={14} /> {t('popup.sleep')}
-                </h4>
+                <h4 className="group-title">{t('popup.sleep')}</h4>
                 <div className="chips sleep-chips">
                   {([null, 15, 30, 60, 'end'] as SleepRequest[]).map((v) => {
                     const on = v === null ? status.sleep === null : v === 'end' ? status.sleep === 'end' : false;
@@ -286,27 +278,17 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
                 ) : null}
               </>
             ) : null}
-            <h4 className="group-title">
-              <Sparkles size={14} /> {t('player.ambient')}
-            </h4>
+            <h4 className="group-title">{t('player.ambient')}</h4>
             <AmbientPanel settings={settings} update={update} compact />
-            <h4 className="group-title">
-              <MoonStar size={14} /> {t('player.cinema')}
-            </h4>
+            <h4 className="group-title">{t('player.cinema')}</h4>
             <CinemaPanel settings={settings} update={update} compact />
-            <h4 className="group-title">
-              <Wand2 size={14} /> {t('player.filters')}
-            </h4>
+            <h4 className="group-title">{t('player.filters')}</h4>
             <FiltersPanel settings={settings} update={update} compact />
             <h4 className="group-title">{t('player.speed')}</h4>
             <SpeedPanel settings={settings} update={update} compact />
-            <h4 className="group-title">
-              <Volume2 size={14} /> {t('player.sound')}
-            </h4>
+            <h4 className="group-title">{t('player.sound')}</h4>
             <SoundPanel settings={settings} update={update} />
-            <h4 className="group-title">
-              <Captions size={14} /> {t('subs.title')}
-            </h4>
+            <h4 className="group-title">{t('subs.title')}</h4>
             <SubtitlesPanel settings={settings} update={update} compact />
           </div>
         ) : null}
@@ -316,9 +298,7 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
               <>
                 {adapterFor(platform.id).progressBar ? (
                   <>
-                    <h4 className="group-title">
-                      <Shapes size={14} /> {t('decor.progress')}
-                    </h4>
+                    <h4 className="group-title">{t('decor.progress')}</h4>
                     <ProgressQuick
                       settings={settings}
                       themes={themes}

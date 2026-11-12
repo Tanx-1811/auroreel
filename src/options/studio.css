@@ -235,38 +235,53 @@ body {
   color: var(--muted);
   margin-bottom: 6px;
 }
+.quick-seed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.quick-seed .color-field {
+  flex: 1;
+  min-width: 0;
+}
 .quick-start {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
 }
 .quick-tile {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-2);
   background: var(--card);
   text-align: left;
   cursor: pointer;
   color: var(--text);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
-button.quick-tile:hover {
+.quick-tile:hover:not(:disabled) {
   background: var(--card-hover);
-  border-color: var(--line-2);
+  border-color: var(--faint);
+}
+.quick-tile > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 .quick-tile strong {
   font-size: 13px;
 }
-.quick-tile .color-field {
-  width: 100%;
-  padding: 4px;
-}
-.quick-tile.picture svg,
 .quick-tile svg {
+  flex: none;
+  margin-top: 1px;
   color: var(--acc);
 }
 .swatches {
@@ -412,7 +427,8 @@ button.quick-tile:hover {
 .site-layout {
   margin-top: 6px;
 }
-.layout-group .group-title {
+.layout-group .group-title,
+.key-group .group-title {
   display: block;
   margin: 16px 0 2px;
   font-size: 11.5px;
@@ -422,7 +438,56 @@ button.quick-tile:hover {
   color: var(--faint);
 }
 
+.key-group .group-title {
+  margin: 18px 0 6px;
+}
+
 /* ——— Schedule ——— */
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line-2);
+  background: var(--card);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.mode-card:hover {
+  background: var(--card-hover);
+}
+.mode-card svg {
+  margin-bottom: 4px;
+  color: var(--muted);
+}
+.mode-card strong {
+  font-size: 14px;
+}
+.mode-card[aria-checked='true'] {
+  border-color: var(--acc);
+  box-shadow: inset 0 0 0 1px var(--acc);
+  background: color-mix(in oklab, var(--acc) 7%, var(--card));
+}
+.mode-card[aria-checked='true'] svg {
+  color: var(--acc);
+}
+@media (max-width: 760px) {
+  .mode-cards {
+    grid-template-columns: 1fr;
+  }
+}
 .slot {
   display: flex;
   flex-direction: column;
@@ -723,11 +788,12 @@ kbd {
   font-size: 18px;
 }
 .home .theme-grid {
-  --card-min: 200px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+/* Fixed columns so the 9 sites and 6 tips fill whole rows. */
 .site-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .site-tile {
@@ -751,7 +817,7 @@ kbd {
 }
 .tip-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .tip-card {
@@ -800,6 +866,20 @@ kbd {
     grid-template-columns: 1fr;
   }
 }
+@media (max-width: 900px) {
+  .home .theme-grid,
+  .site-tiles,
+  .tip-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .home .theme-grid,
+  .site-tiles,
+  .tip-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* ——— Decorations ——— */
 .decor-top {
@@ -843,6 +923,10 @@ kbd {
   .home-decor {
     flex-wrap: wrap;
   }
+  /* Wrap below the icons instead of squeezing the text to a word per line. */
+  .home-decor .grow {
+    min-width: 240px;
+  }
 }
 
 /* Scrollbar styles drawn as tiny pages. */
@@ -850,6 +934,18 @@ kbd {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+}
+.sb-grid .kn-tile {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 14px;
+  min-height: 0;
+  padding: 10px 12px;
+}
+@media (max-width: 900px) {
+  .sb-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .sb-art {
   position: relative;

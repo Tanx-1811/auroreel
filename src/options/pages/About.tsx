@@ -1,4 +1,4 @@
-import { Bug, Code2, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { Bug, Code2, ShieldCheck } from 'lucide-react';
 import { Field, Segmented } from '../../ui/controls.tsx';
 import { useT } from '../../ui/i18n.tsx';
 import { LogoMark } from '../../ui/Logo.tsx';
@@ -34,22 +34,10 @@ export function AboutPage({ settings, update }: PageProps) {
             />
           </Field>
         </Card>
-        <Card
-          title={
-            <span className="with-icon">
-              <Lock size={16} /> {t('about.privacyTitle')}
-            </span>
-          }
-        >
+        <Card title={t('about.privacyTitle')}>
           <p className="muted">{t('about.privacy')}</p>
         </Card>
-        <Card
-          title={
-            <span className="with-icon">
-              <Sparkles size={16} /> {t('about.howTitle')}
-            </span>
-          }
-        >
+        <Card title={t('about.howTitle')}>
           <ul className="muted how">
             <li>{t('about.how1')}</li>
             <li>{t('about.how2')}</li>

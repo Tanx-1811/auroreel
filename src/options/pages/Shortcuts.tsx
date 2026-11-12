@@ -1,11 +1,13 @@
 import { ExternalLink, RotateCcw, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
-  ACTION_IDS,
+  ACTION_GROUPS,
   conflicts,
   DEFAULT_SHORTCUTS,
   formatShortcut,
   shortcutFromEvent,
+  spaceChromeShortcut,
+  type ActionGroup,
   type ActionId,
 } from '../../core/shortcuts.ts';
 import type { MessageKey } from '../../shared/i18n.ts';
@@ -15,6 +17,21 @@ import { Card, PageHead } from '../PageHead.tsx';
 import type { PageProps } from '../types.ts';
 
 const IS_MAC = /Mac/.test(navigator.platform);
+
+const GROUP_TITLE: Record<ActionGroup, MessageKey> = {
+  speed: 'shortcuts.groupSpeed',
+  view: 'shortcuts.groupView',
+  loop: 'shortcuts.groupLoop',
+  theme: 'shortcuts.groupTheme',
+};
+
+/** Chrome's own commands, named in the studio's language (Chrome names them in the browser's). */
+const COMMAND_LABEL: Record<string, MessageKey> = {
+  _execute_action: 'shortcuts.openPopup',
+  'toggle-cinema': 'shortcuts.cmdCinema',
+  'toggle-skin': 'shortcuts.cmdSkin',
+  'next-theme': 'shortcuts.cmdNextTheme',
+};
 
 export function ShortcutsPage({ settings, update }: PageProps) {
   const t = useT();
@@ -70,35 +87,40 @@ export function ShortcutsPage({ settings, update }: PageProps) {
           />
         </Field>
         <div className={`keys ${settings.shortcutsOn ? '' : 'off'}`}>
-          {ACTION_IDS.map((id) => {
-            const value = settings.shortcuts[id];
-            return (
-              <div key={id} className="key-row">
-                <span className="grow">{t(`action.${id}` as MessageKey)}</span>
-                {clash.has(id) ? <span className="badge warn">{t('shortcuts.conflict')}</span> : null}
-                <button
-                  type="button"
-                  className={`kbd-btn ${recording === id ? 'rec' : ''}`}
-                  onClick={() => setRecording(recording === id ? null : id)}
-                >
-                  <span className="sr-only">
-                    {t('shortcuts.change', { action: t(`action.${id}` as MessageKey) })}:{' '}
-                  </span>
-                  {recording === id ? t('shortcuts.press') : <kbd>{formatShortcut(value, IS_MAC)}</kbd>}
-                </button>
-                <button
-                  type="button"
-                  className="icon-btn"
-                  aria-label={t('shortcuts.clear')}
-                  title={t('shortcuts.clear')}
-                  disabled={!value}
-                  onClick={() => void update((s) => ({ ...s, shortcuts: { ...s.shortcuts, [id]: null } }))}
-                >
-                  <X size={15} />
-                </button>
-              </div>
-            );
-          })}
+          {ACTION_GROUPS.map((g) => (
+            <div key={g.id} className="key-group">
+              <div className="group-title">{t(GROUP_TITLE[g.id])}</div>
+              {g.actions.map((id) => {
+                const value = settings.shortcuts[id];
+                return (
+                  <div key={id} className="key-row">
+                    <span className="grow">{t(`action.${id}` as MessageKey)}</span>
+                    {clash.has(id) ? <span className="badge warn">{t('shortcuts.conflict')}</span> : null}
+                    <button
+                      type="button"
+                      className={`kbd-btn ${recording === id ? 'rec' : ''}`}
+                      onClick={() => setRecording(recording === id ? null : id)}
+                    >
+                      <span className="sr-only">
+                        {t('shortcuts.change', { action: t(`action.${id}` as MessageKey) })}:{' '}
+                      </span>
+                      {recording === id ? t('shortcuts.press') : <kbd>{formatShortcut(value, IS_MAC)}</kbd>}
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      aria-label={t('shortcuts.clear')}
+                      title={t('shortcuts.clear')}
+                      disabled={!value}
+                      onClick={() => void update((s) => ({ ...s, shortcuts: { ...s.shortcuts, [id]: null } }))}
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
         <p className="muted small">{t('shortcuts.recordHint')}</p>
       </Card>
@@ -122,8 +144,12 @@ export function ShortcutsPage({ settings, update }: PageProps) {
             .filter((c) => c.name)
             .map((c) => (
               <div key={c.name} className="key-row">
-                <span className="grow">{c.name === '_execute_action' ? t('shortcuts.openPopup') : c.description}</span>
-                <kbd>{c.shortcut || t('shortcuts.notSet')}</kbd>
+                <span className="grow">{COMMAND_LABEL[c.name!] ? t(COMMAND_LABEL[c.name!]!) : c.description}</span>
+                {c.shortcut ? (
+                  <kbd>{spaceChromeShortcut(c.shortcut)}</kbd>
+                ) : (
+                  <span className="muted small">{t('shortcuts.notSet')}</span>
+                )}
               </div>
             ))}
         </div>

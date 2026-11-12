@@ -1,10 +1,10 @@
-import { Cloud, Download, RotateCcw, Upload } from 'lucide-react';
+import { Download, RotateCcw, Upload } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { makeBackup, mergeThemes, parseImport } from '../../core/backup.ts';
 import { defaultSettings } from '../../core/settings.ts';
 import { saveSettings, saveThemes, SYNC_STATUS_KEY } from '../../shared/storage.ts';
 import { syncableThemes } from '../../core/sync.ts';
-import { Field, Switch } from '../../ui/controls.tsx';
+import { Switch } from '../../ui/controls.tsx';
 import { useLang } from '../../ui/i18n.tsx';
 import { useT } from '../../ui/i18n.tsx';
 import { useToast } from '../../ui/toast.tsx';
@@ -38,7 +38,7 @@ export function BackupPage({ settings, themes, update }: PageProps) {
         <SyncCard settings={settings} themes={themes} update={update} />
         <Card
           title={t('backup.export')}
-          hint={t('backup.exportHint', { n: themes.length })}
+          hint={themes.length ? t('backup.exportHint', { n: themes.length }) : t('backup.exportHintNone')}
           actions={
             <button
               type="button"
@@ -65,18 +65,19 @@ export function BackupPage({ settings, themes, update }: PageProps) {
             </button>
           }
         >
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/json,.json"
-            hidden
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              e.target.value = '';
-              if (f) void doImport(f);
-            }}
-          />
+          {null}
         </Card>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          hidden
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            e.target.value = '';
+            if (f) void doImport(f);
+          }}
+        />
         <Card
           title={t('backup.reset')}
           hint={t('backup.resetHint')}
@@ -131,27 +132,23 @@ function SyncCard({ settings, themes, update }: Pick<PageProps, 'settings' | 'th
   const when = status ? new Date(status.at).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US') : '';
   return (
     <Card
-      title={
-        <span className="with-icon">
-          <Cloud size={16} /> {t('backup.sync')}
-        </span>
-      }
+      title={t('backup.sync')}
       hint={t('backup.syncHint')}
-    >
-      <Field label={t('backup.syncSwitch')}>
+      actions={
         <Switch
           checked={settings.sync}
           label={t('backup.syncSwitch')}
           onChange={(v) => update((s) => ({ ...s, sync: v }))}
         />
-      </Field>
+      }
+    >
       {settings.sync && status ? (
-        <p className={`small ${status.ok ? 'muted' : 'warn-text'}`} style={{ margin: '4px 0 0' }}>
+        <p className={`small ${status.ok ? 'muted' : 'warn-text'}`} style={{ margin: '10px 0 0' }}>
           {status.ok ? t('backup.syncOk', { time: when }) : t('backup.syncError', { error: status.error ?? '' })}
         </p>
       ) : null}
       {settings.sync && skipped > 0 ? (
-        <p className="muted small" style={{ margin: '4px 0 0' }}>
+        <p className="muted small" style={{ margin: '6px 0 0' }}>
           {t('backup.syncSkipped', { n: skipped })}
         </p>
       ) : null}

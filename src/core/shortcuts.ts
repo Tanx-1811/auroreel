@@ -41,6 +41,21 @@ export const ACTION_IDS: ActionId[] = [
   'toggleSkin',
 ];
 
+export type ActionGroup = 'speed' | 'view' | 'loop' | 'theme';
+
+/** The actions grouped for the studio's list; every action is in exactly one group. */
+export const ACTION_GROUPS: { id: ActionGroup; actions: ActionId[] }[] = [
+  { id: 'speed', actions: ['speedUp', 'speedDown', 'speedReset', 'rewind', 'advance'] },
+  { id: 'view', actions: ['cinema', 'ambient', 'filters', 'pip'] },
+  { id: 'loop', actions: ['loop', 'abStart', 'abEnd', 'abClear', 'screenshot'] },
+  { id: 'theme', actions: ['themeFromVideo', 'toggleSkin'] },
+];
+
+/** Chrome writes "⌥⇧R" (Mac) or "Alt+Shift+R"; space it out like `formatShortcut` does. */
+export function spaceChromeShortcut(s: string): string {
+  return s.includes('+') ? s.split('+').join(' + ') : [...s].join(' ');
+}
+
 /** Same keys as the popular speed-controller extensions for speed; Alt+letter for the rest. */
 export const DEFAULT_SHORTCUTS: Record<ActionId, string | null> = {
   speedUp: 'KeyD',
