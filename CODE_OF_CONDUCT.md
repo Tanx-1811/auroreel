@@ -1,6 +1,6 @@
 # Code of conduct
 
-Reelskin follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+Auroreel follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 In short: be welcoming and respectful, assume good intent, give and take feedback gracefully, and never harass,
 insult or share anyone's private information. This applies in issues, pull requests, discussions and anywhere you
 represent the project.
@@ -12,6 +12,6 @@ code.
 
 ---
 
-**Tiếng Việt:** Reelskin áp dụng [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+**Tiếng Việt:** Auroreel áp dụng [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 Hãy tôn trọng nhau, góp ý xây dựng, không quấy rối, không xúc phạm, không chia sẻ thông tin riêng tư của người khác.
 Báo cáo vi phạm một cách riêng tư qua **Security → Report a vulnerability** (tiêu đề bắt đầu bằng "Conduct report").

@@ -1,11 +1,23 @@
 {
-  "extName": { "message": "Reelskin — Themes for YouTube & Streaming" },
+  "extName": {
+    "message": "Auroreel — Themes, Ambient Light & Cinema Mode for Video Sites"
+  },
   "extDescription": {
     "message": "Beautiful themes for YouTube, Twitch and streaming sites, plus ambient light, cinema mode, speed and picture controls."
   },
-  "actionTitle": { "message": "Reelskin" },
-  "commandOpen": { "message": "Open Reelskin" },
-  "commandCinema": { "message": "Cinema mode on/off" },
-  "commandSkin": { "message": "Pause the theme in this tab" },
-  "commandNextTheme": { "message": "Next theme" }
+  "actionTitle": {
+    "message": "Auroreel"
+  },
+  "commandOpen": {
+    "message": "Open Auroreel"
+  },
+  "commandCinema": {
+    "message": "Cinema mode on/off"
+  },
+  "commandSkin": {
+    "message": "Pause the theme in this tab"
+  },
+  "commandNextTheme": {
+    "message": "Next theme"
+  }
 }

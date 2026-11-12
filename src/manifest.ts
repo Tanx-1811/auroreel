@@ -21,11 +21,11 @@ export function createManifest(mode: string): chrome.runtime.ManifestV3 {
   const manifest: chrome.runtime.ManifestV3 = {
     manifest_version: 3,
     name: '__MSG_extName__',
-    short_name: 'Reelskin',
+    short_name: 'Auroreel',
     version: pkg.version,
     description: '__MSG_extDescription__',
     // Open source (MIT): Chrome links "Visit website" here.
-    homepage_url: 'https://github.com/Tanx-1811/reelskin',
+    homepage_url: 'https://github.com/Tanx-1811/auroreel',
     default_locale: 'en',
     // scrollbar-color, color-mix(), :has() and clip-path: path(evenodd, …).
     minimum_chrome_version: '121',

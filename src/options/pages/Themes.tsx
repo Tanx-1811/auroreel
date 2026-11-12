@@ -147,7 +147,7 @@ export function ThemesPage({ settings, themes, update, saveTheme, removeTheme }:
                     className="icon-btn"
                     title={t('common.export')}
                     aria-label={t('common.export')}
-                    onClick={() => downloadJson(makeThemeFile(theme), `${theme.name}.reelskin-theme.json`)}
+                    onClick={() => downloadJson(makeThemeFile(theme), `${theme.name}.auroreel-theme.json`)}
                   >
                     <Download size={15} />
                   </button>

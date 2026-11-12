@@ -1,8 +1,8 @@
 # Security policy
 
-Reelskin restyles pages on the supported video sites and adds player tools. It has no server and collects nothing,
+Auroreel restyles pages on the supported video sites and adds player tools. It has no server and collects nothing,
 but it runs on those sites and stores your themes and settings. Please report anything that could let a web page,
-a theme file or a backup make Reelskin run code, read data it shouldn't, reach sites beyond its permissions, or leak
+a theme file or a backup make Auroreel run code, read data it shouldn't, reach sites beyond its permissions, or leak
 what you watch.
 
 ## Reporting a vulnerability

@@ -34,6 +34,6 @@ const sections = BUNDLED.map((name) => {
 const out = join(root, 'public', 'THIRD_PARTY_NOTICES.txt');
 writeFileSync(
   out,
-  `Reelskin is MIT-licensed (see LICENSE in the source repository). It bundles the following third-party software and fonts.\n\n${sections.join(`\n\n${'='.repeat(78)}\n\n`)}\n`,
+  `Auroreel is MIT-licensed (see LICENSE in the source repository). It bundles the following third-party software and fonts.\n\n${sections.join(`\n\n${'='.repeat(78)}\n\n`)}\n`,
 );
 console.log(`Wrote ${out}`);

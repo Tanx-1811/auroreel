@@ -59,7 +59,7 @@ function isTyping(e: Event): boolean {
 
 export class PlayerTools {
   private cfg: PlayerConfig | null = null;
-  private host = el('reelskin-ui' as 'div');
+  private host = el('auroreel-ui' as 'div');
   private root = this.host.attachShadow({ mode: __RS_E2E__ ? 'open' : 'closed' });
   private bar = el('div', { class: 'bar', role: 'toolbar' });
   private panel = el('div', { class: 'panel', role: 'dialog' });
@@ -90,7 +90,7 @@ export class PlayerTools {
   skinPaused = () => false;
 
   constructor() {
-    this.host.dataset.reelskin = 'ui';
+    this.host.dataset.auroreel = 'ui';
     const style = el('style', { text: UI_CSS });
     this.root.append(style, this.bar, this.panel, this.toastEl, this.tip);
     this.cinema.onExit = () => this.setCinema(false);
@@ -283,7 +283,7 @@ export class PlayerTools {
   private buildBar() {
     this.bar.replaceChildren();
     this.buttons.clear();
-    this.bar.setAttribute('aria-label', 'Reelskin');
+    this.bar.setAttribute('aria-label', 'Auroreel');
     this.speedLabel = this.button(
       'speed',
       this.label('page.speedReset', 'speedReset'),

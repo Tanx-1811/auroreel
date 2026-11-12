@@ -1,4 +1,4 @@
-# Contributing to Reelskin
+# Contributing to Auroreel
 
 Thanks for helping! Bug reports, site fixes, new themes and translations are all welcome.
 

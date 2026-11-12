@@ -24,7 +24,7 @@ export function WelcomePage({ settings, update }: PageProps) {
   const t = useT();
   const themes = FEATURED.map((id) => BUILT_IN_THEMES.find((x) => x.id === id)!);
   useEffect(() => {
-    document.title = `${t('welcome.title')} · Reelskin`;
+    document.title = `${t('welcome.title')} · Auroreel`;
   }, [t]);
   const finish = (url?: string) => {
     void update((s) => ({ ...s, onboarded: true })).then(() => {
@@ -38,7 +38,7 @@ export function WelcomePage({ settings, update }: PageProps) {
       <header className="welcome-hero">
         <LogoMark size={72} />
         <h1 className="display">
-          {t('welcome.title')} <span className="grad-text">Reelskin</span>
+          {t('welcome.title')} <span className="grad-text">Auroreel</span>
         </h1>
         <p className="muted">{t('welcome.subtitle')}</p>
       </header>

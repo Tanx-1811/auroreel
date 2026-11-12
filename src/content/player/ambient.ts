@@ -34,7 +34,7 @@ export class Ambient {
   constructor() {
     this.canvas.width = W;
     this.canvas.height = H;
-    this.canvas.dataset.reelskin = 'ambient';
+    this.canvas.dataset.auroreel = 'ambient';
     this.canvas.setAttribute('aria-hidden', 'true');
     Object.assign(this.canvas.style, {
       position: 'fixed',

@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-/** Reelskin's mark: a play triangle made of three theme bands, on a night tile. */
+/** Auroreel's mark: a play triangle made of three theme bands, on a night tile. */
 export function LogoMark({ size = 28 }: { size?: number }) {
   const id = useId().replace(/:/g, '');
   return (

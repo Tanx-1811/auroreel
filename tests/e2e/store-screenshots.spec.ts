@@ -36,7 +36,7 @@ const COPY: Record<Lang, Record<'themes' | 'ambient' | 'studio' | 'maker' | 'cin
     maker: {
       title: 'Make a theme from any picture',
       highlight: 'any picture',
-      subtitle: 'Reelskin picks a readable palette from your photo and previews it live.',
+      subtitle: 'Auroreel picks a readable palette from your photo and previews it live.',
     },
     cinema: {
       title: 'Cinema mode & picture filters',
@@ -63,7 +63,7 @@ const COPY: Record<Lang, Record<'themes' | 'ambient' | 'studio' | 'maker' | 'cin
     maker: {
       title: 'Tạo chủ đề từ bất kỳ bức ảnh nào',
       highlight: 'bất kỳ bức ảnh nào',
-      subtitle: 'Reelskin chọn bảng màu dễ đọc từ ảnh của bạn và xem trước ngay lập tức.',
+      subtitle: 'Auroreel chọn bảng màu dễ đọc từ ảnh của bạn và xem trước ngay lập tức.',
     },
     cinema: {
       title: 'Chế độ rạp & bộ lọc màu hình',
@@ -106,7 +106,7 @@ async function hoverVideo(page: Page) {
   const box = (await page.locator('video').boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.55);
   await page.mouse.move(box.x + box.width * 0.52, box.y + box.height * 0.56);
-  await expect(page.locator('reelskin-ui .bar')).toHaveClass(/show/);
+  await expect(page.locator('auroreel-ui .bar')).toHaveClass(/show/);
   await page.waitForTimeout(250);
 }
 
@@ -134,7 +134,7 @@ for (const lang of ['en', 'vi'] as const) {
     await home.setViewportSize(VIEW);
     await home.goto(site('home'));
     await expect
-      .poll(() => home.evaluate(() => document.getElementById('reelskin-engine')?.textContent?.length ?? 0))
+      .poll(() => home.evaluate(() => document.getElementById('auroreel-engine')?.textContent?.length ?? 0))
       .toBeGreaterThan(100);
     await home.waitForTimeout(600);
     const homeShot = await b64(home);
@@ -165,7 +165,7 @@ for (const lang of ['en', 'vi'] as const) {
     await watch.setViewportSize(VIEW);
     await watch.goto(site('watch'));
     await holdVideo(watch);
-    await expect(watch.locator('canvas[data-reelskin="ambient"]')).toBeAttached();
+    await expect(watch.locator('canvas[data-auroreel="ambient"]')).toBeAttached();
     await watch.waitForTimeout(1600);
     await hoverVideo(watch);
     await compose(context, `${lang}-2-ambient.png`, {
@@ -185,7 +185,7 @@ for (const lang of ['en', 'vi'] as const) {
     await compose(context, `${lang}-3-studio.png`, {
       lang,
       ...copy.studio,
-      address: 'Reelskin Studio',
+      address: 'Auroreel Studio',
       shot: await b64(studio),
     });
     await studio.close();
@@ -208,7 +208,7 @@ for (const lang of ['en', 'vi'] as const) {
     await compose(context, `${lang}-4-maker.png`, {
       lang,
       ...copy.maker,
-      address: 'Reelskin Studio',
+      address: 'Auroreel Studio',
       shot: await b64(maker),
     });
     await maker.close();
@@ -221,12 +221,12 @@ for (const lang of ['en', 'vi'] as const) {
     await holdVideo(cinema, 4.2);
     await cinema.locator('#title').click();
     await cinema.keyboard.press('Alt+KeyC');
-    await expect(cinema.locator('div[data-reelskin="cinema"]')).toBeAttached();
+    await expect(cinema.locator('div[data-auroreel="cinema"]')).toBeAttached();
     await cinema.waitForTimeout(1700);
     await hoverVideo(cinema);
-    await cinema.locator('reelskin-ui button[data-id="filters"]').click();
-    await cinema.locator('reelskin-ui .panel .chip').nth(2).click();
-    await expect(cinema.locator('reelskin-ui .panel')).toHaveClass(/show/);
+    await cinema.locator('auroreel-ui button[data-id="filters"]').click();
+    await cinema.locator('auroreel-ui .panel .chip').nth(2).click();
+    await expect(cinema.locator('auroreel-ui .panel')).toHaveClass(/show/);
     await cinema.waitForTimeout(400);
     await compose(context, `${lang}-5-cinema.png`, {
       lang,

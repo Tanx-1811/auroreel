@@ -1,17 +1,17 @@
 /**
- * The two <style> elements Reelskin adds to a page: the engine's recoloured
+ * The two <style> elements Auroreel adds to a page: the engine's recoloured
  * custom properties first, then the static stylesheet (tokens, backdrop,
  * site rules), so the static rules win where both set a property.
  * Elements inserted from a content script are not subject to the page's CSP.
  */
 export class Styles {
-  private engine = this.make('reelskin-engine');
-  private main = this.make('reelskin-main');
+  private engine = this.make('auroreel-engine');
+  private main = this.make('auroreel-main');
 
   private make(id: string): HTMLStyleElement {
     const el = document.createElement('style');
     el.id = id;
-    el.dataset.reelskin = '';
+    el.dataset.auroreel = '';
     return el;
   }
 
@@ -63,7 +63,7 @@ export class Styles {
       const added = records.some((r) =>
         [...r.addedNodes].some(
           (n) =>
-            (n instanceof HTMLStyleElement || n instanceof HTMLLinkElement) && !(n as HTMLElement).dataset.reelskin,
+            (n instanceof HTMLStyleElement || n instanceof HTMLLinkElement) && !(n as HTMLElement).dataset.auroreel,
         ),
       );
       if (!added) return;
@@ -92,7 +92,7 @@ export class Styles {
     this.setEngine('');
   }
 
-  /** Runs `fn` with Reelskin's styles switched off (to read the site's own values). */
+  /** Runs `fn` with Auroreel's styles switched off (to read the site's own values). */
   withoutOurs<T>(fn: () => T): T {
     const sheets = [this.engine.sheet, this.main.sheet];
     for (const s of sheets) if (s) s.disabled = true;

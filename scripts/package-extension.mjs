@@ -1,4 +1,4 @@
-// Zips the production build (dist/) into release/reelskin-<version>.zip for the Chrome Web Store.
+// Zips the production build (dist/) into release/auroreel-<version>.zip for the Chrome Web Store.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -20,7 +20,7 @@ if (manifest.host_permissions?.some((h) => h === '<all_urls>' || h.includes('127
 
 const out = resolve(root, 'release');
 mkdirSync(out, { recursive: true });
-const file = resolve(out, `reelskin-${manifest.version}.zip`);
+const file = resolve(out, `auroreel-${manifest.version}.zip`);
 rmSync(file, { force: true });
 execFileSync('zip', ['-r', '-X', '-q', file, '.', '-x', '*.map', '-x', '.DS_Store'], { cwd: dist, stdio: 'inherit' });
 console.log(`Packaged ${file}`);

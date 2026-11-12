@@ -79,5 +79,5 @@ test('backup exports a file', async ({ openExtensionPage, setSettings }) => {
   const page = await openExtensionPage('options/options.html#/backup');
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
-  expect((await download).suggestedFilename()).toMatch(/^reelskin-backup-\d{4}-\d{2}-\d{2}\.json$/);
+  expect((await download).suggestedFilename()).toMatch(/^auroreel-backup-\d{4}-\d{2}-\d{2}\.json$/);
 });

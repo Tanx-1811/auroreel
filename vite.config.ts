@@ -7,9 +7,9 @@ import { createManifest } from './src/manifest.ts';
 
 const src = resolve(import.meta.dirname, 'src');
 
-/** `REELSKIN_OUT` lets parallel work build into a scratch folder without clobbering `dist`. */
+/** `AUROREEL_OUT` lets parallel work build into a scratch folder without clobbering `dist`. */
 const outDirFor = (mode: string) =>
-  resolve(import.meta.dirname, process.env.REELSKIN_OUT ?? (mode === 'e2e' ? 'dist-e2e' : 'dist'));
+  resolve(import.meta.dirname, process.env.AUROREEL_OUT ?? (mode === 'e2e' ? 'dist-e2e' : 'dist'));
 
 const defines = (mode: string) => ({
   __RS_E2E__: JSON.stringify(mode === 'e2e'),
@@ -18,7 +18,7 @@ const defines = (mode: string) => ({
 
 function manifestPlugin(mode: string): Plugin {
   return {
-    name: 'reelskin:manifest',
+    name: 'auroreel:manifest',
     generateBundle() {
       this.emitFile({
         type: 'asset',
@@ -35,7 +35,7 @@ function manifestPlugin(mode: string): Plugin {
  */
 function fontSubsetsPlugin(): Plugin {
   return {
-    name: 'reelskin:font-subsets',
+    name: 'auroreel:font-subsets',
     enforce: 'pre',
     transform(code, id) {
       if (!/[\\/]@fontsource[\\/].+\.css$/.test(id)) return null;
@@ -50,7 +50,7 @@ function fontSubsetsPlugin(): Plugin {
 /** Page fonts the themes offer, copied to dist/fonts (web-accessible on the supported sites). */
 function pageFontsPlugin(outDir: string): Plugin {
   return {
-    name: 'reelskin:page-fonts',
+    name: 'auroreel:page-fonts',
     apply: 'build',
     closeBundle() {
       mkdirSync(resolve(outDir, 'fonts'), { recursive: true });
@@ -85,11 +85,11 @@ function scriptsPlugin(mode: string, outDir: string): Plugin {
         target: 'chrome121',
         minify: mode === 'production',
         sourcemap: mode === 'production' ? false : 'inline',
-        lib: { entry: resolve(src, entry), formats: [format], name: 'reelskin', fileName: () => fileName },
+        lib: { entry: resolve(src, entry), formats: [format], name: 'auroreel', fileName: () => fileName },
       },
     });
   return {
-    name: 'reelskin:scripts',
+    name: 'auroreel:scripts',
     apply: 'build',
     async closeBundle() {
       await one('background/service-worker.ts', 'service-worker.js', 'es');

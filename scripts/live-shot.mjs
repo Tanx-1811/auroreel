@@ -38,7 +38,7 @@ if (process.argv.includes('--yt-dark')) {
 }
 const page = await context.newPage();
 page.on('console', (m) => {
-  if (m.type() === 'error' && /reelskin|content\.js/i.test(m.text())) console.log('console:', m.text());
+  if (m.type() === 'error' && /auroreel|content\.js/i.test(m.text())) console.log('console:', m.text());
 });
 page.on('pageerror', (e) => console.log('pageerror:', e.message));
 await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });

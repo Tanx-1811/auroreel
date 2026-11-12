@@ -45,8 +45,8 @@ test('a site can be switched off, and Alt+T pauses one tab', async ({ openSite, 
   await page.keyboard.press('Alt+KeyT');
   await expect.poll(() => page.evaluate(cssVar('--rs-bg'))).toBe('#0d0b1e');
   await setSettings({ sites: { youtube: { enabled: false } } });
-  await expect.poll(() => page.evaluate(() => document.getElementById('reelskin-main')?.textContent ?? '')).toBe('');
-  await expect.poll(() => page.evaluate(() => document.getElementById('reelskin-engine')?.textContent ?? '')).toBe('');
+  await expect.poll(() => page.evaluate(() => document.getElementById('auroreel-main')?.textContent ?? '')).toBe('');
+  await expect.poll(() => page.evaluate(() => document.getElementById('auroreel-engine')?.textContent ?? '')).toBe('');
 });
 
 test('layout options hide parts of the page, with or without a theme', async ({ openSite, setSettings }) => {

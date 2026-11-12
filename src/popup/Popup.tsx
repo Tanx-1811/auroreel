@@ -112,7 +112,7 @@ function PopupBody({ settings, themes, update }: { settings: Settings; themes: T
       <header className="pop-head">
         <LogoMark size={30} />
         <div className="pop-title">
-          <strong>Reelskin</strong>
+          <strong>Auroreel</strong>
           <span className="muted small">{settings.enabled ? t('popup.on') : t('popup.off')}</span>
         </div>
         <Switch

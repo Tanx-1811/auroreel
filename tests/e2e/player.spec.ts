@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, playVideo, test } from './fixtures';
 
 const rate = (page: Page) => page.evaluate(() => document.querySelector('video')!.playbackRate);
-const ui = (page: Page) => page.locator('reelskin-ui');
+const ui = (page: Page) => page.locator('auroreel-ui');
 
 async function hoverVideo(page: Page) {
   const box = (await page.locator('video').boundingBox())!;
@@ -45,7 +45,7 @@ test('cinema mode dims the page around the video and leaves with Esc', async ({ 
   await playVideo(page);
   await page.locator('#title').click();
   await page.keyboard.press('Alt+KeyC');
-  const overlay = page.locator('div[data-reelskin="cinema"]');
+  const overlay = page.locator('div[data-auroreel="cinema"]');
   await expect(overlay).toBeAttached();
   await expect.poll(() => overlay.evaluate((el) => getComputedStyle(el).opacity)).toBe('0.88');
   expect(await overlay.evaluate((el) => el.style.clipPath)).toContain('evenodd');
@@ -90,7 +90,7 @@ test('loop and ambient light', async ({ openSite, setSettings }) => {
   await page.keyboard.press('Alt+KeyL');
   expect(await page.evaluate(() => document.querySelector('video')!.loop)).toBe(false);
   await setSettings({ player: { ambient: { enabled: true, intensity: 80 } } });
-  const glow = page.locator('canvas[data-reelskin="ambient"]');
+  const glow = page.locator('canvas[data-auroreel="ambient"]');
   await expect(glow).toBeAttached();
   await expect.poll(() => glow.evaluate((el) => getComputedStyle(el).opacity)).toBe('0.8');
   await expect.poll(() => glow.evaluate((el) => el.getBoundingClientRect().width)).toBeGreaterThan(800);

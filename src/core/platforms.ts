@@ -1,5 +1,5 @@
 /**
- * The sites Reelskin knows. "full" sites get the whole treatment (deep
+ * The sites Auroreel knows. "full" sites get the whole treatment (deep
  * recolouring, backdrop, layout options); "basic" sites get the background,
  * accent, scrollbars and every player tool. Any other site can get the player
  * tools once the user allows it (optional host permission).

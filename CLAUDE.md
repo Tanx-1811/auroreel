@@ -1,4 +1,4 @@
-# Reelskin — notes for AI assistants
+# Auroreel — notes for AI assistants
 
 Chrome extension (MV3) that restyles YouTube, Twitch and streaming sites with themes and adds player tools (ambient
 light, cinema mode, speed, picture filters, capture, PiP, shortcuts). React 19 + TypeScript + Vite 8 for the popup and

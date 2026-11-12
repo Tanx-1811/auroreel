@@ -1,4 +1,4 @@
-# Reelskin brand kit
+# Auroreel brand kit
 
 Everything here is generated — edit the sources, then run the scripts:
 
@@ -28,7 +28,7 @@ Everything here is generated — edit the sources, then run the scripts:
 Screenshots: 1 themes on a video site + popup · 2 ambient light and the floating toolbar · 3 the studio's theme
 gallery · 4 theme maker building a theme from a picture · 5 cinema mode with picture filters.
 
-Promo images never show real sites' logos or screenshots — only Reelskin's own drawings and the made-up "Viewly" site.
+Promo images never show real sites' logos or screenshots — only Auroreel's own drawings and the made-up "Viewly" site.
 
 ## Colours
 

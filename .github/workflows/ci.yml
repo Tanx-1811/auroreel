@@ -31,7 +31,7 @@ jobs:
       - run: npm run package
       - uses: actions/upload-artifact@v7
         with:
-          name: reelskin-extension
+          name: auroreel-extension
           path: release/*.zip
           if-no-files-found: error
 

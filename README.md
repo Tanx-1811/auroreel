@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="brand/social/readme-banner-1600x500.png" alt="Reelskin — make every screen your cinema" width="800">
+  <img src="brand/social/readme-banner-1600x500.png" alt="Auroreel — make every screen your cinema" width="800">
 </p>
 
-# Reelskin
+# Auroreel
 
 **Themes for YouTube, Twitch and streaming sites — plus ambient light, cinema mode and player tools.**
 A Chrome extension (Manifest V3). Vietnamese and English.
 
-> 🇻🇳 **Tiếng Việt:** Reelskin làm đẹp YouTube, Twitch và các trang xem phim (Netflix, Prime Video, Disney+,
+> 🇻🇳 **Tiếng Việt:** Auroreel làm đẹp YouTube, Twitch và các trang xem phim (Netflix, Prime Video, Disney+,
 > Vimeo, FPT Play, VieON…): 24 chủ đề có sẵn, tự tạo chủ đề (kể cả từ một bức ảnh), ánh sáng nền quanh video,
 > chế độ rạp, chỉnh tốc độ, bộ lọc màu hình, chụp khung hình, hình trong hình, ẩn Shorts/bình luận/đề xuất, tự
 > đổi chủ đề sáng/tối theo giờ, đồng bộ qua Chrome. Không tài khoản, không theo dõi — mọi thứ nằm trên máy bạn.
@@ -50,7 +50,7 @@ npx playwright install chromium   # once
 npm run test:e2e       # end-to-end + accessibility on Chrome for Testing (local test pages)
 npm run test:live      # checks against the real YouTube/Twitch (network, by hand)
 npm run lint && npm run format:check
-npm run package        # → release/reelskin-<version>.zip for the Chrome Web Store
+npm run package        # → release/auroreel-<version>.zip for the Chrome Web Store
 npm run brand          # brand kit (logo, promo tiles) → brand/
 npm run screenshots    # store screenshots (EN/VI) → brand/store/screenshots/
 ```
@@ -63,5 +63,5 @@ How it works: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Store listing copy: 
 Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Security: [SECURITY.md](SECURITY.md) · Publishing:
 [docs/PUBLISHING.md](docs/PUBLISHING.md) · License: [MIT](LICENSE).
 
-Reelskin is an independent project, not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo,
+Auroreel is an independent project, not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo,
 FPT Play or VieON.

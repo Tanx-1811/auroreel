@@ -6,7 +6,7 @@
  *    modes, how properties are used (text or background) and — on sites that
  *    hard-code colours (`rewrite`) — every rule with a literal colour.
  *    Cross-origin stylesheets are fetched when the adapter asks (`fetchCss`).
- * 2. Reads the current values of the themeable properties with Reelskin's
+ * 2. Reads the current values of the themeable properties with Auroreel's
  *    styles switched off.
  * 3. Writes the replacements into the engine <style>.
  *
@@ -118,7 +118,7 @@ export class Engine {
         for (const n of r.addedNodes) {
           if (n instanceof HTMLLinkElement && n.rel === 'stylesheet') {
             n.addEventListener('load', () => this.scheduleScan(80), { once: true });
-          } else if (n instanceof HTMLStyleElement && !n.dataset.reelskin) this.scheduleScan(150);
+          } else if (n instanceof HTMLStyleElement && !n.dataset.auroreel) this.scheduleScan(150);
         }
       }
     });
@@ -296,7 +296,7 @@ export class Engine {
     };
 
     for (const sheet of sheets) {
-      if ((sheet.ownerNode as HTMLElement | null)?.dataset?.reelskin !== undefined) continue;
+      if ((sheet.ownerNode as HTMLElement | null)?.dataset?.auroreel !== undefined) continue;
       let list: CSSRuleList;
       try {
         list = sheet.cssRules;

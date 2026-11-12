@@ -5,8 +5,10 @@ Languages: English (default) and Vietnamese (`public/_locales/vi`).
 
 ## Name (≤ 75)
 
-- EN: `Reelskin — Themes for YouTube & Streaming` (from `_locales/en/messages.json`)
-- VI: `Reelskin — Giao diện cho YouTube & web xem phim`
+The brand name comes first; what it does follows the dash.
+
+- EN: `Auroreel — Themes, Ambient Light & Cinema Mode for Video Sites` (from `_locales/en/messages.json`)
+- VI: `Auroreel — Giao diện, ánh sáng nền & chế độ rạp cho web xem phim`
 
 ## Summary (≤ 132)
 
@@ -17,18 +19,18 @@ Languages: English (default) and Vietnamese (`public/_locales/vi`).
 
 Make every screen your cinema.
 
-Reelskin restyles YouTube, Twitch and your favourite streaming sites with beautiful themes — and adds the player tools
+Auroreel restyles YouTube, Twitch and your favourite streaming sites with beautiful themes — and adds the player tools
 you always wanted.
 
 🎨 24 THEMES, ONE CLICK
 • Dark and light themes with aurora glows, gradients or your own picture behind the page
 • Frosted top bar and menus, rounded thumbnails, accent-coloured progress bar and logo
 • Optional fonts with full Vietnamese support: Be Vietnam Pro, Lexend, Nunito
-• Deep recolouring: Reelskin reads the site's own colour tokens, so every corner follows your theme
+• Deep recolouring: Auroreel reads the site's own colour tokens, so every corner follows your theme
 
 🖌️ THEME MAKER
 • Six colours, live preview and a readability check
-• Start from one colour, "Surprise me", or a picture — Reelskin extracts its palette and uses it as the backdrop
+• Start from one colour, "Surprise me", or a picture — Auroreel extracts its palette and uses it as the backdrop
 • Export and share themes as files
 
 🎬 PLAYER TOOLS (any video)
@@ -56,25 +58,25 @@ background and fonts) · any other site with a video (player tools, optional).
 ☁️ SYNC (OPTIONAL)
 Keep settings and themes the same on every computer signed in to Chrome.
 
-Reelskin is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney,
+Auroreel is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney,
 Vimeo, FPT Play or VieON.
 
 ## Mô tả — Tiếng Việt
 
 Biến mọi màn hình thành rạp phim của bạn.
 
-Reelskin khoác áo mới cho YouTube, Twitch và các trang xem phim bạn yêu thích — kèm bộ công cụ trình phát bạn luôn
+Auroreel khoác áo mới cho YouTube, Twitch và các trang xem phim bạn yêu thích — kèm bộ công cụ trình phát bạn luôn
 mong có.
 
 🎨 24 CHỦ ĐỀ, MỘT CÚ BẤM
 • Chủ đề tối và sáng với nền cực quang, chuyển màu hoặc ảnh của riêng bạn
 • Thanh trên cùng và menu hiệu ứng kính, ảnh thu nhỏ bo góc, thanh tiến trình và logo theo màu nhấn
 • Phông chữ tuỳ chọn hỗ trợ tiếng Việt đầy đủ: Be Vietnam Pro, Lexend, Nunito
-• Đổi màu sâu: Reelskin đọc chính bảng màu của trang nên mọi góc đều theo chủ đề
+• Đổi màu sâu: Auroreel đọc chính bảng màu của trang nên mọi góc đều theo chủ đề
 
 🖌️ TẠO CHỦ ĐỀ
 • Sáu màu, xem trước trực tiếp và kiểm tra độ dễ đọc
-• Bắt đầu từ một màu, "Ngẫu nhiên", hoặc một bức ảnh — Reelskin lấy bảng màu từ ảnh và dùng ảnh làm nền
+• Bắt đầu từ một màu, "Ngẫu nhiên", hoặc một bức ảnh — Auroreel lấy bảng màu từ ảnh và dùng ảnh làm nền
 • Xuất và chia sẻ chủ đề dưới dạng file
 
 🎬 CÔNG CỤ TRÌNH PHÁT (mọi video)
@@ -102,16 +104,16 @@ chữ) · mọi trang có video khác (công cụ trình phát, tuỳ chọn).
 ☁️ ĐỒNG BỘ (TUỲ CHỌN)
 Giữ cài đặt và chủ đề giống nhau trên mọi máy đăng nhập cùng tài khoản Chrome.
 
-Reelskin là dự án độc lập, không liên kết với YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play hay VieON.
+Auroreel là dự án độc lập, không liên kết với YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play hay VieON.
 
 ## Privacy practices (dashboard answers)
 
 - **Single purpose:** "Customise the look of video sites and add player tools (themes, ambient light, cinema mode,
   speed and picture controls)."
 - **Host permissions** (www.youtube.com, music.youtube.com, www.twitch.tv, www.netflix.com, www.primevideo.com,
-  www.disneyplus.com, vimeo.com, fptplay.vn, vieon.vn): "Reelskin applies the user's theme and player tools on these
+  www.disneyplus.com, vimeo.com, fptplay.vn, vieon.vn): "Auroreel applies the user's theme and player tools on these
   video sites. It reads their stylesheets (colours) and the video element; no page content is collected or sent."
-- **\*.vieon.vn:** "VieON serves its stylesheets from its own CDN without cross-origin access; Reelskin's service
+- **\*.vieon.vn:** "VieON serves its stylesheets from its own CDN without cross-origin access; Auroreel's service
   worker downloads those public stylesheets to read their colours. Nothing is sent."
 - **storage:** "Stores the user's settings and themes locally, and in Chrome Sync only if the user turns sync on."
 - **scripting:** "Registers the player-tools content script on all sites, only after the user grants the optional
@@ -119,7 +121,7 @@ Reelskin là dự án độc lập, không liên kết với YouTube, Google, Tw
 - **Optional host permission (all sites):** "Requested from a button when the user wants the player tools (speed,
   filters, cinema mode) on every site with a video."
 - **Remote code:** No. **Data usage:** none collected (tick nothing). Certify the three disclosures.
-- **Privacy policy URL:** `https://github.com/Tanx-1811/reelskin/blob/main/docs/PRIVACY.md` (once the repository is
+- **Privacy policy URL:** `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md` (once the repository is
   public).
 
 ## Assets

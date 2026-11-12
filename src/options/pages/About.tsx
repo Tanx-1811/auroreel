@@ -14,7 +14,7 @@ export function AboutPage({ settings, update }: PageProps) {
       <div className="about-hero">
         <LogoMark size={64} />
         <div>
-          <h2 className="display">Reelskin</h2>
+          <h2 className="display">Auroreel</h2>
           <p className="muted">{t('app.tagline')}</p>
           <span className="badge">{t('about.version', { v: version })}</span>
         </div>
@@ -58,13 +58,13 @@ export function AboutPage({ settings, update }: PageProps) {
           </ul>
         </Card>
         <div className="about-links">
-          <a className="btn sm" href="https://github.com/Tanx-1811/reelskin" target="_blank" rel="noreferrer">
+          <a className="btn sm" href="https://github.com/Tanx-1811/auroreel" target="_blank" rel="noreferrer">
             <Code2 size={14} />
             {t('about.source')}
           </a>
           <a
             className="btn sm"
-            href="https://github.com/Tanx-1811/reelskin/issues/new/choose"
+            href="https://github.com/Tanx-1811/auroreel/issues/new/choose"
             target="_blank"
             rel="noreferrer"
           >
@@ -73,7 +73,7 @@ export function AboutPage({ settings, update }: PageProps) {
           </a>
           <a
             className="btn sm"
-            href="https://github.com/Tanx-1811/reelskin/blob/main/docs/PRIVACY.md"
+            href="https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md"
             target="_blank"
             rel="noreferrer"
           >

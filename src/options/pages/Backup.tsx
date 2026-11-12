@@ -45,7 +45,7 @@ export function BackupPage({ settings, themes, update }: PageProps) {
               className="btn primary"
               onClick={() => {
                 const date = new Date().toISOString().slice(0, 10);
-                downloadJson(makeBackup(settings, themes), `reelskin-backup-${date}.json`);
+                downloadJson(makeBackup(settings, themes), `auroreel-backup-${date}.json`);
               }}
             >
               <Download size={15} />

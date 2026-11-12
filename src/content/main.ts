@@ -23,7 +23,7 @@ declare const __RS_E2E__: boolean;
 
 declare global {
   interface Window {
-    __reelskin?: boolean;
+    __auroreel?: boolean;
   }
 }
 
@@ -38,8 +38,8 @@ function detectPlatform(): Platform {
 
 function main() {
   // Registered scripts and the manifest's can both match after an update; run once.
-  if (window.__reelskin) return;
-  window.__reelskin = true;
+  if (window.__auroreel) return;
+  window.__auroreel = true;
 
   const platform = detectPlatform();
   const base = adapterFor(platform.id);

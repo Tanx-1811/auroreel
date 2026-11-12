@@ -50,7 +50,7 @@ function themeCss({ theme }: CssContext): string {
   const glass = hasBackdrop(theme);
   let css = fixedTokens();
   // YouTube's own ambient mode paints big canvases (black until the video plays) over the
-  // backdrop; Reelskin's ambient light replaces it while a theme is on.
+  // backdrop; Auroreel's ambient light replaces it while a theme is on.
   css += hide(['#cinematics', '#cinematics-container']);
   if (glass) {
     css += rule(

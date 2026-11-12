@@ -1,4 +1,4 @@
-# Nộp Reelskin lên Chrome Web Store — hướng dẫn từng bước
+# Nộp Auroreel lên Chrome Web Store — hướng dẫn từng bước
 
 Mọi thứ cần nộp đã có sẵn trong repo. Những việc chỉ chủ sở hữu làm được: đăng ký tài khoản nhà phát triển (phí một
 lần), chọn email hỗ trợ, công khai repo (để có địa chỉ chính sách quyền riêng tư) và bấm gửi duyệt.
@@ -7,7 +7,7 @@ lần), chọn email hỗ trợ, công khai repo (để có địa chỉ chính 
 
 | Cần                       | Ở đâu                                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------------------- |
-| Gói tải lên               | `release/reelskin-<phiên bản>.zip` — tạo lại bằng `npm run package`                      |
+| Gói tải lên               | `release/auroreel-<phiên bản>.zip` — tạo lại bằng `npm run package`                      |
 | Biểu tượng cửa hàng 128px | `brand/store/store-icon-128.png`                                                         |
 | Ảnh chụp 1280×800         | `brand/store/screenshots/vi-1…5-*.png` (tiếng Việt) và `en-1…5-*.png` (tiếng Anh)        |
 | Ảnh quảng bá nhỏ 440×280  | `brand/store/promo-small-440x280-vi.png` / `promo-small-440x280.png`                     |
@@ -31,7 +31,7 @@ npm run package
 
 ## 2. Tải gói lên
 
-1. Bấm **New item** → chọn `release/reelskin-1.0.0.zip`.
+1. Bấm **New item** → chọn `release/auroreel-1.0.0.zip`.
 2. Cửa hàng tự đọc tên, mô tả ngắn (từ `public/_locales/*/messages.json`) và biểu tượng.
 
 ## 3. Thẻ "Store listing"
@@ -40,7 +40,7 @@ npm run package
   (Add localization → Vietnamese) và dán phần _Mô tả — Tiếng Việt_.
 - **Danh mục:** Make Chrome Yours. **Ngôn ngữ:** English, Vietnamese.
 - **Hình ảnh:** biểu tượng 128px, 5 ảnh chụp (bản EN cho tiếng Anh, bản VI cho tiếng Việt), ảnh quảng bá nhỏ và lớn.
-- **Trang chủ / hỗ trợ:** `https://github.com/Tanx-1811/reelskin` và `https://github.com/Tanx-1811/reelskin/issues`.
+- **Trang chủ / hỗ trợ:** `https://github.com/Tanx-1811/auroreel` và `https://github.com/Tanx-1811/auroreel/issues`.
 
 ## 4. Thẻ "Privacy practices"
 
@@ -51,7 +51,7 @@ npm run package
 
 ## 5. Chính sách quyền riêng tư
 
-Khi repo công khai, dùng: `https://github.com/Tanx-1811/reelskin/blob/main/docs/PRIVACY.md`. Nếu muốn giữ repo
+Khi repo công khai, dùng: `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md`. Nếu muốn giữ repo
 riêng tư, đăng `docs/PRIVACY.md` lên một trang công khai bất kỳ (GitHub Gist, Notion công khai…) rồi dán địa chỉ đó.
 
 ## 6. Gửi duyệt
@@ -64,7 +64,7 @@ giải trình trong `docs/STORE_LISTING.md` đã nêu rõ từng quyền dùng �
 1. Tăng `version` trong `package.json`, ghi `CHANGELOG.md`.
 2. Chạy đủ kiểm tra ở bước 0, `npm run package`, `npm run screenshots` nếu giao diện đổi.
 3. Commit, gắn tag `vX.Y.Z` và đẩy tag — CI (chỉ chạy khi có tag hoặc bấm Run workflow) kiểm tra và tạo gói
-   `reelskin-extension` để tải về.
+   `auroreel-extension` để tải về.
 4. Trong Developer Dashboard: **Package → Upload new package**, rồi gửi duyệt.
 
 ## Microsoft Edge Add-ons (không bắt buộc)

@@ -10,7 +10,7 @@ import { ANY_SITE_ORIGINS } from '../shared/anySite.ts';
 import { loadState, SETTINGS_KEY, updateSettings } from '../shared/storage.ts';
 import { initSync } from './sync.ts';
 
-const ANY_SITE_ID = 'reelskin-any-site';
+const ANY_SITE_ID = 'auroreel-any-site';
 
 initSync();
 

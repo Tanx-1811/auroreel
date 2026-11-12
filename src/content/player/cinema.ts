@@ -15,7 +15,7 @@ export class Cinema {
   onExit: () => void = () => undefined;
 
   constructor() {
-    this.overlay.dataset.reelskin = 'cinema';
+    this.overlay.dataset.auroreel = 'cinema';
     this.overlay.setAttribute('aria-hidden', 'true');
     Object.assign(this.overlay.style, {
       position: 'fixed',

@@ -1,5 +1,5 @@
 name: Feature request / Đề xuất tính năng
-description: An idea for Reelskin. / Ý tưởng cho Reelskin.
+description: An idea for Auroreel. / Ý tưởng cho Auroreel.
 labels: [enhancement]
 body:
   - type: textarea
@@ -11,4 +11,4 @@ body:
   - type: textarea
     id: idea
     attributes:
-      label: How could Reelskin help? / Reelskin có thể giúp thế nào?
+      label: How could Auroreel help? / Auroreel có thể giúp thế nào?

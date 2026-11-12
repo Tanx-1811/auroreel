@@ -1,4 +1,4 @@
-// Shared pieces of Reelskin's brand images: fonts, colours, copy, the mark and
+// Shared pieces of Auroreel's brand images: fonts, colours, copy, the mark and
 // the theme preview cards (the same drawing as the extension's .tp previews).
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -8,7 +8,7 @@ import { backdropLayers, glassOpacity } from '../../src/core/css/common.ts';
 import { BUILT_IN_THEMES, resolvePalette } from '../../src/core/themes.ts';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
-export const NAME = 'Reelskin';
+export const NAME = 'Auroreel';
 
 /** Brand colours (the UI tokens in src/styles/ui.css). */
 export const PALETTE = {

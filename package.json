@@ -1,17 +1,17 @@
 {
-  "name": "reelskin",
+  "name": "auroreel",
   "private": true,
   "version": "1.0.0",
-  "description": "Restyle YouTube, Twitch and streaming sites: themes, ambient light, cinema mode and player tools.",
+  "description": "Auroreel — themes, ambient light, cinema mode and player tools for YouTube, Twitch, Netflix and other video sites.",
   "license": "MIT",
   "author": "Tanx-1811 (https://github.com/Tanx-1811)",
-  "homepage": "https://github.com/Tanx-1811/reelskin#readme",
+  "homepage": "https://github.com/Tanx-1811/auroreel#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tanx-1811/reelskin.git"
+    "url": "git+https://github.com/Tanx-1811/auroreel.git"
   },
   "bugs": {
-    "url": "https://github.com/Tanx-1811/reelskin/issues"
+    "url": "https://github.com/Tanx-1811/auroreel/issues"
   },
   "type": "module",
   "scripts": {

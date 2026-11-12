@@ -1,4 +1,4 @@
-# Reelskin — architecture
+# Auroreel — architecture
 
 Chrome extension, Manifest V3. React 19 + TypeScript + Vite 8 for the popup and the studio; plain TypeScript for the
 content script and the service worker. No server, no state library.
@@ -37,8 +37,8 @@ src/
 The content script runs at `document_start` on the supported sites. It reads `rs:settings` and `rs:themes`, picks the
 theme (`activeThemeId`: site override → schedule → global) and writes two `<style>` elements at the end of `<head>`:
 
-1. `#reelskin-engine` — the recolouring engine's overrides (below).
-2. `#reelskin-main` — `buildPageCss`: theme tokens (`--rs-*` on `:root`), the backdrop, fonts, scrollbars, the site
+1. `#auroreel-engine` — the recolouring engine's overrides (below).
+2. `#auroreel-main` — `buildPageCss`: theme tokens (`--rs-*` on `:root`), the backdrop, fonts, scrollbars, the site
    adapter's theme CSS (fixed token overrides, glass bars, rounded thumbnails, accent progress bar, search box…) and the
    layout options (which also apply when the user keeps the site's colours).
 
@@ -62,7 +62,7 @@ tokens; Twitch: `--color-*`). Hand-written overrides can't keep up with hashed n
    - every rule → which properties are used for text/icons (`color`, `fill`) and which only for backgrounds.
    - Sites that only load the active palette (Twitch's styled-components) declare everything once; the adapter's
      `semantic` pattern adds those names.
-2. **Reads** current values with Reelskin's two style sheets disabled (synchronous, no paint in between).
+2. **Reads** current values with Auroreel's two style sheets disabled (synchronous, no paint in between).
 3. **Remaps** each value (`core/remap.ts`):
    - greys are placed on the site's scale (background → surface → secondary text → text, from the adapter's anchor
      properties) and moved to the same spot on the theme's scale (OKLab interpolation, alpha kept);

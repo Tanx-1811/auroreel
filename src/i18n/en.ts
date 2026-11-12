@@ -39,7 +39,7 @@ export const en = {
   'page.skinOn': 'Theme back on',
   'page.rewind': '−10 s',
   'page.advance': '+10 s',
-  'page.homeHidden': 'Home feed hidden by Reelskin. Search for what you came for.',
+  'page.homeHidden': 'Home feed hidden by Auroreel. Search for what you came for.',
 
   'filter.brightness': 'Brightness',
   'filter.contrast': 'Contrast',
@@ -71,18 +71,18 @@ export const en = {
   // ——— Popup ———
   'popup.on': 'On',
   'popup.off': 'Paused everywhere',
-  'popup.master': 'Reelskin on or off',
+  'popup.master': 'Auroreel on or off',
   'popup.sections': 'Sections',
   'popup.tabThemes': 'Themes',
   'popup.tabPlayer': 'Player',
   'popup.tabLayout': 'Layout',
-  'popup.siteToggle': 'Use Reelskin on {site}',
+  'popup.siteToggle': 'Use Auroreel on {site}',
   'popup.siteOnly': 'Only on {site}',
   'popup.current': 'Now showing:',
   'popup.reload': 'Reload this tab to start',
   'popup.resume': 'Theme paused in this tab — turn it back on',
   'popup.noSiteTitle': 'Open a video site to style it',
-  'popup.noSiteHint': 'Reelskin restyles YouTube, Twitch, Netflix and more.',
+  'popup.noSiteHint': 'Auroreel restyles YouTube, Twitch, Netflix and more.',
   'popup.genericTitle': 'Player tools for this site',
   'popup.genericHint': 'Speed, picture filters, ambient light and cinema mode work on any page with a video.',
   'popup.genericEnable': 'Allow on all sites',
@@ -155,7 +155,7 @@ export const en = {
   'editor.contrast': 'Text contrast {ratio}:1',
   'editor.contrastHint': 'How readable the main text is on the background. 7:1 or more is ideal.',
   'editor.contrastLow':
-    'The text is hard to read on this background. Reelskin lifts it automatically, but a darker or lighter background will look better.',
+    'The text is hard to read on this background. Auroreel lifts it automatically, but a darker or lighter background will look better.',
   'editor.auto': 'Auto',
   'editor.backdrop': 'Backdrop',
   'editor.backdropHint': 'What shows behind the page on YouTube and Twitch.',
@@ -227,8 +227,8 @@ export const en = {
 
   // ——— Sites ———
   'sites.title': 'Sites',
-  'sites.subtitle': 'Turn Reelskin on or off for each site, give a site its own theme and choose what its pages show.',
-  'sites.enable': 'Use Reelskin on {site}',
+  'sites.subtitle': 'Turn Auroreel on or off for each site, give a site its own theme and choose what its pages show.',
+  'sites.enable': 'Use Auroreel on {site}',
   'sites.details': 'Options for {site}',
   'sites.theme': 'Theme on this site',
   'sites.themeHint': 'Overrides the global theme and the auto switch.',
@@ -237,7 +237,7 @@ export const en = {
   'sites.playerHint': 'Toolbar, shortcuts, ambient light and cinema mode.',
   'sites.anyTitle': 'Player tools on every other site',
   'sites.anyHint':
-    'Speed, picture filters, ambient light and cinema mode on any page with a video. Chrome will ask to allow Reelskin on all sites.',
+    'Speed, picture filters, ambient light and cinema mode on any page with a video. Chrome will ask to allow Auroreel on all sites.',
   'sites.anyAllow': 'Allow on all sites',
   'sites.anyStop': 'Turn off',
   'sites.anyOn': 'Player tools are on for every site',
@@ -271,7 +271,7 @@ export const en = {
 
   // ——— Player ———
   'player.title': 'Player',
-  'player.subtitle': 'Tools for every video on the sites where Reelskin is on.',
+  'player.subtitle': 'Tools for every video on the sites where Auroreel is on.',
   'player.ambient': 'Ambient light',
   'player.ambientHint': 'The video’s colours glow softly around it.',
   'player.intensity': 'Strength',
@@ -325,7 +325,7 @@ export const en = {
   'shortcuts.global': 'Browser shortcuts',
   'shortcuts.globalHint': 'Work even when the page isn’t focused. Chrome manages them.',
   'shortcuts.openChrome': 'Change in Chrome',
-  'shortcuts.openPopup': 'Open Reelskin',
+  'shortcuts.openPopup': 'Open Auroreel',
   'shortcuts.notSet': 'Not set',
 
   'action.speedUp': 'Faster',
@@ -355,17 +355,17 @@ export const en = {
   'backup.exportHint': 'Settings and your {n} themes (pictures included) in one .json file.',
   'backup.exportBtn': 'Export',
   'backup.import': 'Import',
-  'backup.importHint': 'A Reelskin backup or a shared theme file.',
+  'backup.importHint': 'A Auroreel backup or a shared theme file.',
   'backup.importBtn': 'Choose file',
   'backup.importConfirm': 'Replace your settings with the ones in this backup? Your themes are kept.',
   'backup.importOk': 'Imported your settings and {n} themes',
   'backup.importThemesOnly': 'Imported {n} themes',
-  'backup.importBad': 'That file isn’t a Reelskin backup or theme.',
+  'backup.importBad': 'That file isn’t a Auroreel backup or theme.',
   'backup.reset': 'Start over',
   'backup.resetHint': 'Back to the default settings. Your own themes are deleted.',
-  'backup.resetBtn': 'Reset Reelskin',
+  'backup.resetBtn': 'Reset Auroreel',
   'backup.resetConfirm': 'Reset all settings and delete your themes? This can’t be undone.',
-  'backup.resetDone': 'Reelskin is back to its defaults',
+  'backup.resetDone': 'Auroreel is back to its defaults',
 
   // ——— About ———
   'about.title': 'About',
@@ -374,18 +374,18 @@ export const en = {
   'about.langAuto': 'Automatic',
   'about.privacyTitle': 'Private by design',
   'about.privacy':
-    'Reelskin works entirely in your browser: no account, no tracking, no server. Your settings, themes and pictures stay on this computer (settings and themes also in Chrome Sync if you turn it on), and nothing about what you watch ever leaves it.',
+    'Auroreel works entirely in your browser: no account, no tracking, no server. Your settings, themes and pictures stay on this computer (settings and themes also in Chrome Sync if you turn it on), and nothing about what you watch ever leaves it.',
   'about.howTitle': 'Good to know',
   'about.how1': 'Changes apply to open tabs instantly — no reload needed.',
   'about.how2': 'Alt + T pauses the theme in one tab; Alt + C turns on cinema mode.',
   'about.how3':
     'Protected videos (Netflix, Disney+…) can’t be captured, and their ambient light uses your accent colour.',
-  'about.how4': 'If a site changes its design, update Reelskin or switch the site to “Site colours” for a while.',
+  'about.how4': 'If a site changes its design, update Auroreel or switch the site to “Site colours” for a while.',
   'about.source': 'Source code',
   'about.report': 'Report a problem',
   'about.policy': 'Privacy policy',
   'about.disclaimer':
-    'Reelskin is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play or VieON. All trademarks belong to their owners.',
+    'Auroreel is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play or VieON. All trademarks belong to their owners.',
 
   // ——— Welcome ———
   'welcome.title': 'Welcome to',
@@ -399,7 +399,7 @@ export const en = {
   'welcome.shortsHint': 'Keeps YouTube about long videos.',
   'welcome.dimHint': 'Easier to spot what’s new.',
   'welcome.step3': 'Go watch something',
-  'welcome.step3Hint': 'Tip: pin Reelskin to the toolbar (puzzle icon → pin) to switch themes in one click.',
+  'welcome.step3Hint': 'Tip: pin Auroreel to the toolbar (puzzle icon → pin) to switch themes in one click.',
   'welcome.openYoutube': 'Open YouTube',
   'welcome.openStudio': 'Explore the Studio',
 } as const;

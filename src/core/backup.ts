@@ -2,7 +2,7 @@
 import { parseSettings, type Settings } from './settings.ts';
 import { parseTheme, type Theme } from './themes.ts';
 
-export const BACKUP_KIND = 'reelskin-backup';
+export const BACKUP_KIND = 'auroreel-backup';
 
 export interface Backup {
   kind: typeof BACKUP_KIND;
@@ -17,7 +17,7 @@ export function makeBackup(settings: Settings, themes: Theme[], now = new Date()
 }
 
 /** A single shared theme file. */
-export const THEME_KIND = 'reelskin-theme';
+export const THEME_KIND = 'auroreel-theme';
 
 export function makeThemeFile(theme: Theme) {
   const { builtIn: _b, ...rest } = theme;

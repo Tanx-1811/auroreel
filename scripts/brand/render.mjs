@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates Reelskin's brand kit into brand/ (npm run brand). Fully offline:
+// Regenerates Auroreel's brand kit into brand/ (npm run brand). Fully offline:
 // the mark is rendered with resvg; compositions (lockups, promo tiles, social
 // images) with Playwright's Chromium and the brand fonts embedded from
 // @fontsource. Theme previews use the real theme data from src/core.

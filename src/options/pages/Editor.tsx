@@ -541,7 +541,7 @@ export function EditorPage({ id, settings, themes, update, saveTheme, removeThem
               <button
                 type="button"
                 className="btn ghost"
-                onClick={() => downloadJson(makeThemeFile(draft), `${draft.name}.reelskin-theme.json`)}
+                onClick={() => downloadJson(makeThemeFile(draft), `${draft.name}.auroreel-theme.json`)}
               >
                 <Download size={15} />
                 {t('common.export')}

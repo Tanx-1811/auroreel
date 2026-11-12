@@ -17,7 +17,7 @@ test('YouTube search: theme, engine, logo and search box', async ({ context, set
     .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor), { timeout: 20_000 })
     .toBe('rgb(13, 11, 30)');
   await expect
-    .poll(() => page.evaluate(() => document.getElementById('reelskin-engine')?.textContent?.length ?? 0), {
+    .poll(() => page.evaluate(() => document.getElementById('auroreel-engine')?.textContent?.length ?? 0), {
       timeout: 20_000,
     })
     .toBeGreaterThan(2000);
@@ -59,7 +59,7 @@ test('Twitch: palette tokens follow the theme', async ({ context, setSettings })
   const page = await context.newPage();
   await page.goto('https://www.twitch.tv/directory', { waitUntil: 'domcontentloaded' });
   await expect
-    .poll(() => page.evaluate(() => document.getElementById('reelskin-engine')?.textContent?.length ?? 0), {
+    .poll(() => page.evaluate(() => document.getElementById('auroreel-engine')?.textContent?.length ?? 0), {
       timeout: 30_000,
     })
     .toBeGreaterThan(2000);
@@ -83,7 +83,7 @@ for (const site of STREAMING) {
     const page = await context.newPage();
     await page.goto(site.url, { waitUntil: 'domcontentloaded' });
     await expect
-      .poll(() => page.evaluate(() => document.getElementById('reelskin-engine')?.textContent?.length ?? 0), {
+      .poll(() => page.evaluate(() => document.getElementById('auroreel-engine')?.textContent?.length ?? 0), {
         timeout: 30_000,
       })
       .toBeGreaterThan(site.min);

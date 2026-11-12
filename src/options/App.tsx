@@ -59,7 +59,7 @@ export function App() {
 function Shell({ route, props }: { route: Route; props: PageProps }) {
   const t = useT();
   useEffect(() => {
-    document.title = `${t(NAV.find((n) => n.page === route.page)?.key ?? 'nav.themes')} · Reelskin`;
+    document.title = `${t(NAV.find((n) => n.page === route.page)?.key ?? 'nav.themes')} · Auroreel`;
   }, [route.page, t]);
   return (
     <div className="studio">
@@ -67,7 +67,7 @@ function Shell({ route, props }: { route: Route; props: PageProps }) {
         <a className="brand" href="#/themes">
           <LogoMark size={34} />
           <span>
-            <strong>Reelskin</strong>
+            <strong>Auroreel</strong>
             <span className="muted small">Studio</span>
           </span>
         </a>
