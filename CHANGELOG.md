@@ -46,3 +46,6 @@ First release, as **Auroreel** (working name Reelskin).
   and chapter boxes (colours YouTube picks from each video) and the channel handle now follow the theme; Twitch's
   light look (nav links, featured-stream panel and its fade, carousel arrows, category tiles, primary buttons) is
   themed; white text on a recoloured brand button (Netflix "Join now") takes the accent's own text colour.
+- The floating toolbar steps aside for the site's own features: never during YouTube ads, on Shorts or on Twitch's
+  front-page preview, and never on a player narrower than itself (YouTube's miniplayer) — shortcuts and the popup
+  still work there.

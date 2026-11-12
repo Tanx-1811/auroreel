@@ -118,6 +118,7 @@ function main() {
       platform: platform.id,
       progress: s.progress,
       progressBar: on && !skinPaused ? adapter.progressBar : undefined,
+      hideIn: adapter.toolbarHideIn,
     });
 
     // YouTube's default quality is applied by youtube-main.js (page world), which reads this attribute.

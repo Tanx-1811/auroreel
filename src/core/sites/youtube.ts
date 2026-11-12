@@ -305,6 +305,8 @@ export const youtube: SiteAdapter = {
   },
   themeCss,
   layoutCss,
+  // Ads (the skip button and ad badges sit where the toolbar would) and Shorts (its own overlay controls).
+  toolbarHideIn: ['.ad-showing', 'ytd-shorts', '#shorts-player', 'ytd-reel-video-renderer'],
   fontExclude: ['.ytp-caption-segment', '.caption-visual-line *', '.ytp-caption-window-container *'],
   // Checked on the 2026 player (ytp-delhi-modern): YouTube stops moving its bar while the controls are hidden.
   progressBar: {

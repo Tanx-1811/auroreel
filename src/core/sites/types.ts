@@ -77,4 +77,9 @@ export interface SiteAdapter {
   fontExclude?: string[];
   /** The site's progress bar, when it can be decorated. */
   progressBar?: ProgressBarConfig;
+  /**
+   * Where the floating toolbar steps aside for the site's own features (ads, short-form players, previews):
+   * a video inside any of these never shows it. Shortcuts and the popup still work there.
+   */
+  toolbarHideIn?: string[];
 }

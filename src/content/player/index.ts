@@ -54,6 +54,8 @@ export interface PlayerConfig {
   progress: ProgressSettings;
   /** The site's own progress bar (for the always-on mini bar), when the skin is on. */
   progressBar?: ProgressBarConfig;
+  /** The toolbar stays hidden for videos inside these (the site's ads, short-form players…). */
+  hideIn?: string[];
 }
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -474,7 +476,7 @@ export class PlayerTools {
       Number.isFinite(v.duration) &&
       v.duration > 0 &&
       !!v.closest(`${bar.root}${bar.idle}`) &&
-      this.roomy();
+      this.roomy(false);
     this.mini.classList.toggle('show', show);
     if (!show || !v) return;
     const b = visibleBox(elementBox(v), innerWidth, innerHeight);
@@ -501,11 +503,17 @@ export class PlayerTools {
     }, ms);
   }
 
-  /** Enough of the video is on screen to carry the toolbar (not a sliver, not a player still being laid out). */
-  private roomy(): boolean {
-    if (!this.video) return false;
-    const seen = visibleBox(elementBox(this.video), innerWidth, innerHeight);
-    return seen.w >= 300 && seen.h >= 120;
+  /**
+   * Enough of the video is on screen to carry the toolbar (not a sliver, not a player still being laid out,
+   * not a miniplayer narrower than the bar) and the site isn't using that spot (ads, Shorts).
+   */
+  private roomy(forBar = true): boolean {
+    const v = this.video;
+    if (!v) return false;
+    if (this.cfg?.hideIn?.some((s) => v.closest(s))) return false;
+    const seen = visibleBox(elementBox(v), innerWidth, innerHeight);
+    const minW = forBar ? Math.max(300, (this.bar.offsetWidth || 340) + 24) : 160;
+    return seen.w >= minW && seen.h >= (forBar ? 120 : 90);
   }
 
   private showBar(show: boolean) {

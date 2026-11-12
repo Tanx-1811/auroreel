@@ -103,5 +103,7 @@ export const twitch: SiteAdapter = {
   },
   themeCss,
   layoutCss,
+  // The front page's featured stream is a preview with its own labels; the toolbar shows on the stream page.
+  toolbarHideIn: ['.front-page-carousel', '[data-a-target="front-page-carousel"]'],
   fontExclude: ['.chat-line__message .text-fragment', '[data-a-target="chat-message-text"]'],
 };

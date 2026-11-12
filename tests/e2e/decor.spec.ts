@@ -62,6 +62,37 @@ test('the toolbar shows only the chosen buttons, at the chosen size', async ({ o
   await expect(bar.locator('button[data-id="ab"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
+test('the toolbar steps aside during ads and on players narrower than itself', async ({ openSite }) => {
+  const page = await openSite('tube.html', 'youtube');
+  await playVideo(page);
+  const bar = page.locator('auroreel-ui').locator('.bar');
+  const hover = async () => {
+    const box = (await page.locator('video').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.move(box.x + box.width / 2 + 10, box.y + box.height / 2 + 5);
+  };
+  await hover();
+  await expect(bar).toHaveClass(/show/);
+  // An ad starts: YouTube marks the player; the skip button and ad badges own that spot.
+  await page.evaluate(() => document.querySelector('.html5-video-player')!.classList.add('ad-showing'));
+  await expect(bar).not.toHaveClass(/show/);
+  await page.mouse.move(5, 5);
+  await hover();
+  await expect(bar).not.toHaveClass(/show/);
+  // The ad ends; then the player shrinks below the bar's width (a miniplayer).
+  await page.evaluate(() => document.querySelector('.html5-video-player')!.classList.remove('ad-showing'));
+  await hover();
+  await expect(bar).toHaveClass(/show/);
+  await page.evaluate(() => {
+    const v = document.querySelector('video')!;
+    v.style.width = '330px';
+    v.style.height = '186px';
+  });
+  await page.mouse.move(5, 5);
+  await hover();
+  await expect(bar).not.toHaveClass(/show/);
+});
+
 test('scrollbars follow the chosen style', async ({ openSite, setSettings }) => {
   await setSettings({ scrollbar: 'hidden' });
   const page = await openSite('tube.html', 'youtube');
