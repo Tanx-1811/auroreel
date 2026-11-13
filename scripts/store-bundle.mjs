@@ -5,6 +5,7 @@
 //   1 - auroreel-<version>.zip             the package (npm run package)
 //   2 - Ảnh/                               icon, screenshots (EN, VI) and promo tiles
 //   3 - Điền từng ô trên Store.txt         every dashboard field with the text to paste (from docs/STORE_LISTING.md)
+//   3a, 3b                                 the English and Vietnamese descriptions alone, to copy whole
 //   4 - Chính sách quyền riêng tư.md       docs/PRIVACY.md, for the public privacy-policy page
 //
 //   npm run store        (= npm run package + this script)
@@ -232,4 +233,7 @@ ${block('DESCRIPTION — ENGLISH', descEn)}
 ${block('MÔ TẢ — TIẾNG VIỆT', descVi)}
 ${block('TÊN & TÓM TẮT (Store tự đọc từ gói — chỉ để đối chiếu)', [...names.map((i) => `Tên ${i.label}: ${i.text}`), ...summaries.map((i) => `Tóm tắt ${i.label}: ${i.text}`)].join('\n'))}`;
 writeFileSync(join(out, '3 - Điền từng ô trên Store.txt'), guide);
+// The two long descriptions on their own, to open and copy whole (⌘A, ⌘C).
+writeFileSync(join(out, '3a - Description (English).txt'), `${descEn}\n`);
+writeFileSync(join(out, '3b - Mô tả (Tiếng Việt).txt'), `${descVi}\n`);
 console.log(`Store bundle: ${out}`);
