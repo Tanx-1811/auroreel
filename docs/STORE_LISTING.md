@@ -144,24 +144,24 @@ to their video players (ambient light, cinema mode, speed, picture filters).
 
 ## Permission justifications
 
-One box per permission on the Privacy practices tab.
+The Privacy tab has one box per permission (≤ 1000 characters each): storage, scripting, and one "Host permission"
+box for every match pattern (the sites, `*.vieon.vn` and the optional all-sites access).
 
-- **Host permissions:** Auroreel applies the user's theme and player tools on the supported video sites (YouTube,
-  YouTube Music, Twitch, Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON). On those pages it reads the
-  stylesheets (to learn the site's colours) and the video element (speed, filters, ambient light). No page content is
-  collected, stored or sent anywhere.
-- **\*.vieon.vn:** VieON serves its stylesheets from its own CDN without cross-origin access, so Auroreel downloads
-  those public stylesheets again (no cookies) to read their colours. Nothing is sent.
-- **storage:** Keeps the user's settings and themes on this computer, and in Chrome Sync only if the user turns sync
-  on.
+- **storage:** Keeps the user's settings and themes on this computer (chrome.storage.local), and in Chrome Sync only if
+  the user turns sync on. Nothing is sent to the developer or anyone else.
 - **scripting:** Registers the player-tools content script on other sites only after the user grants the optional
-  "all sites" permission from Auroreel's settings, and removes it when the permission is withdrawn.
-- **Optional host permission (all sites):** Asked only when the user clicks "Allow on all sites" to get the player
-  tools (speed, filters, cinema mode) on every site with a video. It can be withdrawn at any time.
+  "all sites" permission from Auroreel's settings, and removes it when that permission is withdrawn.
+- **Host permission:** Auroreel applies the user's chosen theme and player tools on the supported video sites (YouTube,
+  YouTube Music, Twitch, Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON). On those pages it reads the
+  stylesheets to learn the site's colours and uses the video element for speed, picture filters, ambient light and
+  cinema mode. \*.vieon.vn: VieON serves its stylesheets from its own CDN without cross-origin access, so Auroreel
+  downloads those public stylesheets again (without cookies) to read their colours. The all-sites access
+  (https://\*/\*, http://\*/\*) is optional: it is requested only when the user clicks "Allow on all sites" to get the
+  player tools on other sites with a video, and it can be withdrawn at any time. No page content is collected, stored
+  or sent anywhere.
 
 ## Other privacy answers
 
-- **Remote code:** No — all code ships in the package.
 - **Data usage:** none collected (tick nothing). Certify the three disclosures.
 - **Privacy policy URL:** `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md` (once the repository is
   public).

@@ -25,11 +25,11 @@ const manifest = JSON.parse(readFileSync(join(root, 'dist/manifest.json'), 'utf8
 if (manifest.version !== version) problems.push(`dist/manifest.json is ${manifest.version}, package.json ${version}`);
 
 // ---------- Pictures: sizes the store accepts ----------
-/** Width × height from a PNG header. */
+/** Width × height and colour type from a PNG header. */
 const pngSize = (file) => {
   const b = readFileSync(file);
   if (b.toString('ascii', 1, 4) !== 'PNG') return null;
-  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20), type: b[25] };
 };
 const store = join(root, 'brand/store');
 const shots = readdirSync(join(store, 'screenshots')).filter((f) => f.endsWith('.png'));
@@ -46,6 +46,9 @@ for (const p of pictures) {
   if (!size) problems.push(`brand/store/${p.file} is missing or not a PNG`);
   else if (size.w !== p.w || size.h !== p.h)
     problems.push(`brand/store/${p.file} is ${size.w}×${size.h}, not ${p.w}×${p.h}`);
+  // Screenshots and promo tiles: JPEG or 24-bit PNG without alpha (PNG colour type 2).
+  else if (p.file !== 'store-icon-128.png' && size.type !== 2)
+    problems.push(`brand/store/${p.file} has an alpha channel (the store wants 24-bit PNG)`);
 }
 for (const lang of ['en', 'vi']) {
   const n = shots.filter((f) => f.startsWith(`${lang}-`)).length;
@@ -112,6 +115,8 @@ for (const [label, d] of [
   ['VI', descVi],
 ])
   if ([...d].length > 16_000) problems.push(`${label} description > 16,000 characters`);
+for (const [label, text] of [['Single purpose', single], ...permissions.map((p) => [p.label, p.text])])
+  if ([...text].length > 1000) problems.push(`${label} is ${[...text].length} characters (the box takes 1000)`);
 // Keyword spam: no more than five supported sites named, no brand five times or more.
 const BRANDS = ['YouTube', 'Twitch', 'Netflix', 'Prime Video', 'Disney+', 'Vimeo', 'FPT Play', 'VieON'];
 for (const [label, d] of [
@@ -169,31 +174,35 @@ Dán nguyên văn các khối chữ bên dưới vào đúng ô. Bấm "Save dra
 1) PACKAGE
    New item → chọn "1 - auroreel-${version}.zip" trong thư mục này.
 
-2) STORE LISTING (ngôn ngữ mặc định: English)
+2) STORE LISTING — khi "Current editing language" là English – en (default)
    • Description: khối DESCRIPTION — ENGLISH bên dưới.
-   • Category: Make Chrome Yours → Functionality & UI
-   • Language: English
+   • Category (cho mọi ngôn ngữ): Functionality & UI
    • Store icon: 2 - Ảnh/store-icon-128.png
-   • Screenshots (đúng thứ tự 1 → 5): 2 - Ảnh/Ảnh chụp - English/
-   • Small promo tile 440×280: 2 - Ảnh/Quảng bá/promo-small-440x280.png
-   • Marquee promo tile 1400×560: 2 - Ảnh/Quảng bá/promo-marquee-1400x560.png
+   • Localized screenshots: để trống (bản tiếng Anh dùng ảnh Global).
+   • Global screenshots — kéo 5 ảnh theo thứ tự 1 → 5: 2 - Ảnh/Ảnh chụp - English/
+   • Small promo tile (bắt buộc): 2 - Ảnh/Quảng bá/promo-small-440x280.png
+   • Marquee promo tile: 2 - Ảnh/Quảng bá/promo-marquee-1400x560.png
+   • Promo video (Localized và Global): để trống.
+   • Official URL: để trống (chỉ dành cho trang web bạn đã xác minh trong Google Search Console).
    • Homepage URL: https://github.com/Tanx-1811/auroreel
    • Support URL: https://github.com/Tanx-1811/auroreel/issues
-     (hai địa chỉ này chỉ mở được khi repo công khai; repo còn riêng tư thì bỏ trống)
-   • Mature content: No
-   Bản tiếng Việt: chọn ngôn ngữ Vietnamese ở đầu thẻ → dán khối MÔ TẢ — TIẾNG VIỆT và tải ảnh trong
-   "Ảnh chụp - Tiếng Việt". Tên và tóm tắt tự lấy từ gói. Ảnh quảng bá dùng chung một bộ cho mọi ngôn ngữ
-   (Store không cho bản địa hoá): dùng bộ tiếng Anh; bộ đuôi -vi chỉ khi muốn trang Store ưu tiên tiếng Việt.
-   • Promo video (tuỳ chọn): bỏ trống.
+     (hai địa chỉ này chỉ mở được khi repo công khai; repo còn riêng tư thì để trống)
+   • Mature content: không bật.
+   • Item support: giữ mặc định.
+
+   Rồi đổi "Current editing language" sang Vietnamese – vi:
+   • Description: khối MÔ TẢ — TIẾNG VIỆT bên dưới.
+   • Localized screenshots — kéo 5 ảnh theo thứ tự 1 → 5: 2 - Ảnh/Ảnh chụp - Tiếng Việt/
+   Tên và tóm tắt tự lấy từ gói. Ảnh quảng bá dùng chung cho mọi ngôn ngữ (Store không cho bản địa hoá);
+   bộ đuôi -vi chỉ dùng khi muốn trang Store ưu tiên tiếng Việt.
 
 3) PRIVACY PRACTICES
    • Single purpose description:
      ${single}
 
-   • Permission justification — mỗi quyền một ô:
-${permissions.map((p) => `\n     [${p.label}]\n     ${p.text}`).join('\n')}
+   • Permission justification — mỗi ô một đoạn bên dưới:
+${permissions.map((p) => `\n     [${p.label} justification]\n     ${p.text}`).join('\n')}
 
-   • Are you using remote code? → No, I am not using remote code.
    • Data usage: KHÔNG tích mục nào (Auroreel không thu thập dữ liệu).
      Tích cả 3 cam kết ở cuối (không bán dữ liệu; không dùng ngoài mục đích chính; không dùng để xét tín dụng).
    • Privacy policy URL: https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md

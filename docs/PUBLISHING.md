@@ -49,7 +49,7 @@ Mở `3 - Điền từng ô trên Store.txt` và làm theo thứ tự:
 
 1. **Package:** New item → chọn tệp zip.
 2. **Store listing:** mô tả EN, danh mục _Functionality & UI_, ảnh, rồi thêm bản tiếng Việt.
-3. **Privacy practices:** mục đích duy nhất, giải trình từng quyền, _No remote code_, không tích dữ liệu nào, ba cam
+3. **Privacy practices:** mục đích duy nhất, giải trình 3 quyền (storage, scripting, host permission), không tích dữ liệu nào, ba cam
    kết, địa chỉ chính sách.
 4. **Test instructions:** các bước cho người duyệt (không cần tài khoản).
 5. **Distribution:** Free, Public, All regions.
