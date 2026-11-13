@@ -30,7 +30,8 @@
     "icons": "node scripts/generate-icons.mjs",
     "brand": "node scripts/brand/render.mjs",
     "notices": "node scripts/third-party-notices.mjs",
-    "package": "node scripts/third-party-notices.mjs && npm run build && node scripts/package-extension.mjs"
+    "package": "node scripts/third-party-notices.mjs && npm run build && node scripts/package-extension.mjs",
+    "store": "npm run package && node scripts/store-bundle.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "^5.3.0",

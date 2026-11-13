@@ -15,7 +15,9 @@ chromium` once). Local test pages in `tests/e2e/site/`; `?rs-platform=<id>` maps
 - `npm run test:live` — real YouTube, Twitch, Netflix (public title page), FPT Play, VieON, Prime Video (network); run
   by hand after a site redesign, never in CI. Don't spoof the user agent (YouTube Music and Vimeo can't be checked
   headless).
-- `npm run package` — zips `dist/` into `release/` (refuses the e2e build).
+- `npm run package` — zips `dist/` into `release/` (refuses the e2e build). `npm run store` — package + checks the
+  store limits (image sizes, text lengths, name/summary match `_locales`) + `release/auroreel-<v>-store/` with the
+  pictures and every dashboard field to paste (from `docs/STORE_LISTING.md`).
 - `npm run icons`, `npm run brand`, `npm run screenshots` — toolbar icons, brand kit, store screenshots.
 - Dev tools: `scripts/probe-site.mjs` (a site's custom properties / selector census), `scripts/live-shot.mjs` (real
   page + extension screenshot, `--theme=`, `--set='{json}'`, `--yt-dark`, `--eval=`), `scripts/ui-shot.mjs` (popup /

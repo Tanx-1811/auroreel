@@ -1,25 +1,31 @@
 # Chrome Web Store listing
 
-Category: **Make Chrome Yours** (closest to "customise how sites look").
+Category: **Functionality & UI** (Make Chrome Yours), like the closest player-tool extensions.
+
+Descriptions name at most five sites and say "YouTube" at most four times (with ™ and Google's attribution line): the
+store counts longer brand lists and repeated keywords as spam. `npm run store` checks both.
+
 Languages: English (default) and Vietnamese (`public/_locales/vi`).
 
 ## Name (≤ 75)
 
 The brand name comes first; what it does follows the dash.
 
-- EN: `Auroreel — Themes, Ambient Light & Cinema Mode for Video Sites` (from `_locales/en/messages.json`)
-- VI: `Auroreel — Giao diện, ánh sáng nền & chế độ rạp cho web xem phim`
+The store reads both from `public/_locales/{en,vi}/messages.json`; `npm run store` checks they match.
+
+- EN: Auroreel — Themes, Ambient Light & Cinema Mode for Video Sites
+- VI: Auroreel — Giao diện, ánh sáng nền & chế độ rạp cho web xem phim
 
 ## Summary (≤ 132)
 
-- EN: Beautiful themes for YouTube, Twitch and streaming sites, plus ambient light, cinema mode, speed and picture controls.
-- VI: Giao diện đẹp cho YouTube, Twitch và các web xem phim, kèm ánh sáng nền, chế độ rạp, chỉnh tốc độ và màu hình.
+- EN: Beautiful themes for YouTube™, Twitch and streaming sites, plus ambient light, cinema mode, speed and picture controls.
+- VI: Giao diện đẹp cho YouTube™, Twitch và các web xem phim, kèm ánh sáng nền, chế độ rạp, chỉnh tốc độ và màu hình.
 
 ## Description — English
 
 Make every screen your cinema.
 
-Auroreel restyles YouTube, Twitch and your favourite streaming sites with beautiful themes — and adds the player tools
+Auroreel restyles YouTube™, Twitch and your favourite streaming sites with beautiful themes — and adds the player tools
 you always wanted.
 
 🎨 24 THEMES, ONE CLICK
@@ -31,6 +37,7 @@ you always wanted.
 🖌️ THEME MAKER
 • Six colours, live preview and a readability check
 • Start from one colour, "Surprise me", or a picture — Auroreel extracts its palette and uses it as the backdrop
+• Turn the video you're watching into a theme in one click
 • Export and share themes as files
 
 🎬 PLAYER TOOLS (any video)
@@ -41,7 +48,6 @@ you always wanted.
 • Volume boost up to 300%, scroll over the video for volume
 • A–B loop, sleep timer (after N minutes or at the end of the video)
 • Save the current frame, loop, picture in picture
-• Turn the video you're watching into a theme in one click
 • Subtitle styling: size, colour, background box, bold
 • Keyboard shortcuts (S/D/R for speed, Alt+C cinema, [ ] A–B loop…) — all remappable
 • Pick the toolbar's buttons and size
@@ -49,9 +55,9 @@ you always wanted.
 🐱 A LIVELY PROGRESS BAR (YouTube)
 • The knob becomes a heart, star, rocket, cat, lotus… (16 drawings), any emoji or your own picture
 • Bounce, spin, pulse or wiggle while the video plays; rainbow or custom colour; thicker bar
-• An always-on thin progress bar while YouTube hides its controls
+• A thin progress bar stays visible while the player hides its controls
 
-🧘 FOCUS ON YOUTUBE
+🧘 FOCUS MODE
 • Hide Shorts, the home feed, related videos, comments, end screens, chips or merch
 • Choose videos per row, blur or grey out thumbnails until hover, fade watched videos
 • Default video quality (480p to 4K)
@@ -62,21 +68,22 @@ you always wanted.
 🔒 PRIVATE BY DESIGN
 No account, no tracking, no server. Everything stays on your computer.
 
-Works on: YouTube and Twitch (full themes with backdrops and layout options) · Netflix, Prime Video, Disney+,
-YouTube Music, FPT Play and VieON (every colour follows your theme, in the site's dark style) · Vimeo (accent,
-background and fonts) · any other site with a video (player tools, optional).
-
 ☁️ SYNC (OPTIONAL)
 Keep settings and themes the same on every computer signed in to Chrome.
 
-Auroreel is an independent project and is not affiliated with YouTube, Google, Twitch, Netflix, Amazon, Disney,
-Vimeo, FPT Play or VieON.
+WHERE IT WORKS
+Full themes with backdrops and layout options on YouTube and Twitch. On Netflix, Prime Video, Disney+ and other
+streaming sites every colour follows your theme, in the site's dark style. Player tools work on any other site with a
+video once you allow it.
+
+Auroreel is an independent project, not affiliated with or endorsed by Google, Twitch or any streaming service.
+YouTube is a trademark of Google LLC. Use of this trademark is subject to Google Permissions.
 
 ## Mô tả — Tiếng Việt
 
 Biến mọi màn hình thành rạp phim của bạn.
 
-Auroreel khoác áo mới cho YouTube, Twitch và các trang xem phim bạn yêu thích — kèm bộ công cụ trình phát bạn luôn
+Auroreel khoác áo mới cho YouTube™, Twitch và các trang xem phim bạn yêu thích — kèm bộ công cụ trình phát bạn luôn
 mong có.
 
 🎨 24 CHỦ ĐỀ, MỘT CÚ BẤM
@@ -88,6 +95,7 @@ mong có.
 🖌️ TẠO CHỦ ĐỀ
 • Sáu màu, xem trước trực tiếp và kiểm tra độ dễ đọc
 • Bắt đầu từ một màu, "Ngẫu nhiên", hoặc một bức ảnh — Auroreel lấy bảng màu từ ảnh và dùng ảnh làm nền
+• Biến video đang xem thành chủ đề chỉ với một cú bấm
 • Xuất và chia sẻ chủ đề dưới dạng file
 
 🎬 CÔNG CỤ TRÌNH PHÁT (mọi video)
@@ -98,7 +106,6 @@ mong có.
 • Tăng âm lượng tới 300%, lăn chuột trên video để chỉnh âm lượng
 • Lặp đoạn A–B, hẹn giờ tắt (sau N phút hoặc khi hết video)
 • Lưu khung hình, lặp lại, hình trong hình
-• Biến video đang xem thành chủ đề chỉ với một cú bấm
 • Tuỳ chỉnh phụ đề: cỡ chữ, màu, nền sau chữ, chữ đậm
 • Phím tắt (S/D/R chỉnh tốc độ, Alt+C chế độ rạp, [ ] lặp A–B…) — đổi được hết
 • Tự chọn nút và cỡ thanh công cụ
@@ -106,9 +113,9 @@ mong có.
 🐱 THANH TIẾN ĐỘ SINH ĐỘNG (YouTube)
 • Nút kéo thành trái tim, ngôi sao, tên lửa, mèo, hoa sen… (16 hình), emoji bất kỳ hoặc ảnh của bạn
 • Nảy, xoay, nhịp, lắc khi video phát; màu cầu vồng hoặc tự chọn; thanh dày hơn
-• Thanh tiến độ mảnh luôn hiện khi YouTube ẩn thanh điều khiển
+• Thanh tiến độ mảnh luôn hiện khi trình phát ẩn thanh điều khiển
 
-🧘 TẬP TRUNG TRÊN YOUTUBE
+🧘 CHẾ ĐỘ TẬP TRUNG
 • Ẩn Shorts, bảng tin trang chủ, video liên quan, bình luận, màn hình kết thúc, thanh chủ đề, hàng hoá
 • Chọn số video mỗi hàng, làm mờ hoặc trắng đen ảnh thu nhỏ đến khi trỏ chuột, làm mờ video đã xem
 • Chất lượng video mặc định (480p đến 4K)
@@ -119,36 +126,64 @@ mong có.
 🔒 RIÊNG TƯ
 Không tài khoản, không theo dõi, không máy chủ. Mọi thứ nằm trên máy bạn.
 
-Hoạt động trên: YouTube và Twitch (chủ đề đầy đủ, nền phía sau, tuỳ chọn bố cục) · Netflix, Prime Video, Disney+,
-YouTube Music, FPT Play, VieON (mọi màu theo chủ đề, giữ phong cách tối của trang) · Vimeo (màu nhấn, màu nền, phông
-chữ) · mọi trang có video khác (công cụ trình phát, tuỳ chọn).
-
 ☁️ ĐỒNG BỘ (TUỲ CHỌN)
 Giữ cài đặt và chủ đề giống nhau trên mọi máy đăng nhập cùng tài khoản Chrome.
 
-Auroreel là dự án độc lập, không liên kết với YouTube, Google, Twitch, Netflix, Amazon, Disney, Vimeo, FPT Play hay VieON.
+HOẠT ĐỘNG Ở ĐÂU
+Chủ đề đầy đủ, nền phía sau và tuỳ chọn bố cục trên YouTube và Twitch. Trên Netflix, FPT Play, VieON và các web xem
+phim khác, mọi màu theo chủ đề và giữ phong cách tối của trang. Công cụ trình phát dùng được trên mọi trang có video
+khác khi bạn cho phép.
 
-## Privacy practices (dashboard answers)
+Auroreel là dự án độc lập, không liên kết với hay được bảo trợ bởi Google, Twitch hay dịch vụ xem phim nào.
+YouTube là nhãn hiệu của Google LLC. Việc sử dụng nhãn hiệu này tuân theo Google Permissions.
 
-- **Single purpose:** "Customise the look of video sites and add player tools (themes, ambient light, cinema mode,
-  speed and picture controls)."
-- **Host permissions** (www.youtube.com, music.youtube.com, www.twitch.tv, www.netflix.com, www.primevideo.com,
-  www.disneyplus.com, vimeo.com, fptplay.vn, vieon.vn): "Auroreel applies the user's theme and player tools on these
-  video sites. It reads their stylesheets (colours) and the video element; no page content is collected or sent."
-- **\*.vieon.vn:** "VieON serves its stylesheets from its own CDN without cross-origin access; Auroreel's service
-  worker downloads those public stylesheets to read their colours. Nothing is sent."
-- **storage:** "Stores the user's settings and themes locally, and in Chrome Sync only if the user turns sync on."
-- **scripting:** "Registers the player-tools content script on all sites, only after the user grants the optional
-  all-sites permission from the extension's UI."
-- **Optional host permission (all sites):** "Requested from a button when the user wants the player tools (speed,
-  filters, cinema mode) on every site with a video."
-- **Remote code:** No. **Data usage:** none collected (tick nothing). Certify the three disclosures.
+## Single purpose
+
+Auroreel makes watching video on the web nicer: it restyles video sites with the user's chosen theme and adds controls
+to their video players (ambient light, cinema mode, speed, picture filters).
+
+## Permission justifications
+
+One box per permission on the Privacy practices tab.
+
+- **Host permissions:** Auroreel applies the user's theme and player tools on the supported video sites (YouTube,
+  YouTube Music, Twitch, Netflix, Prime Video, Disney+, Vimeo, FPT Play, VieON). On those pages it reads the
+  stylesheets (to learn the site's colours) and the video element (speed, filters, ambient light). No page content is
+  collected, stored or sent anywhere.
+- **\*.vieon.vn:** VieON serves its stylesheets from its own CDN without cross-origin access, so Auroreel downloads
+  those public stylesheets again (no cookies) to read their colours. Nothing is sent.
+- **storage:** Keeps the user's settings and themes on this computer, and in Chrome Sync only if the user turns sync
+  on.
+- **scripting:** Registers the player-tools content script on other sites only after the user grants the optional
+  "all sites" permission from Auroreel's settings, and removes it when the permission is withdrawn.
+- **Optional host permission (all sites):** Asked only when the user clicks "Allow on all sites" to get the player
+  tools (speed, filters, cinema mode) on every site with a video. It can be withdrawn at any time.
+
+## Other privacy answers
+
+- **Remote code:** No — all code ships in the package.
+- **Data usage:** none collected (tick nothing). Certify the three disclosures.
 - **Privacy policy URL:** `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md` (once the repository is
   public).
+
+## Test instructions
+
+No account or sign-in is needed.
+
+1. Open https://www.youtube.com and play any video.
+2. Click the Auroreel icon in the toolbar and pick a theme: the whole page changes colour at once.
+3. Hover the video: a toolbar appears at the top right (speed, picture filters, ambient light, cinema mode, loop,
+   capture, picture in picture). Alt+Shift+C toggles cinema mode.
+4. Open Auroreel's settings (the "Open Studio" button in the popup) to try the theme maker, the Decorations page
+   (progress-bar knob) and the other options.
+5. Twitch (https://www.twitch.tv) and Vimeo (https://vimeo.com) work the same way without signing in. Netflix, Prime
+   Video, Disney+, FPT Play and VieON need a subscription for playback; their public pages already show the theme.
 
 ## Assets
 
 - Icon 128: `brand/store/store-icon-128.png`
 - Small promo tile 440×280: `brand/store/promo-small-440x280.png` (VI: `-vi.png`)
 - Marquee 1400×560: `brand/store/promo-marquee-1400x560.png` (VI: `-vi.png`)
+- Promo tiles are one set for every language (the store can't localise them): upload the English pair; the `-vi`
+  pair is for a Vietnamese-first listing.
 - Screenshots 1280×800: `brand/store/screenshots/en-*.png`, `vi-*.png` (`npm run screenshots`)

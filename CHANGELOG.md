@@ -57,3 +57,8 @@ First release, as **Auroreel** (working name Reelskin).
   background really recoloured to the accent; an empty toolbar never shows (the last button can't be unticked);
   the toolbar and mini bar measure the page less often; the Decorations preview uses the theme YouTube actually
   shows; the emoji box follows changes made elsewhere; Twitch's sign-up bar and text buttons follow the theme.
+- Store kit: `npm run store` packages the extension, checks it against the Chrome Web Store's limits (picture sizes,
+  screenshot count, text lengths, at most five sites and four "YouTube" per description) and gathers the package,
+  pictures and every dashboard field to paste into `release/auroreel-<version>-store/`. Listing copy follows Google's
+  trademark guidance (YouTube™ plus the attribution line); the third screenshot now shows the lively progress bar;
+  test instructions for the reviewers.

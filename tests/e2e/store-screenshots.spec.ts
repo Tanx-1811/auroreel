@@ -29,9 +29,9 @@ const COPY: Record<Lang, Record<'themes' | 'ambient' | 'studio' | 'maker' | 'cin
       subtitle: 'The picture’s colours glow softly around it. Speed, loop, capture and PiP on hover.',
     },
     studio: {
-      title: 'A whole studio of looks',
-      highlight: 'studio',
-      subtitle: 'Dark, light, aurora glows, gradients and glass — every theme previewed before you pick.',
+      title: 'A progress bar with personality',
+      highlight: 'personality',
+      subtitle: 'Turn the YouTube knob into a cat, a rocket or a heart — 16 drawings, any emoji or your own picture.',
     },
     maker: {
       title: 'Make a theme from any picture',
@@ -56,9 +56,9 @@ const COPY: Record<Lang, Record<'themes' | 'ambient' | 'studio' | 'maker' | 'cin
       subtitle: 'Màu của khung hình toả sáng dịu nhẹ. Tốc độ, lặp, chụp hình và PiP ngay khi rê chuột.',
     },
     studio: {
-      title: 'Cả một studio giao diện',
-      highlight: 'studio',
-      subtitle: 'Tối, sáng, cực quang, chuyển màu và hiệu ứng kính — xem trước từng chủ đề trước khi chọn.',
+      title: 'Thanh tiến độ sinh động',
+      highlight: 'sinh động',
+      subtitle: 'Nút kéo trên YouTube thành mèo, tên lửa, trái tim… — 16 hình vẽ, emoji bất kỳ hoặc ảnh của bạn.',
     },
     maker: {
       title: 'Tạo chủ đề từ bất kỳ bức ảnh nào',
@@ -176,11 +176,24 @@ for (const lang of ['en', 'vi'] as const) {
     });
     await watch.close();
 
-    // 3. The studio's theme gallery.
-    await setSettings({ themeId: 'midnight-velvet', player: { ambient: { enabled: false } } });
-    const studio = await openExtensionPage('options/options.html#/themes');
+    // 3. The studio's Decorations page: a lively progress-bar knob.
+    await setSettings({
+      themeId: 'midnight-velvet',
+      player: { ambient: { enabled: false } },
+      progress: { knob: 'cat', motion: 'bounce', fill: 'rainbow', height: 'thick', size: 30 },
+    });
+    const studio = await openExtensionPage('options/options.html#/decor');
     await studio.emulateMedia({ colorScheme: 'dark' });
     await studio.setViewportSize(VIEW);
+    await expect(studio.locator('.kn-preview .kn-knob.art img')).toBeVisible();
+    // Hold the preview a little before the middle of the video, on a steady frame.
+    await studio.evaluate(() => {
+      for (const a of document.getAnimations()) {
+        if (!(a instanceof CSSAnimation) || !a.animationName.includes('kn')) continue;
+        a.pause();
+        a.currentTime = a.animationName === 'kn-progress' ? 6200 : 0;
+      }
+    });
     await studio.waitForTimeout(500);
     await compose(context, `${lang}-3-studio.png`, {
       lang,

@@ -1,73 +1,83 @@
 # Nộp Auroreel lên Chrome Web Store — hướng dẫn từng bước
 
-Mọi thứ cần nộp đã có sẵn trong repo. Những việc chỉ chủ sở hữu làm được: đăng ký tài khoản nhà phát triển (phí một
-lần), chọn email hỗ trợ, công khai repo (để có địa chỉ chính sách quyền riêng tư) và bấm gửi duyệt.
+Mọi thứ cần nộp đều tạo được từ repo bằng một lệnh. Những việc chỉ chủ sở hữu làm được: đăng ký tài khoản nhà phát
+triển, bật xác minh 2 bước, chọn email liên hệ, công khai chính sách quyền riêng tư và bấm gửi duyệt.
 
-## 0. Chuẩn bị (đã có sẵn)
-
-| Cần                       | Ở đâu                                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------------------- |
-| Gói tải lên               | `release/auroreel-<phiên bản>.zip` — tạo lại bằng `npm run package`                      |
-| Biểu tượng cửa hàng 128px | `brand/store/store-icon-128.png`                                                         |
-| Ảnh chụp 1280×800         | `brand/store/screenshots/vi-1…5-*.png` (tiếng Việt) và `en-1…5-*.png` (tiếng Anh)        |
-| Ảnh quảng bá nhỏ 440×280  | `brand/store/promo-small-440x280-vi.png` / `promo-small-440x280.png`                     |
-| Ảnh quảng bá lớn 1400×560 | `brand/store/promo-marquee-1400x560-vi.png` / `promo-marquee-1400x560.png`               |
-| Nội dung trang cửa hàng   | `docs/STORE_LISTING.md` (tên, tóm tắt, mô tả EN + VI, giải trình quyền, dữ liệu sử dụng) |
-| Chính sách quyền riêng tư | `docs/PRIVACY.md` (EN + VI) — cần địa chỉ công khai, xem bước 5                          |
-
-Trước mỗi lần nộp:
+## 0. Tạo bộ hồ sơ
 
 ```bash
 npm run lint && npm run format:check && npm run typecheck && npm test && npm run test:e2e
 npm run test:live      # YouTube, Twitch, Netflix, FPT Play, VieON, Prime Video thật (cần mạng)
-npm run package
+npm run screenshots    # chỉ khi giao diện đổi
+npm run store
 ```
 
-## 1. Tài khoản nhà phát triển
+`npm run store` đóng gói rồi kiểm tra theo giới hạn của Store: cỡ ảnh, số ảnh chụp, độ dài tên và tóm tắt, tên và tóm
+tắt khớp `_locales`, mô tả không nêu quá 5 trang web. Sau đó nó gom mọi thứ vào `release/auroreel-<phiên bản>-store/`:
 
-1. Mở <https://chrome.google.com/webstore/devconsole> bằng tài khoản Google muốn đứng tên.
-2. Đồng ý điều khoản và trả **phí đăng ký 5 USD một lần**.
-3. Điền tên nhà phát triển (hiện trên cửa hàng) và **email liên hệ** — email này sẽ công khai. Xác minh email.
+| Tệp / thư mục                      | Dùng để                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------- |
+| `0 - Hướng dẫn nộp từng bước.md`   | Tài liệu này                                                                           |
+| `1 - auroreel-<phiên bản>.zip`     | Gói tải lên                                                                            |
+| `2 - Ảnh/`                         | Biểu tượng 128px, 5 ảnh chụp 1280×800 (EN, VI), ảnh quảng bá 440×280 và 1400×560       |
+| `3 - Điền từng ô trên Store.txt`   | Từng ô trên Developer Dashboard kèm đúng chữ cần dán (sinh từ `docs/STORE_LISTING.md`) |
+| `4 - Chính sách quyền riêng tư.md` | Nội dung trang chính sách (bản gốc: `docs/PRIVACY.md`)                                 |
 
-## 2. Tải gói lên
+Chữ trên Store sửa ở `docs/STORE_LISTING.md`, rồi chạy lại `npm run store`.
 
-1. Bấm **New item** → chọn `release/auroreel-1.0.0.zip`.
-2. Cửa hàng tự đọc tên, mô tả ngắn (từ `public/_locales/*/messages.json`) và biểu tượng.
+## 1. Tài khoản nhà phát triển (một lần)
 
-## 3. Thẻ "Store listing"
+1. Bật **xác minh 2 bước** cho tài khoản Google sẽ đứng tên: Store bắt buộc trước khi đăng.
+2. Mở <https://chrome.google.com/webstore/devconsole>, đồng ý điều khoản và trả **phí đăng ký một lần** (5 USD).
+3. Điền tên nhà phát triển (hiện trên Store) và **email liên hệ**: email này công khai. Xác minh email.
+4. **Trader / non-trader** (luật DSA của EU): phát hành miễn phí với tư cách cá nhân thì thường chọn _non-trader_.
+   Google để bạn tự quyết về mặt pháp lý. Chọn _trader_ thì phải công khai tên, địa chỉ và số điện thoại.
 
-- **Mô tả chi tiết:** dán phần _Description — English_ trong `docs/STORE_LISTING.md`. Thêm bản địa hoá **Tiếng Việt**
-  (Add localization → Vietnamese) và dán phần _Mô tả — Tiếng Việt_.
-- **Danh mục:** Make Chrome Yours. **Ngôn ngữ:** English, Vietnamese.
-- **Hình ảnh:** biểu tượng 128px, 5 ảnh chụp (bản EN cho tiếng Anh, bản VI cho tiếng Việt), ảnh quảng bá nhỏ và lớn.
-- **Trang chủ / hỗ trợ:** `https://github.com/Tanx-1811/auroreel` và `https://github.com/Tanx-1811/auroreel/issues`.
+## 2. Công khai chính sách quyền riêng tư
 
-## 4. Thẻ "Privacy practices"
+Store cần một địa chỉ công khai cho chính sách quyền riêng tư. Ngoài ra, nút "Visit website" của Chrome và trang Giới
+thiệu trong Studio cũng trỏ về repo GitHub. Trong khi repo còn **riêng tư**, các liên kết này đều báo 404.
 
-- Dán **Single purpose** và từng **giải trình quyền** trong phần _Privacy practices_ của `docs/STORE_LISTING.md`
-  (quyền trên các trang xem phim, `*.vieon.vn`, `storage`, `scripting`, quyền tuỳ chọn trên mọi trang).
-- **Remote code:** No. **Data usage:** không thu thập gì — không tick mục nào; đánh dấu ba cam kết.
-- **Privacy policy:** địa chỉ ở bước 5.
+- **Cách gọn nhất:** chuyển repo sang công khai (mã nguồn MIT), rồi dùng
+  `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md`.
+- **Nếu muốn giữ repo riêng tư:** đăng nội dung `4 - Chính sách quyền riêng tư.md` lên một trang công khai (GitHub
+  Gist, Notion công khai…) và dán địa chỉ đó. Các liên kết GitHub trong Studio vẫn báo 404 cho người dùng.
 
-## 5. Chính sách quyền riêng tư
+## 3. Điền hồ sơ
 
-Khi repo công khai, dùng: `https://github.com/Tanx-1811/auroreel/blob/main/docs/PRIVACY.md`. Nếu muốn giữ repo
-riêng tư, đăng `docs/PRIVACY.md` lên một trang công khai bất kỳ (GitHub Gist, Notion công khai…) rồi dán địa chỉ đó.
+Mở `3 - Điền từng ô trên Store.txt` và làm theo thứ tự:
 
-## 6. Gửi duyệt
+1. **Package:** New item → chọn tệp zip.
+2. **Store listing:** mô tả EN, danh mục _Functionality & UI_, ảnh, rồi thêm bản tiếng Việt.
+3. **Privacy practices:** mục đích duy nhất, giải trình từng quyền, _No remote code_, không tích dữ liệu nào, ba cam
+   kết, địa chỉ chính sách.
+4. **Test instructions:** các bước cho người duyệt (không cần tài khoản).
+5. **Distribution:** Free, Public, All regions.
 
-Bấm **Submit for review**. Lần đầu thường mất vài ngày vì extension xin quyền trên nhiều trang. Nếu bị hỏi lại, phần
-giải trình trong `docs/STORE_LISTING.md` đã nêu rõ từng quyền dùng để làm gì.
+Bấm **Save draft** sau mỗi thẻ, rồi **Submit for review**.
 
-## 7. Phát hành bản mới
+## 4. Thời gian duyệt
+
+Thường vài ngày, có khi vài tuần. Lần đầu nộp và xin quyền trên nhiều trang thì Store duyệt kỹ hơn. Nếu bị hỏi lại,
+phần giải trình quyền trong hồ sơ đã nêu rõ từng quyền dùng để làm gì. Quá 3 tuần chưa có kết quả thì liên hệ bộ phận
+hỗ trợ của Chrome Web Store.
+
+Lý do bị từ chối hay gặp với loại extension này, và cách hồ sơ đã tránh:
+
+- **Spam từ khoá:** mỗi mô tả nêu tối đa 5 trang web, chữ "YouTube" tối đa 4 lần (`npm run store` kiểm tra).
+- **Nhãn hiệu:** tên không chứa "YouTube". Lần nhắc đầu tiên ghi "YouTube™", cuối mô tả có câu ghi nhận nhãn hiệu
+  của Google. Ảnh chụp dùng trang mẫu "Viewly", không dùng logo của các trang.
+- **Quyền quá rộng:** quyền "mọi trang" là tuỳ chọn, chỉ xin khi người dùng bấm, và đã có giải trình riêng.
+
+## 5. Phát hành bản mới
 
 1. Tăng `version` trong `package.json`, ghi `CHANGELOG.md`.
-2. Chạy đủ kiểm tra ở bước 0, `npm run package`, `npm run screenshots` nếu giao diện đổi.
-3. Commit, gắn tag `vX.Y.Z` và đẩy tag — CI (chỉ chạy khi có tag hoặc bấm Run workflow) kiểm tra và tạo gói
+2. Chạy đủ bước 0.
+3. Commit, gắn tag `vX.Y.Z` và đẩy tag. CI (chỉ chạy khi có tag hoặc khi bấm Run workflow) kiểm tra rồi tạo gói
    `auroreel-extension` để tải về.
 4. Trong Developer Dashboard: **Package → Upload new package**, rồi gửi duyệt.
 
 ## Microsoft Edge Add-ons (không bắt buộc)
 
-Gói Chrome chạy nguyên trên Edge. Đăng ký miễn phí tại <https://partner.microsoft.com/dashboard/microsoftedge>, tải
-cùng tệp zip, dùng lại mô tả, ảnh và chính sách ở trên.
+Gói Chrome chạy nguyên trên Edge. Đăng ký miễn phí tại <https://partner.microsoft.com/dashboard/microsoftedge>, tải lên
+cùng tệp zip và dùng lại mô tả, ảnh và chính sách ở trên.

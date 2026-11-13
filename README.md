@@ -100,6 +100,7 @@ npm run test:e2e       # end-to-end + trợ năng (Chrome for Testing, trang th�
 npm run test:live      # kiểm tra trên YouTube, Twitch, Netflix, FPT Play, VieON, Prime Video thật (cần mạng)
 npm run lint && npm run format:check && npm run typecheck
 npm run package        # → release/auroreel-<phiên bản>.zip để nộp Chrome Web Store
+npm run store          # gói + ảnh + chữ dán từng ô → release/auroreel-<phiên bản>-store/
 npm run brand          # logo, ảnh quảng bá → brand/
 npm run screenshots    # ảnh chụp Store (EN/VI) → brand/store/screenshots/
 ```
